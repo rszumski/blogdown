@@ -1,0 +1,57 @@
+---
+title: "Weather Is Not Climate"
+author: "Russell Szumski"
+date: 2017-12-20
+categories: ["R"]
+tags: ["ggplot2", "ggiraph"]
+---
+
+Tools: R
+
+Data Source: [NASA](https://climate.nasa.gov/system/internal_resources/details/original/647_Global_Temperature_Data_File.txt)
+
+I live in Chicago and it's cold old, but weather is not climate. The difference between weather and climate is a measure of time. Weather is what conditions of the atmosphere are over a short period of time, and climate is how the atmosphere "behaves" over relatively long periods of time.
+
+So lets take the data and plot the deviations from the 1951 - 1980 average going back to 1880 and see what it looks like.
+
+
+```{r setup, include=FALSE, cache = TRUE}
+knitr::opts_chunk$set(echo = F)
+library(ggplot2)
+library(ggthemes)
+library(ggiraph)
+
+options(warn=-1)
+
+df_temp = read.csv('Annual Temp Dev/ZonAnn.Ts+dSST.csv')
+
+pal <- c("#313695","#4575b4","#74add1","#abd9e9","#e0f3f8","#ffffbf","#fee090","#fdae61","#f46d43","#d73027","#a50026")
+vals <- seq(-2, 2, length = 10)
+
+df_temp$tooltip <- paste0(df_temp$Year,':', df_temp$Glob)
+
+tooltip_css <- "background-color:black;color:white;padding:10px;"
+
+plot_int <- ggplot(df_temp, aes(x = Year, y = Glob, frame = Year, tooltip = tooltip)) +
+  geom_point_interactive(shape = 21, colour="black", aes(fill = Glob), size=5, stroke=1) +
+  scale_x_continuous(limits=c(1880,2017)) +
+  scale_y_continuous(limits=c(-0.4,1.2)) +
+  theme_minimal() +
+  scale_fill_gradientn(colors = pal, values = vals, rescaler = function(x, ...) x, oob = identity, guide=FALSE) +
+  labs(x = "Year",
+       y = "Deviations from 1951-1980 (C)",
+       title = "Land-Ocean: Global Annual Means ",
+       subtitle = "") +
+  geom_hline(yintercept = 0) +
+  theme_minimal(base_family = "RobotoCondensed-Regular") +
+  theme(text=element_text(size=12, family="Roboto-Bold"))
+
+```
+
+
+```{r, echo=FALSE}
+ggiraph(code = print(plot_int),hover_css = "fill-opacity:5",
+        tooltip_extra_css = tooltip_css, width = .9, height = 4) 
+```
+
+So while I might be experiencing some cold weather, the average global temperature is on the rise. Sixteen of the 17 warmest years in the 136-year record all have occurred since 2001 and 2016 ranks as the warmest on record.

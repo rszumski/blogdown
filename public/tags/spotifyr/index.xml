@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Spotifyr on szumskiR</title>
+    <link>/tags/spotifyr/</link>
+    <description>Recent content in Spotifyr on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Wed, 20 Dec 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/spotifyr/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Sad Songs</title>
+      <link>/post/gregory-alan-isakov/</link>
+      <pubDate>Wed, 20 Dec 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/gregory-alan-isakov/</guid>
+      <description>Tools: R
+Data Source: Spotify
+Gregory Alan Isakov has been one of my favorite singer-songwriters for a while, and I’ve gotten used to people suggesting that I play something ‘less depressing’. Most singer-songwriter’s music is indeed sad, but his music can’t be that sad. Can it?
+Using the spotifyr package we can pull track audio features from the ‘Spotify’ Web API, including valence and energy of a track.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Weather Is Not Climate</title>
+  <meta property="og:title" content="Weather Is Not Climate" />
+  <meta name="twitter:title" content="Weather Is Not Climate" />
+  <meta name="description" content="Tools: R
+Data Source: NASA
+I live in Chicago and it’s cold old, but weather is not climate. The difference between weather and climate is a measure of time. Weather is what conditions of the atmosphere are over a short period of time, and climate is how the atmosphere “behaves” over relatively long periods of time.
+So lets take the data and plot the deviations from the 1951 - 1980 average going back to 1880 and see what it looks like.">
+  <meta property="og:description" content="Tools: R
+Data Source: NASA
+I live in Chicago and it’s cold old, but weather is not climate. The difference between weather and climate is a measure of time. Weather is what conditions of the atmosphere are over a short period of time, and climate is how the atmosphere “behaves” over relatively long periods of time.
+So lets take the data and plot the deviations from the 1951 - 1980 average going back to 1880 and see what it looks like.">
+  <meta name="twitter:description" content="Tools: R
+Data Source: NASA
+I live in Chicago and it’s cold old, but weather is not climate. The difference between weather and climate is a measure of time. Weather is what conditions of the …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/annual-temp-dev/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/annual-temp-dev/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Weather Is Not Climate</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on December 20, 2017
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 2 minutes (330 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/d3/d3.min.js"></script>
+<script src="/rmarkdown-libs/d3-lasso/d3-lasso.min.js"></script>
+<link href="/rmarkdown-libs/ggiraph/styles.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/ggiraph-binding/ggiraph.js"></script>
+<script src="/rmarkdown-libs/uid987c768b5ab2465dac9dd7ae3bf88ee1/scripts_uid987c768b5ab2465dac9dd7ae3bf88ee1.js"></script>
+
+
+<p>Tools: R</p>
+<p>Data Source: <a href="https://climate.nasa.gov/system/internal_resources/details/original/647_Global_Temperature_Data_File.txt">NASA</a></p>
+<p>I live in Chicago and it’s cold old, but weather is not climate. The difference between weather and climate is a measure of time. Weather is what conditions of the atmosphere are over a short period of time, and climate is how the atmosphere “behaves” over relatively long periods of time.</p>
+<p>So lets take the data and plot the deviations from the 1951 - 1980 average going back to 1880 and see what it looks like.</p>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="ggiraph html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"html":"<div id='uid987c768b5ab2465dac9dd7ae3bf88ee1' class='ggiraph-container' ><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"svg_1\" viewBox=\"0 0 432.00 288.00\" class=\"svg-responsive-container\">\n  <g>\n    <defs>\n      <clipPath id=\"cl1_0\">\n        <rect x=\"0.00\" y=\"288.00\" width=\"0.00\" height=\"144.00\"/>\n      <\/clipPath>\n    <\/defs>\n    <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"288.00\" id=\"1\" clip-path=\"url(#cl1_0)\" fill=\"#FFFFFF\" fill-opacity=\"1\" stroke-width=\"0.75\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <defs>\n      <clipPath id=\"cl1_1\">\n        <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"288.00\"/>\n      <\/clipPath>\n    <\/defs>\n    <defs>\n      <clipPath id=\"cl1_2\">\n        <rect x=\"43.03\" y=\"35.33\" width=\"383.49\" height=\"220.61\"/>\n      <\/clipPath>\n    <\/defs>\n    <polyline points=\"43.03,227.11 426.52,227.11\" id=\"2\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.03,164.44 426.52,164.44\" id=\"3\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.03,101.76 426.52,101.76\" id=\"4\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.03,39.09 426.52,39.09\" id=\"5\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"111.35,255.94 111.35,35.33\" id=\"6\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"213.14,255.94 213.14,35.33\" id=\"7\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"314.93,255.94 314.93,35.33\" id=\"8\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"416.72,255.94 416.72,35.33\" id=\"9\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.03,195.77 426.52,195.77\" id=\"10\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.03,133.10 426.52,133.10\" id=\"11\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.03,70.43 426.52,70.43\" id=\"12\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"60.46,255.94 60.46,35.33\" id=\"13\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"162.25,255.94 162.25,35.33\" id=\"14\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"264.04,255.94 264.04,35.33\" id=\"15\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"365.83,255.94 365.83,35.33\" id=\"16\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#EBEBEB\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <circle cx=\"60.46\" cy=\"219.59\" r=\"4.53pt\" id=\"17\" clip-path=\"url(#cl1_2)\" fill=\"#F2F9DA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"63.00\" cy=\"208.31\" r=\"4.53pt\" id=\"18\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCE\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"65.55\" cy=\"209.56\" r=\"4.53pt\" id=\"19\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCF\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"68.09\" cy=\"219.59\" r=\"4.53pt\" id=\"20\" clip-path=\"url(#cl1_2)\" fill=\"#F2F9DA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"70.64\" cy=\"232.12\" r=\"4.53pt\" id=\"21\" clip-path=\"url(#cl1_2)\" fill=\"#EAF6E9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"73.18\" cy=\"234.63\" r=\"4.53pt\" id=\"22\" clip-path=\"url(#cl1_2)\" fill=\"#E8F6EB\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"75.73\" cy=\"235.88\" r=\"4.53pt\" id=\"23\" clip-path=\"url(#cl1_2)\" fill=\"#E7F5ED\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"78.27\" cy=\"239.64\" r=\"4.53pt\" id=\"24\" clip-path=\"url(#cl1_2)\" fill=\"#E5F4F1\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"80.82\" cy=\"218.33\" r=\"4.53pt\" id=\"25\" clip-path=\"url(#cl1_2)\" fill=\"#F3F9D9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"83.36\" cy=\"209.56\" r=\"4.53pt\" id=\"26\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCF\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"85.91\" cy=\"243.40\" r=\"4.53pt\" id=\"27\" clip-path=\"url(#cl1_2)\" fill=\"#E2F4F5\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"88.45\" cy=\"225.85\" r=\"4.53pt\" id=\"28\" clip-path=\"url(#cl1_2)\" fill=\"#EEF8E1\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"91.00\" cy=\"229.62\" r=\"4.53pt\" id=\"29\" clip-path=\"url(#cl1_2)\" fill=\"#EBF7E6\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"93.54\" cy=\"235.88\" r=\"4.53pt\" id=\"30\" clip-path=\"url(#cl1_2)\" fill=\"#E7F5ED\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"96.09\" cy=\"234.63\" r=\"4.53pt\" id=\"31\" clip-path=\"url(#cl1_2)\" fill=\"#E8F6EB\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"98.63\" cy=\"224.60\" r=\"4.53pt\" id=\"32\" clip-path=\"url(#cl1_2)\" fill=\"#EFF8E0\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"101.18\" cy=\"209.56\" r=\"4.53pt\" id=\"33\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCF\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"103.72\" cy=\"210.81\" r=\"4.53pt\" id=\"34\" clip-path=\"url(#cl1_2)\" fill=\"#F7FBD0\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"106.26\" cy=\"230.87\" r=\"4.53pt\" id=\"35\" clip-path=\"url(#cl1_2)\" fill=\"#EBF7E7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"108.81\" cy=\"218.33\" r=\"4.53pt\" id=\"36\" clip-path=\"url(#cl1_2)\" fill=\"#F3F9D9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"111.35\" cy=\"207.05\" r=\"4.53pt\" id=\"37\" clip-path=\"url(#cl1_2)\" fill=\"#F9FCCC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"113.90\" cy=\"214.57\" r=\"4.53pt\" id=\"38\" clip-path=\"url(#cl1_2)\" fill=\"#F5FAD5\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"116.44\" cy=\"233.38\" r=\"4.53pt\" id=\"39\" clip-path=\"url(#cl1_2)\" fill=\"#E9F6EA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"118.99\" cy=\"244.66\" r=\"4.53pt\" id=\"40\" clip-path=\"url(#cl1_2)\" fill=\"#E1F3F7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"124.08\" cy=\"232.12\" r=\"4.53pt\" id=\"41\" clip-path=\"url(#cl1_2)\" fill=\"#EAF6E9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"126.62\" cy=\"223.35\" r=\"4.53pt\" id=\"42\" clip-path=\"url(#cl1_2)\" fill=\"#EFF8DF\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"129.17\" cy=\"244.66\" r=\"4.53pt\" id=\"43\" clip-path=\"url(#cl1_2)\" fill=\"#E1F3F7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"141.89\" cy=\"239.64\" r=\"4.53pt\" id=\"44\" clip-path=\"url(#cl1_2)\" fill=\"#E5F4F1\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"144.44\" cy=\"239.64\" r=\"4.53pt\" id=\"45\" clip-path=\"url(#cl1_2)\" fill=\"#E5F4F1\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"146.98\" cy=\"214.57\" r=\"4.53pt\" id=\"46\" clip-path=\"url(#cl1_2)\" fill=\"#F5FAD5\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"149.53\" cy=\"210.81\" r=\"4.53pt\" id=\"47\" clip-path=\"url(#cl1_2)\" fill=\"#F7FBD0\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"152.07\" cy=\"235.88\" r=\"4.53pt\" id=\"48\" clip-path=\"url(#cl1_2)\" fill=\"#E7F5ED\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"157.16\" cy=\"230.87\" r=\"4.53pt\" id=\"49\" clip-path=\"url(#cl1_2)\" fill=\"#EBF7E7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"159.70\" cy=\"228.36\" r=\"4.53pt\" id=\"50\" clip-path=\"url(#cl1_2)\" fill=\"#ECF7E4\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"162.25\" cy=\"227.11\" r=\"4.53pt\" id=\"51\" clip-path=\"url(#cl1_2)\" fill=\"#EDF7E3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"164.79\" cy=\"217.08\" r=\"4.53pt\" id=\"52\" clip-path=\"url(#cl1_2)\" fill=\"#F3FAD8\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"167.34\" cy=\"228.36\" r=\"4.53pt\" id=\"53\" clip-path=\"url(#cl1_2)\" fill=\"#ECF7E4\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"169.88\" cy=\"225.85\" r=\"4.53pt\" id=\"54\" clip-path=\"url(#cl1_2)\" fill=\"#EEF8E1\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"172.43\" cy=\"227.11\" r=\"4.53pt\" id=\"55\" clip-path=\"url(#cl1_2)\" fill=\"#EDF7E3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"174.97\" cy=\"220.84\" r=\"4.53pt\" id=\"56\" clip-path=\"url(#cl1_2)\" fill=\"#F1F9DC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"177.52\" cy=\"207.05\" r=\"4.53pt\" id=\"57\" clip-path=\"url(#cl1_2)\" fill=\"#F9FCCC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"180.06\" cy=\"220.84\" r=\"4.53pt\" id=\"58\" clip-path=\"url(#cl1_2)\" fill=\"#F1F9DC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"182.61\" cy=\"219.59\" r=\"4.53pt\" id=\"59\" clip-path=\"url(#cl1_2)\" fill=\"#F2F9DA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"185.15\" cy=\"238.39\" r=\"4.53pt\" id=\"60\" clip-path=\"url(#cl1_2)\" fill=\"#E5F5F0\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"187.70\" cy=\"213.32\" r=\"4.53pt\" id=\"61\" clip-path=\"url(#cl1_2)\" fill=\"#F5FBD3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"190.24\" cy=\"208.31\" r=\"4.53pt\" id=\"62\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCE\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"192.79\" cy=\"217.08\" r=\"4.53pt\" id=\"63\" clip-path=\"url(#cl1_2)\" fill=\"#F3FAD8\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"195.33\" cy=\"232.12\" r=\"4.53pt\" id=\"64\" clip-path=\"url(#cl1_2)\" fill=\"#EAF6E9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"197.88\" cy=\"213.32\" r=\"4.53pt\" id=\"65\" clip-path=\"url(#cl1_2)\" fill=\"#F5FBD3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"200.42\" cy=\"220.84\" r=\"4.53pt\" id=\"66\" clip-path=\"url(#cl1_2)\" fill=\"#F1F9DC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"202.97\" cy=\"215.83\" r=\"4.53pt\" id=\"67\" clip-path=\"url(#cl1_2)\" fill=\"#F4FAD6\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"205.51\" cy=\"200.79\" r=\"4.53pt\" id=\"68\" clip-path=\"url(#cl1_2)\" fill=\"#FCFEC5\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"208.05\" cy=\"199.53\" r=\"4.53pt\" id=\"69\" clip-path=\"url(#cl1_2)\" fill=\"#FDFEC3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"210.60\" cy=\"199.53\" r=\"4.53pt\" id=\"70\" clip-path=\"url(#cl1_2)\" fill=\"#FDFEC3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"213.14\" cy=\"181.98\" r=\"4.53pt\" id=\"71\" clip-path=\"url(#cl1_2)\" fill=\"#FFF6B2\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"215.69\" cy=\"173.21\" r=\"4.53pt\" id=\"72\" clip-path=\"url(#cl1_2)\" fill=\"#FFF1AA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"218.23\" cy=\"189.50\" r=\"4.53pt\" id=\"73\" clip-path=\"url(#cl1_2)\" fill=\"#FFFBB9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"220.78\" cy=\"187.00\" r=\"4.53pt\" id=\"74\" clip-path=\"url(#cl1_2)\" fill=\"#FFFAB7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"223.32\" cy=\"169.45\" r=\"4.53pt\" id=\"75\" clip-path=\"url(#cl1_2)\" fill=\"#FFEFA6\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"225.87\" cy=\"184.49\" r=\"4.53pt\" id=\"76\" clip-path=\"url(#cl1_2)\" fill=\"#FFF8B4\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"228.41\" cy=\"204.55\" r=\"4.53pt\" id=\"77\" clip-path=\"url(#cl1_2)\" fill=\"#FAFDC9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"230.96\" cy=\"200.79\" r=\"4.53pt\" id=\"78\" clip-path=\"url(#cl1_2)\" fill=\"#FCFEC5\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"233.50\" cy=\"209.56\" r=\"4.53pt\" id=\"79\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCF\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"236.05\" cy=\"209.56\" r=\"4.53pt\" id=\"80\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCF\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"238.59\" cy=\"218.33\" r=\"4.53pt\" id=\"81\" clip-path=\"url(#cl1_2)\" fill=\"#F3F9D9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"241.14\" cy=\"203.29\" r=\"4.53pt\" id=\"82\" clip-path=\"url(#cl1_2)\" fill=\"#FBFDC8\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"243.68\" cy=\"194.52\" r=\"4.53pt\" id=\"83\" clip-path=\"url(#cl1_2)\" fill=\"#FFFEBE\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"246.23\" cy=\"187.00\" r=\"4.53pt\" id=\"84\" clip-path=\"url(#cl1_2)\" fill=\"#FFFAB7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"248.77\" cy=\"213.32\" r=\"4.53pt\" id=\"85\" clip-path=\"url(#cl1_2)\" fill=\"#F5FBD3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"251.32\" cy=\"213.32\" r=\"4.53pt\" id=\"86\" clip-path=\"url(#cl1_2)\" fill=\"#F5FBD3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"253.86\" cy=\"220.84\" r=\"4.53pt\" id=\"87\" clip-path=\"url(#cl1_2)\" fill=\"#F1F9DC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"256.40\" cy=\"190.76\" r=\"4.53pt\" id=\"88\" clip-path=\"url(#cl1_2)\" fill=\"#FFFCBA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"258.95\" cy=\"187.00\" r=\"4.53pt\" id=\"89\" clip-path=\"url(#cl1_2)\" fill=\"#FFFAB7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"261.49\" cy=\"192.01\" r=\"4.53pt\" id=\"90\" clip-path=\"url(#cl1_2)\" fill=\"#FFFDBB\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"264.04\" cy=\"198.28\" r=\"4.53pt\" id=\"91\" clip-path=\"url(#cl1_2)\" fill=\"#FEFEC2\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"266.58\" cy=\"189.50\" r=\"4.53pt\" id=\"92\" clip-path=\"url(#cl1_2)\" fill=\"#FFFBB9\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"269.13\" cy=\"190.76\" r=\"4.53pt\" id=\"93\" clip-path=\"url(#cl1_2)\" fill=\"#FFFCBA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"271.67\" cy=\"187.00\" r=\"4.53pt\" id=\"94\" clip-path=\"url(#cl1_2)\" fill=\"#FFFAB7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"274.22\" cy=\"220.84\" r=\"4.53pt\" id=\"95\" clip-path=\"url(#cl1_2)\" fill=\"#F1F9DC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"276.76\" cy=\"208.31\" r=\"4.53pt\" id=\"96\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCE\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"279.31\" cy=\"202.04\" r=\"4.53pt\" id=\"97\" clip-path=\"url(#cl1_2)\" fill=\"#FCFDC6\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"281.85\" cy=\"198.28\" r=\"4.53pt\" id=\"98\" clip-path=\"url(#cl1_2)\" fill=\"#FEFEC2\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"284.40\" cy=\"205.80\" r=\"4.53pt\" id=\"99\" clip-path=\"url(#cl1_2)\" fill=\"#FAFDCB\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"286.94\" cy=\"187.00\" r=\"4.53pt\" id=\"100\" clip-path=\"url(#cl1_2)\" fill=\"#FFFAB7\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"289.49\" cy=\"192.01\" r=\"4.53pt\" id=\"101\" clip-path=\"url(#cl1_2)\" fill=\"#FFFDBB\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"292.03\" cy=\"207.05\" r=\"4.53pt\" id=\"102\" clip-path=\"url(#cl1_2)\" fill=\"#F9FCCC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"294.58\" cy=\"194.52\" r=\"4.53pt\" id=\"103\" clip-path=\"url(#cl1_2)\" fill=\"#FFFEBE\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"297.12\" cy=\"175.72\" r=\"4.53pt\" id=\"104\" clip-path=\"url(#cl1_2)\" fill=\"#FFF3AC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"299.67\" cy=\"205.80\" r=\"4.53pt\" id=\"105\" clip-path=\"url(#cl1_2)\" fill=\"#FAFDCB\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"302.21\" cy=\"198.28\" r=\"4.53pt\" id=\"106\" clip-path=\"url(#cl1_2)\" fill=\"#FEFEC2\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"304.75\" cy=\"209.56\" r=\"4.53pt\" id=\"107\" clip-path=\"url(#cl1_2)\" fill=\"#F8FCCF\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"307.30\" cy=\"174.46\" r=\"4.53pt\" id=\"108\" clip-path=\"url(#cl1_2)\" fill=\"#FFF2AB\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"309.84\" cy=\"188.25\" r=\"4.53pt\" id=\"109\" clip-path=\"url(#cl1_2)\" fill=\"#FFFAB8\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"312.39\" cy=\"175.72\" r=\"4.53pt\" id=\"110\" clip-path=\"url(#cl1_2)\" fill=\"#FFF3AC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"314.93\" cy=\"161.93\" r=\"4.53pt\" id=\"111\" clip-path=\"url(#cl1_2)\" fill=\"#FFEA9F\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"317.48\" cy=\"154.41\" r=\"4.53pt\" id=\"112\" clip-path=\"url(#cl1_2)\" fill=\"#FFE598\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"320.02\" cy=\"179.48\" r=\"4.53pt\" id=\"113\" clip-path=\"url(#cl1_2)\" fill=\"#FFF5B0\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"322.57\" cy=\"156.91\" r=\"4.53pt\" id=\"114\" clip-path=\"url(#cl1_2)\" fill=\"#FFE79B\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"325.11\" cy=\"175.72\" r=\"4.53pt\" id=\"115\" clip-path=\"url(#cl1_2)\" fill=\"#FFF3AC\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"327.66\" cy=\"180.73\" r=\"4.53pt\" id=\"116\" clip-path=\"url(#cl1_2)\" fill=\"#FFF6B1\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"330.20\" cy=\"173.21\" r=\"4.53pt\" id=\"117\" clip-path=\"url(#cl1_2)\" fill=\"#FFF1AA\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"332.75\" cy=\"154.41\" r=\"4.53pt\" id=\"118\" clip-path=\"url(#cl1_2)\" fill=\"#FFE598\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"335.29\" cy=\"144.38\" r=\"4.53pt\" id=\"119\" clip-path=\"url(#cl1_2)\" fill=\"#FEDF8F\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"337.84\" cy=\"159.42\" r=\"4.53pt\" id=\"120\" clip-path=\"url(#cl1_2)\" fill=\"#FFE89D\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"340.38\" cy=\"140.62\" r=\"4.53pt\" id=\"121\" clip-path=\"url(#cl1_2)\" fill=\"#FEDB8B\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"342.93\" cy=\"144.38\" r=\"4.53pt\" id=\"122\" clip-path=\"url(#cl1_2)\" fill=\"#FEDF8F\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"345.47\" cy=\"168.20\" r=\"4.53pt\" id=\"123\" clip-path=\"url(#cl1_2)\" fill=\"#FFEEA5\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"348.02\" cy=\"165.69\" r=\"4.53pt\" id=\"124\" clip-path=\"url(#cl1_2)\" fill=\"#FFECA3\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"350.56\" cy=\"156.91\" r=\"4.53pt\" id=\"125\" clip-path=\"url(#cl1_2)\" fill=\"#FFE79B\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"353.10\" cy=\"140.62\" r=\"4.53pt\" id=\"126\" clip-path=\"url(#cl1_2)\" fill=\"#FEDB8B\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"355.65\" cy=\"154.41\" r=\"4.53pt\" id=\"127\" clip-path=\"url(#cl1_2)\" fill=\"#FFE598\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"358.19\" cy=\"136.86\" r=\"4.53pt\" id=\"128\" clip-path=\"url(#cl1_2)\" fill=\"#FED788\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"360.74\" cy=\"118.06\" r=\"4.53pt\" id=\"129\" clip-path=\"url(#cl1_2)\" fill=\"#FEC576\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"363.28\" cy=\"145.63\" r=\"4.53pt\" id=\"130\" clip-path=\"url(#cl1_2)\" fill=\"#FEE090\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"365.83\" cy=\"145.63\" r=\"4.53pt\" id=\"131\" clip-path=\"url(#cl1_2)\" fill=\"#FEE090\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"368.37\" cy=\"129.34\" r=\"4.53pt\" id=\"132\" clip-path=\"url(#cl1_2)\" fill=\"#FFD081\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"370.92\" cy=\"118.06\" r=\"4.53pt\" id=\"133\" clip-path=\"url(#cl1_2)\" fill=\"#FEC576\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"373.46\" cy=\"119.31\" r=\"4.53pt\" id=\"134\" clip-path=\"url(#cl1_2)\" fill=\"#FEC677\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"376.01\" cy=\"128.09\" r=\"4.53pt\" id=\"135\" clip-path=\"url(#cl1_2)\" fill=\"#FFCF7F\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"378.55\" cy=\"111.79\" r=\"4.53pt\" id=\"136\" clip-path=\"url(#cl1_2)\" fill=\"#FEBE70\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"381.10\" cy=\"118.06\" r=\"4.53pt\" id=\"137\" clip-path=\"url(#cl1_2)\" fill=\"#FEC576\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"383.64\" cy=\"115.55\" r=\"4.53pt\" id=\"138\" clip-path=\"url(#cl1_2)\" fill=\"#FEC274\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"386.19\" cy=\"130.59\" r=\"4.53pt\" id=\"139\" clip-path=\"url(#cl1_2)\" fill=\"#FFD182\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"388.73\" cy=\"115.55\" r=\"4.53pt\" id=\"140\" clip-path=\"url(#cl1_2)\" fill=\"#FEC274\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"391.28\" cy=\"108.03\" r=\"4.53pt\" id=\"141\" clip-path=\"url(#cl1_2)\" fill=\"#FEBB6D\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"393.82\" cy=\"123.07\" r=\"4.53pt\" id=\"142\" clip-path=\"url(#cl1_2)\" fill=\"#FECA7B\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"396.37\" cy=\"118.06\" r=\"4.53pt\" id=\"143\" clip-path=\"url(#cl1_2)\" fill=\"#FEC576\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"398.91\" cy=\"115.55\" r=\"4.53pt\" id=\"144\" clip-path=\"url(#cl1_2)\" fill=\"#FEC274\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"401.45\" cy=\"104.27\" r=\"4.53pt\" id=\"145\" clip-path=\"url(#cl1_2)\" fill=\"#FEB769\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"404.00\" cy=\"86.72\" r=\"4.53pt\" id=\"146\" clip-path=\"url(#cl1_2)\" fill=\"#FCA35C\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"406.54\" cy=\"71.68\" r=\"4.53pt\" id=\"147\" clip-path=\"url(#cl1_2)\" fill=\"#FA9052\" fill-opacity=\"1\" stroke-width=\"1.41732\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <line x1=\"43.03\" y1=\"195.77\" x2=\"426.52\" y2=\"195.77\" id=\"148\" clip-path=\"url(#cl1_2)\" stroke-width=\"1.06698\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\" fill=\"#000000\" fill-opacity=\"1\"/>\n    <defs>\n      <clipPath id=\"cl1_3\">\n        <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"288.00\"/>\n      <\/clipPath>\n    <\/defs>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"22.19\" y=\"199.42\" id=\"149\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Roboto-Bold\">0.0<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"22.19\" y=\"136.75\" id=\"150\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Roboto-Bold\">0.5<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"22.19\" y=\"74.08\" id=\"151\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Roboto-Bold\">1.0<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"47.73\" y=\"268.17\" id=\"152\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Roboto-Bold\">1880<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"149.52\" y=\"268.17\" id=\"153\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Roboto-Bold\">1920<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"251.31\" y=\"268.17\" id=\"154\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Roboto-Bold\">1960<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"353.10\" y=\"268.17\" id=\"155\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Roboto-Bold\">2000<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"221.27\" y=\"282.40\" id=\"156\" font-size=\"9.00pt\" font-family=\"Roboto-Bold\">Year<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text transform=\"translate(14.23,238.85) rotate(-90)\" id=\"157\" font-size=\"9.00pt\" font-family=\"Roboto-Bold\">Deviations from 1951-1980 (C)<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"43.03\" y=\"15.68\" id=\"158\" font-size=\"10.80pt\" font-family=\"Roboto-Bold\">Land-Ocean: Global Annual Means <\/text>\n    <\/g>\n  <\/g>\n<\/svg>\n<div class='ggiraph-toolbar'><div class='ggiraph-toolbar-block shinyonly'><a class='ggiraph-toolbar-icon neutral' title='lasso selection' href='javascript:lasso_on(\"uid987c768b5ab2465dac9dd7ae3bf88ee1\", true, \"array_selected_uid987c768b5ab2465dac9dd7ae3bf88ee1\", \"clicked_uid987c768b5ab2465dac9dd7ae3bf88ee1\");'><svg width='1.5em' height='1.5em' viewBox='0 0 230 230'><g><ellipse ry='65.5' rx='86.5' cy='94' cx='115.5' stroke-width='20' fill='transparent'/><ellipse ry='11.500001' rx='10.5' cy='153' cx='91.5' stroke-width='20' fill='transparent'/><line y2='210.5' x2='105' y1='164.5' x1='96' stroke-width='20'/><\/g><\/svg><\/a><a class='ggiraph-toolbar-icon drop' title='lasso anti-selection' href='javascript:lasso_on(\"uid987c768b5ab2465dac9dd7ae3bf88ee1\", false, \"array_selected_uid987c768b5ab2465dac9dd7ae3bf88ee1\", \"clicked_uid987c768b5ab2465dac9dd7ae3bf88ee1\");'><svg width='1.5em' height='1.5em' viewBox='0 0 230 230'><g><ellipse ry='65.5' rx='86.5' cy='94' cx='115.5' stroke-width='20' fill='transparent'/><ellipse ry='11.500001' rx='10.5' cy='153' cx='91.5' stroke-width='20' fill='transparent'/><line y2='210.5' x2='105' y1='164.5' x1='96' stroke-width='20'/><\/g><\/svg><\/a><\/div><\/div><style>div.tooltip_uid987c768b5ab2465dac9dd7ae3bf88ee1 {position:absolute;pointer-events:none;z-index:999;background-color:black;color:white;padding:10px;}\n.cl_data_id_uid987c768b5ab2465dac9dd7ae3bf88ee1:{}.cl_data_id_uid987c768b5ab2465dac9dd7ae3bf88ee1:hover{fill-opacity:5}\n.clicked_uid987c768b5ab2465dac9dd7ae3bf88ee1{fill-opacity:5}<\/style><\/div>","uid":"uid987c768b5ab2465dac9dd7ae3bf88ee1","funname":"init_prop_uid987c768b5ab2465dac9dd7ae3bf88ee1","sel_array_name":"array_selected_uid987c768b5ab2465dac9dd7ae3bf88ee1","selected_class":"clicked_uid987c768b5ab2465dac9dd7ae3bf88ee1","tooltip_opacity":0.9,"tooltip_offx":10,"tooltip_offy":0,"zoom_max":1,"use_wh":false,"width":"90%","selection_type":"multiple","flexdashboard":false},"evals":[],"jsHooks":[]}</script>
+<p>So while I might be experiencing some cold weather, the average global temperature is on the rise. Sixteen of the 17 warmest years in the 136-year record all have occurred since 2001 and 2016 ranks as the warmest on record.</p>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="/post/inaugural-address-smog/" data-toggle="tooltip" data-placement="top" title="Inaugural Addresses are more ... unintelligible">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="/post/gregory-alan-isakov/" data-toggle="tooltip" data-placement="top" title="Sad Songs">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

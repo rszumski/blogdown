@@ -1,0 +1,130 @@
+---
+title: "CTA Ridership"
+author: "Russell Szumski"
+date: 2018-01-25
+categories: ["R"]
+tags: ["flexdashboard", "highcharter", "forecast", "treemap", "leaflet"]
+---
+
+Tools: R
+
+Data Source: [Chicago Data Portal](https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Monthly-Day-Type-A/t2rn-p8d7) The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001. 
+
+I came across the [flexdashboard](http://rmarkdown.rstudio.com/flexdashboard/) package while I was looking at different ways to create dashboards. So I thought it would be fun make a dashboard with data from the CTA - Ridership - 'L' Station Entries dataset. The dashboard will consist of two columns. The first column will have two rows with a time series in the top row and a map in the bottom row. In the second column the user will have the option to select between viewing a treemap or a bar chart. 
+
+This a static website so I can't include the actual dashboard, but here is a [link](https://rpubs.com/rszumski/352541) and below is what I did to make each plot after a little data prep.
+```{r setup, include=FALSE, cache = F}
+library(highcharter)
+library(forecast)
+library(rgdal)
+library(leaflet)
+library(raster)
+library(treemap)
+library(dplyr)
+library(widgetframe)
+
+df_ts <- read.csv('CTA/CTA_Ridership_ts.csv')
+df_ts <- ts(df_ts$Ridership, start=c(2001, 1), end=c(2017, 11), frequency=12) 
+
+
+timeseries <- df_ts %>%
+  forecast(level = 90) %>%
+  hchart()
+
+df_map <- read.csv('CTA/Leaflet_data.csv')
+
+df_map$Count = format(df_map$Count,big.mark=",",scientific=FALSE)
+
+content <- paste(as.character(df_map$Station),
+                 "Rides:",df_map$Count)
+
+shapeData <- shapefile("CTA/ShapeFiles/CTA_RailLines.shp")
+shapeData <- spTransform(shapeData, CRS("+proj=longlat"))
+
+leaf_map = leaflet(df_map) %>% addTiles() %>%
+  addPolylines(data = shapeData, color = "black",fill = NULL) %>%
+  addMarkers(clusterOptions = markerClusterOptions(),~long, ~lat, label = content,
+             labelOptions = labelOptions(noHide = F,direction = 'top'))
+
+df_tree <- read.csv('CTA/CTA-Treemap.csv') %>%
+  mutate_if(is.factor, as.character) %>%
+  mutate_if(is.integer, as.numeric)
+
+treemap <- hctreemap(treemap(df_tree, index = c("Line", "stationname"),
+                  vSize = "Count", vColor = "lines",
+                  type = "value", palette = "RdYlBu"))
+
+df_bar <- read.csv('CTA/CTA-bar.csv')
+
+barchart <- highchart() %>%
+  hc_xAxis(categories = df_bar$Line) %>% 
+  hc_add_series(df_bar$Count, name = "Rides", showInLegend = FALSE) %>%
+  hc_chart(type = "bar")
+
+```
+
+Time series:
+
+```{r , eval=FALSE}
+df <- df %>%
+  group_by(date) %>%
+  summarise(Count = sum(rides))
+
+df_ts <- ts(df$Count, start=c(2001, 1), end=c(2017, 11), frequency=12) 
+
+df_ts %>%
+  forecast(level = 90) %>%
+  hchart()
+```
+
+```{r , echo=FALSE}
+frameWidget(timeseries, height = 400, width = '95%')
+```
+
+Map: 
+
+```{r , eval=FALSE}
+df_map$Count = format(df_map$Count,big.mark=",",scientific=FALSE)
+
+content <- paste(as.character(df_map$Station),
+                 "Rides:",df_map$Count)
+
+shapeData <- shapefile("ShapeFiles/CTA_RailLines.shp")
+shapeData <- spTransform(shapeData, CRS("+proj=longlat"))
+
+leaf_map = leaflet(df_map) %>% addTiles() %>%
+  addPolylines(data = shapeData, color = "black",fill = NULL) %>%
+  addMarkers(clusterOptions = markerClusterOptions(),~long, ~lat, label = content,
+             labelOptions = labelOptions(noHide = F,direction = 'top'))
+
+```
+
+
+```{r , echo=FALSE}
+frameWidget(leaf_map, height = 400, width = '95%')
+```
+
+Treemap:
+
+```{r , eval=FALSE}
+hctreemap(treemap(df_tree, index = c("Line", "stationname"),
+                  vSize = "Count", vColor = "lines",
+                  type = "value", palette = "RdYlBu"))
+```
+
+```{r , echo=FALSE}
+frameWidget(treemap, height = 400, width = '95%')
+```
+
+Bar chart:
+
+```{r , eval=FALSE}
+highchart() %>%
+  hc_xAxis(categories = df_bar$Line) %>% 
+  hc_add_series(df_bar$Count, name = "Rides", showInLegend = FALSE) %>%
+  hc_chart(type = "bar")
+```
+
+```{r , echo=FALSE}
+frameWidget(barchart, height = 400, width = '95%')
+```

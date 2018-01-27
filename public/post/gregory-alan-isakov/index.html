@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Sad Songs</title>
+  <meta property="og:title" content="Sad Songs" />
+  <meta name="twitter:title" content="Sad Songs" />
+  <meta name="description" content="Tools: R
+Data Source: Spotify
+Gregory Alan Isakov has been one of my favorite singer-songwriters for a while, and I’ve gotten used to people suggesting that I play something ‘less depressing’. Most singer-songwriter’s music is indeed sad, but his music can’t be that sad. Can it?
+Using the spotifyr package we can pull track audio features from the ‘Spotify’ Web API, including valence and energy of a track.">
+  <meta property="og:description" content="Tools: R
+Data Source: Spotify
+Gregory Alan Isakov has been one of my favorite singer-songwriters for a while, and I’ve gotten used to people suggesting that I play something ‘less depressing’. Most singer-songwriter’s music is indeed sad, but his music can’t be that sad. Can it?
+Using the spotifyr package we can pull track audio features from the ‘Spotify’ Web API, including valence and energy of a track.">
+  <meta name="twitter:description" content="Tools: R
+Data Source: Spotify
+Gregory Alan Isakov has been one of my favorite singer-songwriters for a while, and I’ve gotten used to people suggesting that I play something ‘less depressing’. Most …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/gregory-alan-isakov/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/gregory-alan-isakov/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Sad Songs</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on December 20, 2017
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 2 minutes (383 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/d3/d3.min.js"></script>
+<script src="/rmarkdown-libs/d3-lasso/d3-lasso.min.js"></script>
+<link href="/rmarkdown-libs/ggiraph/styles.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/ggiraph-binding/ggiraph.js"></script>
+<script src="/rmarkdown-libs/uida12bd48ab39f48caa66d42268f6f7a9b/scripts_uida12bd48ab39f48caa66d42268f6f7a9b.js"></script>
+
+
+<p>Tools: R</p>
+<p>Data Source: Spotify</p>
+<p><a href="https://gregoryalanisakov.com/">Gregory Alan Isakov</a> has been one of my favorite singer-songwriters for a while, and I’ve gotten used to people suggesting that I play something ‘less depressing’. Most singer-songwriter’s music is indeed sad, but his music can’t be that sad. Can it?</p>
+<p>Using the spotifyr package we can pull track audio features from the ‘Spotify’ Web API, including valence and energy of a track.</p>
+<p>Valence: a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).</p>
+<p>Energy: a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale.</p>
+<p>Plotting valence vs. energy we can get an idea of the emotion of a song.</p>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="ggiraph html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"html":"<div id='uida12bd48ab39f48caa66d42268f6f7a9b' class='ggiraph-container' ><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"svg_1\" viewBox=\"0 0 432.00 432.00\" class=\"svg-responsive-container\">\n  <g>\n    <defs>\n      <clipPath id=\"cl1_0\">\n        <rect x=\"0.00\" y=\"432.00\" width=\"0.00\" height=\"0.00\"/>\n      <\/clipPath>\n    <\/defs>\n    <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\" id=\"1\" clip-path=\"url(#cl1_0)\" fill=\"#FFFFFF\" fill-opacity=\"1\" stroke-width=\"0.75\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <defs>\n      <clipPath id=\"cl1_1\">\n        <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\"/>\n      <\/clipPath>\n    <\/defs>\n    <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\" id=\"2\" clip-path=\"url(#cl1_1)\" fill=\"none\" stroke=\"none\"/>\n    <defs>\n      <clipPath id=\"cl1_2\">\n        <rect x=\"46.09\" y=\"34.17\" width=\"380.43\" height=\"292.17\"/>\n      <\/clipPath>\n    <\/defs>\n    <polyline points=\"46.09,313.06 426.52,313.06\" id=\"3\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#D8D8D8\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"46.09,246.66 426.52,246.66\" id=\"4\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#D8D8D8\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"46.09,180.26 426.52,180.26\" id=\"5\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#D8D8D8\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"46.09,113.86 426.52,113.86\" id=\"6\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#D8D8D8\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"46.09,47.45 426.52,47.45\" id=\"7\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#D8D8D8\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <circle cx=\"167.48\" cy=\"233.11\" r=\"1.47pt\" id=\"8\" clip-path=\"url(#cl1_2)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"126.32\" cy=\"241.08\" r=\"1.47pt\" id=\"9\" clip-path=\"url(#cl1_2)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"129.09\" cy=\"241.61\" r=\"1.47pt\" id=\"10\" clip-path=\"url(#cl1_2)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"177.86\" cy=\"253.03\" r=\"1.47pt\" id=\"11\" clip-path=\"url(#cl1_2)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"128.75\" cy=\"265.52\" r=\"1.47pt\" id=\"12\" clip-path=\"url(#cl1_2)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"119.41\" cy=\"234.97\" r=\"1.47pt\" id=\"13\" clip-path=\"url(#cl1_2)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"161.26\" cy=\"277.74\" r=\"1.47pt\" id=\"14\" clip-path=\"url(#cl1_2)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"119.75\" cy=\"271.10\" r=\"1.47pt\" id=\"15\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"188.23\" cy=\"198.32\" r=\"1.47pt\" id=\"16\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"138.43\" cy=\"220.36\" r=\"1.47pt\" id=\"17\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"99.35\" cy=\"246.39\" r=\"1.47pt\" id=\"18\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"126.67\" cy=\"242.94\" r=\"1.47pt\" id=\"19\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"225.93\" cy=\"208.94\" r=\"1.47pt\" id=\"20\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"205.87\" cy=\"254.10\" r=\"1.47pt\" id=\"21\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"171.98\" cy=\"196.46\" r=\"1.47pt\" id=\"22\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"162.98\" cy=\"197.52\" r=\"1.47pt\" id=\"23\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"103.15\" cy=\"225.68\" r=\"1.47pt\" id=\"24\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"140.85\" cy=\"285.97\" r=\"1.47pt\" id=\"25\" clip-path=\"url(#cl1_2)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"125.29\" cy=\"283.85\" r=\"1.47pt\" id=\"26\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"122.17\" cy=\"247.72\" r=\"1.47pt\" id=\"27\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"151.57\" cy=\"210.01\" r=\"1.47pt\" id=\"28\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"185.46\" cy=\"215.05\" r=\"1.47pt\" id=\"29\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"226.27\" cy=\"227.27\" r=\"1.47pt\" id=\"30\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"203.10\" cy=\"264.46\" r=\"1.47pt\" id=\"31\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"116.64\" cy=\"270.03\" r=\"1.47pt\" id=\"32\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"86.10\" cy=\"222.49\" r=\"1.47pt\" id=\"33\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"135.32\" cy=\"237.36\" r=\"1.47pt\" id=\"34\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"101.77\" cy=\"274.55\" r=\"1.47pt\" id=\"35\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"325.53\" cy=\"252.77\" r=\"1.47pt\" id=\"36\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"124.25\" cy=\"295.21\" r=\"1.47pt\" id=\"37\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"113.87\" cy=\"262.07\" r=\"1.47pt\" id=\"38\" clip-path=\"url(#cl1_2)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"247.72\" cy=\"199.12\" r=\"1.47pt\" id=\"39\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"211.06\" cy=\"217.44\" r=\"1.47pt\" id=\"40\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"136.35\" cy=\"226.74\" r=\"1.47pt\" id=\"41\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"201.37\" cy=\"171.49\" r=\"1.47pt\" id=\"42\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"206.91\" cy=\"246.66\" r=\"1.47pt\" id=\"43\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"88.49\" cy=\"227.27\" r=\"1.47pt\" id=\"44\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"81.33\" cy=\"251.18\" r=\"1.47pt\" id=\"45\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"87.42\" cy=\"299.65\" r=\"1.47pt\" id=\"46\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"138.08\" cy=\"248.52\" r=\"1.47pt\" id=\"47\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"232.50\" cy=\"195.93\" r=\"1.47pt\" id=\"48\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"90.67\" cy=\"292.42\" r=\"1.47pt\" id=\"49\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"164.02\" cy=\"233.91\" r=\"1.47pt\" id=\"50\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"122.52\" cy=\"274.55\" r=\"1.47pt\" id=\"51\" clip-path=\"url(#cl1_2)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"110.76\" cy=\"245.33\" r=\"1.47pt\" id=\"52\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"139.12\" cy=\"261.00\" r=\"1.47pt\" id=\"53\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"162.98\" cy=\"251.71\" r=\"1.47pt\" id=\"54\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"170.94\" cy=\"234.18\" r=\"1.47pt\" id=\"55\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"129.09\" cy=\"231.79\" r=\"1.47pt\" id=\"56\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"84.93\" cy=\"253.57\" r=\"1.47pt\" id=\"57\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"208.64\" cy=\"219.04\" r=\"1.47pt\" id=\"58\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"106.27\" cy=\"216.91\" r=\"1.47pt\" id=\"59\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"213.48\" cy=\"228.33\" r=\"1.47pt\" id=\"60\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"129.09\" cy=\"278.53\" r=\"1.47pt\" id=\"61\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"128.05\" cy=\"248.78\" r=\"1.47pt\" id=\"62\" clip-path=\"url(#cl1_2)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <line x1=\"236.30\" y1=\"326.34\" x2=\"236.30\" y2=\"34.17\" id=\"63\" clip-path=\"url(#cl1_2)\" stroke-width=\"1.06698\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\" fill=\"#000000\" fill-opacity=\"1\"/>\n    <line x1=\"46.09\" y1=\"180.26\" x2=\"426.52\" y2=\"180.26\" id=\"64\" clip-path=\"url(#cl1_2)\" stroke-width=\"1.06698\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\" fill=\"#000000\" fill-opacity=\"1\"/>\n    <g clip-path=\"url(#cl1_2)\">\n      <text x=\"51.91\" y=\"316.84\" id=\"65\" font-size=\"8.28pt\" font-family=\"Liberation Sans\">Sad/Depressing<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_2)\">\n      <text x=\"51.92\" y=\"51.24\" id=\"66\" font-size=\"8.28pt\" font-family=\"Liberation Sans\">Turbulent/Angry<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_2)\">\n      <text x=\"353.22\" y=\"51.24\" id=\"67\" font-size=\"8.28pt\" font-family=\"Liberation Sans\">Happy/Joyful<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_2)\">\n      <text x=\"351.39\" y=\"316.84\" id=\"68\" font-size=\"8.28pt\" font-family=\"Liberation Sans\">Chill/Peaceful<\/text>\n    <\/g>\n    <defs>\n      <clipPath id=\"cl1_3\">\n        <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\"/>\n      <\/clipPath>\n    <\/defs>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"21.69\" y=\"316.50\" id=\"69\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.00<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"21.69\" y=\"250.10\" id=\"70\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.25<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"21.69\" y=\"183.70\" id=\"71\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.50<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"21.69\" y=\"117.29\" id=\"72\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.75<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"21.69\" y=\"50.89\" id=\"73\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">1.00<\/text>\n    <\/g>\n    <polyline points=\"43.35,313.06 46.09,313.06\" id=\"74\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.35,246.66 46.09,246.66\" id=\"75\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.35,180.26 46.09,180.26\" id=\"76\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.35,113.86 46.09,113.86\" id=\"77\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"43.35,47.45 46.09,47.45\" id=\"78\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"63.38,329.08 63.38,326.34\" id=\"79\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"149.84,329.08 149.84,326.34\" id=\"80\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"236.30,329.08 236.30,326.34\" id=\"81\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"322.77,329.08 322.77,326.34\" id=\"82\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"409.23,329.08 409.23,326.34\" id=\"83\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"53.65\" y=\"338.15\" id=\"84\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.00<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"140.11\" y=\"338.15\" id=\"85\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.25<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"226.57\" y=\"338.15\" id=\"86\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.50<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"313.03\" y=\"338.15\" id=\"87\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">0.75<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"399.50\" y=\"338.15\" id=\"88\" font-size=\"7.20pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Liberation Sans\">1.00<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"214.62\" y=\"351.88\" id=\"89\" font-size=\"9.00pt\" font-family=\"Liberation Sans\">Valence<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text transform=\"translate(13.73,199.27) rotate(-90)\" id=\"90\" font-size=\"9.00pt\" font-family=\"Liberation Sans\">Energy<\/text>\n    <\/g>\n    <rect x=\"23.15\" y=\"363.34\" width=\"426.30\" height=\"63.18\" id=\"91\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke=\"none\"/>\n    <rect x=\"33.14\" y=\"369.01\" width=\"17.28\" height=\"17.28\" id=\"92\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke=\"none\"/>\n    <circle cx=\"41.78\" cy=\"377.65\" r=\"1.47pt\" id=\"93\" clip-path=\"url(#cl1_3)\" fill=\"#DC322F\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#DC322F\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <rect x=\"33.14\" y=\"386.29\" width=\"17.28\" height=\"17.28\" id=\"94\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke=\"none\"/>\n    <circle cx=\"41.78\" cy=\"394.93\" r=\"1.47pt\" id=\"95\" clip-path=\"url(#cl1_3)\" fill=\"#D33682\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#D33682\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <rect x=\"33.14\" y=\"403.57\" width=\"17.28\" height=\"17.28\" id=\"96\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke=\"none\"/>\n    <circle cx=\"41.78\" cy=\"412.21\" r=\"1.47pt\" id=\"97\" clip-path=\"url(#cl1_3)\" fill=\"#268BD2\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#268BD2\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <rect x=\"275.96\" y=\"369.01\" width=\"17.28\" height=\"17.28\" id=\"98\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke=\"none\"/>\n    <circle cx=\"284.60\" cy=\"377.65\" r=\"1.47pt\" id=\"99\" clip-path=\"url(#cl1_3)\" fill=\"#2AA198\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#2AA198\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <rect x=\"275.96\" y=\"386.29\" width=\"17.28\" height=\"17.28\" id=\"100\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke=\"none\"/>\n    <circle cx=\"284.60\" cy=\"394.93\" r=\"1.47pt\" id=\"101\" clip-path=\"url(#cl1_3)\" fill=\"#859900\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#859900\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"52.58\" y=\"381.09\" id=\"102\" font-size=\"7.20pt\" font-family=\"Liberation Sans\">Gregory Alan Isakov with the Colorado Symphony<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"52.58\" y=\"398.37\" id=\"103\" font-size=\"7.20pt\" font-family=\"Liberation Sans\">songs for October<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"52.58\" y=\"415.65\" id=\"104\" font-size=\"7.20pt\" font-family=\"Liberation Sans\">That Sea, The Gambler<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"295.40\" y=\"381.09\" id=\"105\" font-size=\"7.20pt\" font-family=\"Liberation Sans\">The Weatherman<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"295.40\" y=\"398.37\" id=\"106\" font-size=\"7.20pt\" font-family=\"Liberation Sans\">This Empty Northern Hemisphere<\/text>\n    <\/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"46.09\" y=\"15.10\" id=\"107\" font-size=\"10.80pt\" font-family=\"Liberation Sans\"> <\/text>\n    <\/g>\n  <\/g>\n<\/svg>\n<div class='ggiraph-toolbar'><div class='ggiraph-toolbar-block shinyonly'><a class='ggiraph-toolbar-icon neutral' title='lasso selection' href='javascript:lasso_on(\"uida12bd48ab39f48caa66d42268f6f7a9b\", true, \"array_selected_uida12bd48ab39f48caa66d42268f6f7a9b\", \"clicked_uida12bd48ab39f48caa66d42268f6f7a9b\");'><svg width='1.5em' height='1.5em' viewBox='0 0 230 230'><g><ellipse ry='65.5' rx='86.5' cy='94' cx='115.5' stroke-width='20' fill='transparent'/><ellipse ry='11.500001' rx='10.5' cy='153' cx='91.5' stroke-width='20' fill='transparent'/><line y2='210.5' x2='105' y1='164.5' x1='96' stroke-width='20'/><\/g><\/svg><\/a><a class='ggiraph-toolbar-icon drop' title='lasso anti-selection' href='javascript:lasso_on(\"uida12bd48ab39f48caa66d42268f6f7a9b\", false, \"array_selected_uida12bd48ab39f48caa66d42268f6f7a9b\", \"clicked_uida12bd48ab39f48caa66d42268f6f7a9b\");'><svg width='1.5em' height='1.5em' viewBox='0 0 230 230'><g><ellipse ry='65.5' rx='86.5' cy='94' cx='115.5' stroke-width='20' fill='transparent'/><ellipse ry='11.500001' rx='10.5' cy='153' cx='91.5' stroke-width='20' fill='transparent'/><line y2='210.5' x2='105' y1='164.5' x1='96' stroke-width='20'/><\/g><\/svg><\/a><\/div><\/div><style>div.tooltip_uida12bd48ab39f48caa66d42268f6f7a9b {position:absolute;pointer-events:none;z-index:999;padding:5px;background:black;color:white;border-radius:2px 2px 2px 2px;}\n.cl_data_id_uida12bd48ab39f48caa66d42268f6f7a9b:{}.cl_data_id_uida12bd48ab39f48caa66d42268f6f7a9b:hover{fill:orange;stroke:gray;}\n.clicked_uida12bd48ab39f48caa66d42268f6f7a9b{fill:orange;stroke:gray;}<\/style><\/div>","uid":"uida12bd48ab39f48caa66d42268f6f7a9b","funname":"init_prop_uida12bd48ab39f48caa66d42268f6f7a9b","sel_array_name":"array_selected_uida12bd48ab39f48caa66d42268f6f7a9b","selected_class":"clicked_uida12bd48ab39f48caa66d42268f6f7a9b","tooltip_opacity":0.9,"tooltip_offx":20,"tooltip_offy":-10,"zoom_max":1,"use_wh":false,"width":"80%","selection_type":"multiple","flexdashboard":false},"evals":[],"jsHooks":[]}</script>
+<p>Turns out yes. Of all five albums, and 55 songs, Greg only has three songs that fall out of the sad/depressing area, with nothing landing in the happy/joyful area.</p>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="/post/annual-temp-dev/" data-toggle="tooltip" data-placement="top" title="Weather Is Not Climate">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="/post/ramen-bigrams/" data-toggle="tooltip" data-placement="top" title="Instant Ramen">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

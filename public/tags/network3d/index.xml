@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Network3d on szumskiR</title>
+    <link>/tags/network3d/</link>
+    <description>Recent content in Network3d on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Wed, 10 Jan 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/network3d/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Instant Ramen</title>
+      <link>/post/ramen-bigrams/</link>
+      <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/ramen-bigrams/</guid>
+      <description>Tools: R
+Data Source: 2682 Instant Ramen Noodle Ratings
+Created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Also because why not, who hasn’t enjoyed some instant ramen before.
+Used tidytext for the calculations and networkD3 for the visualization.</description>
+    </item>
+    
+  </channel>
+</rss>

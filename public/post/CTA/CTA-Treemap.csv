@@ -1,0 +1,197 @@
+"","Line","lines","stationname","Count"
+"1","Blue Line",33,"Addison-O'Hare",13533779
+"2","Blue Line",33,"Austin-Forest Park",9496590
+"3","Blue Line",33,"Belmont-O'Hare",25648902
+"4","Blue Line",33,"California/Milwaukee",41546154
+"5","Blue Line",33,"Chicago/Milwaukee",17272005
+"6","Blue Line",33,"Cicero-Forest Park",6733591
+"7","Blue Line",33,"Clark/Lake",85455510
+"8","Blue Line",33,"Clinton-Forest Park",15419448
+"9","Blue Line",33,"Cumberland",24964517
+"10","Blue Line",33,"Damen/Milwaukee",28804026
+"11","Blue Line",33,"Division/Milwaukee",27133678
+"12","Blue Line",33,"Forest Park",19202711
+"13","Blue Line",33,"Grand/Milwaukee",9957262
+"14","Blue Line",33,"Harlem-Forest Park",5258430
+"15","Blue Line",33,"Harlem-O'Hare",14364322
+"16","Blue Line",33,"Irving Park-O'Hare",21203373
+"17","Blue Line",33,"Jackson/Dearborn",37326402
+"18","Blue Line",33,"Jefferson Park",33538529
+"19","Blue Line",33,"Kedzie-Homan-Forest Park",10113075
+"20","Blue Line",33,"LaSalle",13417186
+"21","Blue Line",33,"Logan Square",30703372
+"22","Blue Line",33,"Medical Center",14040065
+"23","Blue Line",33,"Monroe/Dearborn",30790810
+"24","Blue Line",33,"Montrose-O'Hare",10842727
+"25","Blue Line",33,"Oak Park-Forest Park",8268595
+"26","Blue Line",33,"O'Hare Airport",56075280
+"27","Blue Line",33,"Pulaski-Forest Park",8749242
+"28","Blue Line",33,"Racine",11358583
+"29","Blue Line",33,"Rosemont",28393476
+"30","Blue Line",33,"UIC-Halsted",25385492
+"31","Blue Line",33,"Washington/Dearborn",47701260
+"32","Blue Line",33,"Western-Forest Park",7516810
+"33","Blue Line",33,"Western/Milwaukee",22485924
+"34","Brown Line",28,"Adams/Wabash",38987615
+"35","Brown Line",28,"Addison-Brown",10736466
+"36","Brown Line",28,"Armitage",19616259
+"37","Brown Line",28,"Belmont-North Main",64712230
+"38","Brown Line",28,"Chicago/Franklin",27222951
+"39","Brown Line",28,"Clark/Lake",85455510
+"40","Brown Line",28,"Damen-Brown",11074857
+"41","Brown Line",28,"Diversey",24803377
+"42","Brown Line",28,"Francisco",6597233
+"43","Brown Line",28,"Fullerton",63519897
+"44","Brown Line",28,"Irving Park-Brown",13037738
+"45","Brown Line",28,"Kedzie-Brown",9737409
+"46","Brown Line",28,"Kimball",20188131
+"47","Brown Line",28,"LaSalle/Van Buren",13831599
+"48","Brown Line",28,"Library",17893132
+"49","Brown Line",28,"Madison/Wabash",23436524
+"50","Brown Line",28,"Merchandise Mart",29573267
+"51","Brown Line",28,"Montrose-Brown",12011151
+"52","Brown Line",28,"Paulina",12161629
+"53","Brown Line",28,"Quincy/Wells",34810416
+"54","Brown Line",28,"Randolph/Wabash",35743526
+"55","Brown Line",28,"Rockwell",7953589
+"56","Brown Line",28,"Sedgwick",17587034
+"57","Brown Line",28,"Southport",14769192
+"58","Brown Line",28,"State/Lake",47804914
+"59","Brown Line",28,"Washington/Wells",32921105
+"60","Brown Line",28,"Wellington",12890726
+"61","Brown Line",28,"Western-Brown",19880532
+"62","Green Line",31,"35-Bronzeville-IIT",11484923
+"63","Green Line",31,"43rd",5168420
+"64","Green Line",31,"47th-South Elevated",6932337
+"65","Green Line",31,"51st",5898421
+"66","Green Line",31,"Adams/Wabash",38987615
+"67","Green Line",31,"Ashland/63rd",8698991
+"68","Green Line",31,"Ashland-Lake",11167236
+"69","Green Line",31,"Austin-Lake",10320954
+"70","Green Line",31,"California-Lake",5300155
+"71","Green Line",31,"Central-Lake",12181276
+"72","Green Line",31,"Cermak-McCormick Place",1288184
+"73","Green Line",31,"Cicero-Lake",7461047
+"74","Green Line",31,"Clark/Lake",85455510
+"75","Green Line",31,"Clinton-Lake",16529537
+"76","Green Line",31,"Conservatory",4273612
+"77","Green Line",31,"East 63rd-Cottage Grove",7003383
+"78","Green Line",31,"Garfield-South Elevated",8774413
+"79","Green Line",31,"Halsted/63rd",4240487
+"80","Green Line",31,"Harlem-Lake",19121892
+"81","Green Line",31,"Indiana",4304091
+"82","Green Line",31,"Kedzie-Lake",7281671
+"83","Green Line",31,"King Drive",3507257
+"84","Green Line",31,"Laramie",7170947
+"85","Green Line",31,"Madison/Wabash",23436524
+"86","Green Line",31,"Morgan-Lake",4112540
+"87","Green Line",31,"Oak Park-Lake",7981409
+"88","Green Line",31,"Pulaski-Lake",8882787
+"89","Green Line",31,"Randolph/Wabash",35743526
+"90","Green Line",31,"Ridgeland",6634056
+"91","Green Line",31,"Roosevelt",104554894
+"92","Green Line",31,"State/Lake",47804914
+"93","Orange Line",17,"35th/Archer",13861601
+"94","Orange Line",17,"Adams/Wabash",38987615
+"95","Orange Line",17,"Ashland-Orange",7816844
+"96","Orange Line",17,"Clark/Lake",85455510
+"97","Orange Line",17,"Halsted-Orange",13088303
+"98","Orange Line",17,"Kedzie-Midway",15791786
+"99","Orange Line",17,"LaSalle/Van Buren",13831599
+"100","Orange Line",17,"Library",17893132
+"101","Orange Line",17,"Madison/Wabash",23436524
+"102","Orange Line",17,"Midway Airport",45402923
+"103","Orange Line",17,"Pulaski-Orange",25336159
+"104","Orange Line",17,"Quincy/Wells",34810416
+"105","Orange Line",17,"Randolph/Wabash",35743526
+"106","Orange Line",17,"Roosevelt",104554894
+"107","Orange Line",17,"State/Lake",47804914
+"108","Orange Line",17,"Washington/Wells",32921105
+"109","Orange Line",17,"Western-Orange",17915600
+"110","Pink Line",23,"18th",7728358
+"111","Pink Line",23,"54th/Cermak",9538264
+"112","Pink Line",23,"Adams/Wabash",38987615
+"113","Pink Line",23,"Ashland-Lake",11167236
+"114","Pink Line",23,"California-Cermak",5898573
+"115","Pink Line",23,"Central Park",4709391
+"116","Pink Line",23,"Cicero-Cermak",5770239
+"117","Pink Line",23,"Clark/Lake",85455510
+"118","Pink Line",23,"Clinton-Lake",16529537
+"119","Pink Line",23,"Damen-Cermak",5806326
+"120","Pink Line",23,"Kedzie-Cermak",4083063
+"121","Pink Line",23,"Kostner",2061014
+"122","Pink Line",23,"LaSalle/Van Buren",13831599
+"123","Pink Line",23,"Library",17893132
+"124","Pink Line",23,"Madison/Wabash",23436524
+"125","Pink Line",23,"Morgan-Lake",4112540
+"126","Pink Line",23,"Polk",14408664
+"127","Pink Line",23,"Pulaski-Cermak",4760480
+"128","Pink Line",23,"Quincy/Wells",34810416
+"129","Pink Line",23,"Randolph/Wabash",35743526
+"130","Pink Line",23,"State/Lake",47804914
+"131","Pink Line",23,"Washington/Wells",32921105
+"132","Pink Line",23,"Western-Cermak",4829383
+"133","Purple Line",26,"Adams/Wabash",38987615
+"134","Purple Line",26,"Armitage",19616259
+"135","Purple Line",26,"Belmont-North Main",64712230
+"136","Purple Line",26,"Central-Evanston",4614105
+"137","Purple Line",26,"Chicago/Franklin",27222951
+"138","Purple Line",26,"Clark/Lake",85455510
+"139","Purple Line",26,"Davis",20526440
+"140","Purple Line",26,"Dempster",4403376
+"141","Purple Line",26,"Diversey",24803377
+"142","Purple Line",26,"Foster",4121700
+"143","Purple Line",26,"Fullerton",63519897
+"144","Purple Line",26,"Howard",33329354
+"145","Purple Line",26,"LaSalle/Van Buren",13831599
+"146","Purple Line",26,"Library",17893132
+"147","Purple Line",26,"Linden",5575584
+"148","Purple Line",26,"Madison/Wabash",23436524
+"149","Purple Line",26,"Main",6398678
+"150","Purple Line",26,"Merchandise Mart",29573267
+"151","Purple Line",26,"Noyes",3785232
+"152","Purple Line",26,"Quincy/Wells",34810416
+"153","Purple Line",26,"Randolph/Wabash",35743526
+"154","Purple Line",26,"Sedgwick",17587034
+"155","Purple Line",26,"South Boulevard",4073992
+"156","Purple Line",26,"State/Lake",47804914
+"157","Purple Line",26,"Washington/Wells",32921105
+"158","Purple Line",26,"Wellington",12890726
+"159","Red Line",34,"47th-Dan Ryan",16186014
+"160","Red Line",34,"63rd-Dan Ryan",17963458
+"161","Red Line",34,"69th",31275027
+"162","Red Line",34,"79th",40111400
+"163","Red Line",34,"87th",25699691
+"164","Red Line",34,"95th/Dan Ryan",132260024
+"165","Red Line",34,"Addison-North Main",45486543
+"166","Red Line",34,"Argyle",15355806
+"167","Red Line",34,"Belmont-North Main",64712230
+"168","Red Line",34,"Berwyn",18475197
+"169","Red Line",34,"Bryn Mawr",25160238
+"170","Red Line",34,"Cermak-Chinatown",21755458
+"171","Red Line",34,"Chicago/State",80190592
+"172","Red Line",34,"Clark/Division",40609981
+"173","Red Line",34,"Fullerton",63519897
+"174","Red Line",34,"Garfield-Dan Ryan",21045843
+"175","Red Line",34,"Grand/State",58812727
+"176","Red Line",34,"Granville",20465207
+"177","Red Line",34,"Harrison",19457079
+"178","Red Line",34,"Howard",33329354
+"179","Red Line",34,"Jackson/State",55307936
+"180","Red Line",34,"Jarvis",8317999
+"181","Red Line",34,"Lake/State",84033449
+"182","Red Line",34,"Lawrence",17319357
+"183","Red Line",34,"Loyola",28447834
+"184","Red Line",34,"Monroe/State",45215311
+"185","Red Line",34,"Morse",23739209
+"186","Red Line",34,"North/Clybourn",27264281
+"187","Red Line",34,"Roosevelt",104554894
+"188","Red Line",34,"Sheridan",27326675
+"189","Red Line",34,"Sox-35th-Dan Ryan",24353857
+"190","Red Line",34,"Thorndale",15602012
+"191","Red Line",34,"Washington/State",14321124
+"192","Red Line",34,"Wilson",30303341
+"193","Yellow Line",4,"Dempster-Skokie",3460823
+"194","Yellow Line",4,"Howard",33329354
+"195","Yellow Line",4,"Oakton-Skokie",1459145
+"196","Yellow Line",4,"Skokie",7628448

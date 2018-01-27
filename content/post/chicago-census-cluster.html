@@ -1,0 +1,123 @@
+---
+title: "Cluster Analysis of Selected Socioeconomic Indicators in Chicago"
+author: "Russell Szumski"
+date: 2017-05-18
+categories: ["R"]
+tags: ["cluster", "factoextra"]
+---
+
+
+
+<p>K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.</p>
+<div id="the-dataset" class="section level4">
+<h4>The dataset</h4>
+<p>This dataset contains a selection of six socioeconomic indicators of public health significance and a “hardship index,” by Chicago community area, for the years 2008 – 2012. The indicators are the percent of occupied housing units with more than one person per room (i.e., crowded housing); the percent of households living below the federal poverty level; the percent of persons in the labor force over the age of 16 years that are unemployed; the percent of persons over the age of 25 years without a high school diploma; the percent of the population under 18 or over 64 years of age (i.e., dependency); and per capita income</p>
+<p><a href="https://data.cityofchicago.org/Health-Human-Services/Census-Data-Selected-socioeconomic-indicators-in-C/kn9c-c2s2">Link</a></p>
+</div>
+<div id="k-mean" class="section level2">
+<h2>K-mean</h2>
+<p>In k-means clustering, each cluster is represented by its center (i.e, centroid) which corresponds to the mean of points assigned to the cluster. Recall that, k-means algrorithm requires the user to choose the number of clusters (i.e, k) to be generated.</p>
+<p>The algorithm starts by randomly selecting k objects from the dataset as the initial cluster means.</p>
+<p>Next, each of the remaining objects is assigned to it’s closest centroid, where closest is defined using the Euclidean distance between the object and the cluster mean. This step is called cluster assignement step.</p>
+<p>After the assignment step, the algorithm computes the new mean value of each cluster. The term cluster centroid update is used to design this step. All the objects are reassigned again using the updated cluster means.</p>
+<p>The cluster assignment and centroid update steps are iteratively repeated until the cluster assignments stop changing (i.e until convergence is achieved). That is, the clusters formed in the current iteration are the same as those obtained in the previous iteration.</p>
+<p>First we find the number of suggested clusters:</p>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-1-1.png" width="750px" /></p>
+<p>3 clusters are suggested.</p>
+<p>Compute k-means clustering with k = 3:</p>
+<pre class="r"><code>km.res &lt;- kmeans(df, 3)</code></pre>
+<p>We can look the mean of each of the variables in the clusters:</p>
+<pre><code>##   cluster PERCENT.OF.HOUSING.CROWDED PERCENT.HOUSEHOLDS.BELOW.POVERTY
+## 1       1                  10.211765                         21.62941
+## 2       2                   2.852941                         13.02353
+## 3       3                   4.173077                         33.28846
+##   PERCENT.AGED.16..UNEMPLOYED PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA
+## 1                   14.688235                                     36.91765
+## 2                    9.358824                                     11.81765
+## 3                   23.684615                                     20.65000
+##   PERCENT.AGED.UNDER.18.OR.OVER.64 PER.CAPITA.INCOME HARDSHIP.INDEX
+## 1                         37.62941          15980.18       71.29412
+## 2                         30.94118          37462.32       22.02941
+## 3                         40.80000          16268.54       71.19231</code></pre>
+<p>Visualizing the clusters:</p>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-4-1.png" width="750px" /></p>
+<p>Silhouette:</p>
+<p>Silhouette refers to a method of interpretation and validation of consistency within clusters of data.</p>
+<p>Silhouette Plot shows for each cluster:</p>
+<ol style="list-style-type: decimal">
+<li><p>The number of elements (nj) per cluster. Each horizontal line corresponds to an element. The length of the lines corresponds to silhouette width (Si), which is the means similarity of each element to its own cluster minus the mean similarity to the next most similar cluster.</p></li>
+<li><p>The average silhouette width.</p></li>
+</ol>
+<p>Observations with a large Si (almost 1) are very well clustered, a small Si (around 0) means that the observation lies between two clusters, and observations with a negative Si are probably placed in the wrong cluster.</p>
+<pre><code>##   cluster size ave.sil.width
+## 1       1   17          0.38
+## 2       2   34          0.39
+## 3       3   26          0.34</code></pre>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-5-1.png" width="750px" /></p>
+<p>It can be seen that one sample has a negative silhouette. This means that it is not in the right cluster. We can find the name of this sample and determine the cluster it close to.</p>
+<pre><code>##      cluster neighbor    sil_width
+## [1,]       2        3 -0.001543911</code></pre>
+<p>And that community area is -</p>
+<pre><code>## Calumet Heights 
+##               2</code></pre>
+</div>
+<div id="pam-partitioning-around-medoids" class="section level2">
+<h2>PAM: Partitioning Around Medoids</h2>
+<p>The use of means implies that k-means clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. A more robust algorithm is provided by PAM algorithm (Partitioning Around Medoids) which is also known as k-medoids clustering.</p>
+<p>The pam algorithm is based on the search for k representative objects or medoids among the observations of the dataset. These observations should represent the structure of the data. After finding a set of k medoids, k clusters are constructed by assigning each observation to the nearest medoid. The goal is to find k representative objects which minimize the sum of the dissimilarities of the observations to their closest representative object.</p>
+<p>First we find the number of suggested clusters: <img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-8-1.png" width="750px" /></p>
+<p>9 clusters are suggested.</p>
+<p>Compute PAM clustering with k = 9:</p>
+<pre class="r"><code>pam.res &lt;- pam(df, 9)</code></pre>
+<p>We can look the mean of each of the variables in the clusters:</p>
+<pre><code>##   cluster PERCENT.OF.HOUSING.CROWDED PERCENT.HOUSEHOLDS.BELOW.POVERTY
+## 1       1                   3.711111                         18.06667
+## 2       2                   3.893333                         13.34000
+## 3       3                   1.150000                         12.10000
+## 4       4                   1.220000                          4.94000
+## 5       5                   8.610000                         18.20000
+## 6       6                  14.420000                         28.12000
+## 7       7                   5.850000                         31.43333
+## 8       8                   5.500000                         44.18889
+## 9       9                   2.625000                         25.59167
+##   PERCENT.AGED.16..UNEMPLOYED PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA
+## 1                    8.444444                                     11.73333
+## 2                   11.960000                                     17.43333
+## 3                    5.433333                                      3.95000
+## 4                    7.800000                                      6.36000
+## 5                   13.560000                                     34.73000
+## 6                   17.640000                                     45.66000
+## 7                   18.500000                                     26.16667
+## 8                   28.477778                                     25.12222
+## 9                   22.133333                                     15.41667
+##   PERCENT.AGED.UNDER.18.OR.OVER.64 PER.CAPITA.INCOME HARDSHIP.INDEX
+## 1                         25.06667          35034.89       20.11111
+## 2                         36.64667          25835.93       34.80000
+## 3                         20.43333          67000.67        4.00000
+## 4                         38.52000          38380.40       13.60000
+## 5                         37.18000          17318.40       63.70000
+## 6                         37.76000          12441.60       89.80000
+## 7                         40.01667          14852.50       75.66667
+## 8                         43.58889          12311.56       89.55556
+## 9                         39.08333          19691.17       55.91667</code></pre>
+<p>Visualizing the clusters:</p>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-11-1.png" width="750px" /></p>
+<p>Silhouette:</p>
+<pre><code>##   cluster size ave.sil.width
+## 1       1    9          0.37
+## 2       2   15          0.24
+## 3       3    6          0.48
+## 4       4    5          0.60
+## 5       5   10          0.31
+## 6       6    5          0.43
+## 7       7    6          0.29
+## 8       8    9          0.16
+## 9       9   12          0.32</code></pre>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-12-1.png" width="750px" /></p>
+<p>Again It can be seen that some samples have a negative silhouette. This means that they are not in the right cluster. We can find the name of these samples and determine the clusters they are closer to.</p>
+<pre><code>##                    cluster neighbor   sil_width
+## Calumet Heights          2        9 -0.05598535
+## Oakland                  8        9 -0.06744838
+## North Lawndale           8        7 -0.09397151
+## East Garfield Park       8        7 -0.19230738</code></pre>
+</div>

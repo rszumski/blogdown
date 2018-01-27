@@ -1,0 +1,567 @@
+---
+title: "Weather Is Not Climate"
+author: "Russell Szumski"
+date: 2017-12-20
+categories: ["R"]
+tags: ["R Markdown", "ggplot2", "ggiraph"]
+---
+
+Write temp things. what is weather, ehat is climate
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(ggplot2)
+library(ggthemes)
+library(ggiraph)
+
+options(warn=-1)
+
+df_temp = read.csv('Annual Temp Dev/ZonAnn.Ts+dSST.csv')
+
+pal <- c("#313695","#4575b4","#74add1","#abd9e9","#e0f3f8","#ffffbf","#fee090","#fdae61","#f46d43","#d73027","#a50026")
+vals <- seq(-2, 2, length = 10)
+
+df_temp$tooltip <- paste0(df_temp$Year,':', df_temp$Glob)
+
+tooltip_css <- "background-color:black;color:white;padding:10px;"
+
+plot_int <- ggplot(df_temp, aes(x = Year, y = Glob, frame = Year, tooltip = tooltip)) +
+  geom_point_interactive(shape = 21, colour="black", aes(fill = Glob), size=5, stroke=1) +
+  scale_x_continuous(limits=c(1880,2017)) +
+  scale_y_continuous(limits=c(-0.4,1.2)) +
+  theme_minimal() +
+  scale_fill_gradientn(colors = pal, values = vals, rescaler = function(x, ...) x, oob = identity, guide=FALSE) +
+  labs(x = "Year",
+       y = "Deviations from 1951-1980 (C)",
+       title = "Land-Ocean: Global Annual Means ",
+       subtitle = "") +
+  geom_hline(yintercept = 0) +
+  theme_minimal(base_family = "RobotoCondensed-Regular") +
+  theme(text=element_text(size=12, family="Roboto-Bold"))
+
+```
+
+
+```{r, echo=FALSE}
+ggiraph(code = print(plot_int),hover_css = "fill-opacity:5",
+        tooltip_extra_css = tooltip_css, width = .9, height = 4) 
+```
+
+conclusion
+
+<!--chapter:end:Annual-Temp-Dev.Rmd-->
+
+---
+title: "Cluster Analysis of Selected Socioeconomic Indicators in Chicago"
+author: "Russell Szumski"
+date: 2017-05-18
+categories: ["R"]
+tags: ["R Markdown", "cluster", "factoextra"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width='750px', dpi=200)
+library(ggthemes)
+library(factoextra)
+library(cluster)
+
+setwd("Census Cluster/")
+df_census = read.csv('Census_Data_-_Selected_socioeconomic_indicators_in_Chicago__2008___2012.csv', na.strings = c("", "NA"))
+df_census <- na.omit(df_census)
+
+df = df_census
+rownames(df) <- df[,1]
+df[,1] <- NULL
+
+df = scale(df)
+```
+
+K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.
+
+#### The dataset
+
+This dataset contains a selection of six socioeconomic indicators of public health significance and a “hardship index,” by Chicago community area, for the years 2008 – 2012. The indicators are the percent of occupied housing units with more than one person per room (i.e., crowded housing); the percent of households living below the federal poverty level; the percent of persons in the labor force over the age of 16 years that are unemployed; the percent of persons over the age of 25 years without a high school diploma; the percent of the population under 18 or over 64 years of age (i.e., dependency); and per capita income
+
+[Link](https://data.cityofchicago.org/Health-Human-Services/Census-Data-Selected-socioeconomic-indicators-in-C/kn9c-c2s2)
+
+## K-mean
+
+In k-means clustering, each cluster is represented by its center (i.e, centroid) which corresponds to the mean of points assigned to the cluster. Recall that, k-means algrorithm requires the user to choose the number of clusters (i.e, k) to be generated.
+
+The algorithm starts by randomly selecting k objects from the dataset as the initial cluster means.
+
+Next, each of the remaining objects is assigned to it’s closest centroid, where closest is defined using the Euclidean distance between the object and the cluster mean. This step is called cluster assignement step.
+
+After the assignment step, the algorithm computes the new mean value of each cluster. The term cluster centroid update is used to design this step. All the objects are reassigned again using the updated cluster means.
+
+The cluster assignment and centroid update steps are iteratively repeated until the cluster assignments stop changing (i.e until convergence is achieved). That is, the clusters formed in the current iteration are the same as those obtained in the previous iteration.
+
+First we find the number of suggested clusters:
+
+```{r, echo=FALSE}
+fviz_nbclust(df, kmeans, method = "gap_stat")
+```
+
+3 clusters are suggested.
+
+Compute k-means clustering with k = 3:
+
+```{r, echo=T}
+km.res <- kmeans(df, 3)
+```
+
+We can look the mean of each of the variables in the clusters:
+
+```{r, echo=F}
+aggregate(df_census[ ,2:8], by=list(cluster=km.res$cluster), mean)
+```
+
+Visualizing the clusters:
+
+```{r, echo=FALSE}
+fviz_cluster(km.res, data = df)+
+  theme_minimal()
+```
+
+Silhouette:
+
+Silhouette refers to a method of interpretation and validation of consistency within clusters of data.
+
+Silhouette Plot shows for each cluster:
+
+1) The number of elements (nj) per cluster. Each horizontal line corresponds to an element. The length of the lines corresponds to silhouette width (Si), which is the means similarity of each element to its own cluster minus the mean similarity to the next most similar cluster.
+
+2) The average silhouette width.
+
+Observations with a large Si (almost 1) are very well clustered, a small Si (around 0) means that the observation lies between two clusters, and observations with a negative Si are probably placed in the wrong cluster.
+
+```{r, echo=FALSE}
+dissE = daisy(df)
+fviz_silhouette(silhouette(km.res$cl, dissE)) + theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+It can be seen that one sample has a negative silhouette. This means that it is not in the right cluster. We can find the name of this sample and determine the cluster it close to.
+
+```{r, echo=FALSE}
+sil_km <- silhouette(km.res$cl, dissE)[, 1:3]
+neg_sil_index <- which(sil_km[, 'sil_width'] < 0)
+sil_km[neg_sil_index, , drop = FALSE]
+```
+And that community area is -
+```{r, echo=FALSE}
+km.res$cluster[48]
+```
+## PAM: Partitioning Around Medoids
+
+The use of means implies that k-means clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. A more robust algorithm is provided by PAM algorithm (Partitioning Around Medoids) which is also known as k-medoids clustering.
+
+The pam algorithm is based on the search for k representative objects or medoids among the observations of the dataset. These observations should represent the structure of the data. After finding a set of k medoids, k clusters are constructed by assigning each observation to the nearest medoid. The goal is to find k representative objects which minimize the sum of the dissimilarities of the observations to their closest representative object.
+
+First we find the number of suggested clusters:
+```{r, echo=FALSE}
+fviz_nbclust(df, pam, method = "gap_stat")
+```
+
+9 clusters are suggested.
+
+Compute PAM clustering with k = 9:
+
+```{r, echo=T}
+pam.res <- pam(df, 9)
+```
+
+We can look the mean of each of the variables in the clusters:
+
+```{r, echo=F}
+aggregate(df_census[ ,2:8], by=list(cluster=pam.res$clustering), mean)
+```
+
+Visualizing the clusters:
+
+```{r, echo=FALSE}
+fviz_cluster(pam.res) + theme_minimal()
+```
+
+Silhouette:
+
+```{r, echo=FALSE}
+fviz_silhouette(silhouette(pam.res)) + theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+Again It can be seen that some samples have a negative silhouette. This means that they are not in the right cluster. We can find the name of these samples and determine the clusters they are closer to.
+
+```{r, echo=FALSE}
+sil <- silhouette(pam.res)[, 1:3]
+neg_sil_index <- which(sil[, 'sil_width'] < 0)
+sil[neg_sil_index, , drop = FALSE]
+```
+
+
+<!--chapter:end:chicago-census-cluster.Rmd-->
+
+---
+title: "Inaugural Addresses are more ... unintelligible"
+author: "Russell Szumski"
+date: 2017-12-03
+categories: ["R"]
+tags: ["R Markdown", "ggplot2", "tidytext"]
+---
+
+I found myself looking at a 2013 plot from the Guardian interactive team that used the Flesch-Kincaid readability test to track the reading level of every State of the Union. I had no idea what a readability test was, so I looked it up. 
+ 
+A text’s readability measures how hard or easy it is for a reader to read and understand what a text is saying; depending on how sentences are written, what words are chosen, and so on. 
+
+There are many ways of evaluating the readability of text. One commonly used ways is a SMOG grade, which stands for “Simple Measure of Gobbledygook”. The SMOG grade is a measure of readability that estimates the years of education needed to understand a piece of writing. 
+
+So lets look at the SMOG grade for every Inaugural Address.  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(dplyr)
+library(tidytext)
+library(tidyr)
+library(purrr)
+library(readtext)
+library(ggplot2)
+library(ggiraph)
+
+syllable_count <- function(ortho) {
+  Specials.2 <- c('every', 'different', 'family', 'girl', 'girls', 'world', 'worlds', 'bein', 'being', 'something', 'mkay', 'mayb')
+  Specials.3 <- c('anyon', 'everyon')
+  SubSyl <- c('cial',
+              'tia',
+              'cius',
+              'cious',
+              'giu',              
+              'ion',
+              'iou',
+              '^every',           
+              'sia$',
+              '.ely$',            
+              '[^szaeiou]es$',    
+              '[^tdaeiou]ed$',    
+              '^ninet',           
+              '^awe'				
+  )
+  AddSyl <- c('ia',
+              'rie[rt]',
+              'dien',
+              'ieth',
+              'iu',
+              'io',
+              'ii',
+              'ienc',	      
+              'les?$',
+              '[aeiouym][bp]l$',  
+              '[aeiou]{3}',       
+              'ndl(ed)?$',        
+              'mpl(ed)?$',	    
+              '^mc',				
+              'ism$',             
+              '([^aeiouy])\\1l(ed)?$',  
+              '[^l]lien',         
+              '^coa[dglx].',      
+              '[^gq]ua[^aeiou]',  
+              '[sd]nt$',          
+              '\\wshes$',          
+              '\\wches$',          
+              '\\wges$',          
+              '\\wces$',	      
+              '\\w[aeiouy]ing[s]?$' 
+  )
+  
+  tot_syls <- 0
+  ortho.l <- tolower(ortho)
+  stripchars <- "[:'\\[\\]]"
+  ortho.cl <- gsub(stripchars, "", ortho.l, perl=T)
+  spacechars <- "[\\W_]" 
+  ortho.cl <- gsub(spacechars, " ", ortho.cl, perl=T)
+  ortho.vec <- unlist(strsplit(ortho.cl, " ", perl=T))
+  ortho.vec <- ortho.vec[ortho.vec!=""]
+  for (w in ortho.vec) {
+    w <- gsub("e$", "", w, perl=T) # strip final -e
+    syl <- 0
+     if (w %in% Specials.2) {
+      syl <- 2
+     } else if (w %in% Specials.3) {
+      syl <- 3
+    } else {
+      for (pat in SubSyl) {
+        if (length(grep(pat, w, perl=T))>=1) 
+          syl <- syl - 1
+      }
+      for (pat in AddSyl) {
+        if (length(grep(pat, w, perl=T))>=1) 
+          syl <- syl + 1
+      }
+      if (nchar(w)==1) {
+        syl <- 1
+      } else {
+        chnk <- unlist(strsplit(w, "[^aeiouy:]+"))
+        chnk <- chnk[chnk!=""]
+        syl <- syl + length(chnk)
+        if (syl==0) syl <- 1
+      }
+    }
+    tot_syls <- tot_syls + syl
+  }
+  tot_syls
+}
+
+
+df <- readtext(paste0('Inaugural Addresses/'))
+
+
+df <- df %>% unnest_tokens(sentences, text, token = 'sentences')
+
+df <- df %>%
+  unnest_tokens(word, sentences, drop = FALSE) %>%
+  rowwise() %>%
+  mutate(n_syllables = syllable_count(word)) %>%
+  ungroup()
+
+results <- left_join(df %>%
+                       group_by(doc_id) %>%
+                       summarise(n_words = n_distinct(word),n_sentences = n_distinct(sentences)),
+                     df %>% 
+                       group_by(doc_id) %>% 
+                       filter(n_syllables >= 3) %>% 
+                       summarise(n_polysyllables = n())) %>%
+  mutate(SMOG = 1.0430 * sqrt(30 * n_polysyllables/n_sentences) + 3.1291)
+
+
+results$doc_id <- gsub('.txt','', results$doc_id)
+
+results$year <- gsub("\\D*","",results$doc_id)
+
+results$president <- gsub('.txt','',results$doc_id) 
+results$president <- gsub('[0-9][0-9][0-9][0-9]_','',results$president)
+
+wordcounts <- df %>%
+  group_by(doc_id, sentences) %>%
+  summarize(words = n()) %>%
+  group_by(doc_id) %>%
+  tally(words)
+
+wordcounts$doc_id <- gsub('.txt','', wordcounts$doc_id)
+
+results <- left_join(results,wordcounts)
+
+title_ <- paste0(sprintf("<b>%s</b>", as.character(results$president)),
+                 sprintf("<td>%s</td>", ' '),
+                 sprintf("<td>%s</td>", '('),
+                 sprintf("<td>%s</td>", results$year),
+                 sprintf("<td>%s</td>", ')'))
+
+table_ <- paste0(
+  "<table></td>",
+  sprintf("<td>%.0f</td>", results$n),
+  sprintf("<td>%s</td>", 'Words'),
+  "<table><tr><td>SMOG Grade:</td>",
+  sprintf("<td>%.02f</td>", results$SMOG),
+  "</tr><tr>",
+  "</tr></table>"
+)
+
+
+results$tooltip <- paste0(title_, table_)
+
+
+tooltip_css <- "background-color:black;color:white;padding:10px;"
+
+plot <- ggplot(results, aes(doc_id, SMOG, tooltip = tooltip)) + geom_point_interactive(aes(size = n, color=president,
+                                        data_id = president, alpha=0.8)) + 
+  guides(color=F, alpha=F) +
+  scale_x_discrete(limits=results$doc_id, labels=results$year) +
+  theme_minimal(base_family = "RobotoCondensed-Regular") +
+  theme(plot.title=element_text(family="Roboto-Bold")) +
+  theme(legend.title=element_blank()) +
+  theme(axis.text.x = element_text(angle=90, hjust=1, size=7)) +
+  theme(legend.position = c(0.85, 0.75)) +
+  annotate("text", x = 50, y = 25, label = "Number of Words") +
+  
+  labs(x = "Year of Inaugural Addresses",
+       y = "SMOG Grade",
+       title = "Inaugural Addresses are more ... unintelligible:",
+       subtitle = "Simple Measure of Gobbledygook")
+
+fit_results <- results[,5]
+fit_results$X <- seq(1789,2017,4)
+str(fit_results)
+
+fit <- lm(SMOG~ X, data = fit_results)
+
+new <- data.frame(X = seq(2021,2061,4))
+pred <- predict(fit, new)
+
+pred <- as.data.frame(pred)
+
+Pred_df <- list(new, pred) %>%
+  as.data.frame()
+
+colnames(Pred_df) <- c('Year','SMOG')
+```
+
+
+```{r, echo=FALSE}
+ggiraph(code = print(plot),hover_css = "fill-opacity:5",
+        tooltip_extra_css = tooltip_css, width = .9, height = 4)
+```
+
+We can see that the SMOG grade for Inaugural Addresses in decreasing. If Gobbledygook is wordy and generally unintelligible jargon, then Inaugural Addresses are more unintelligible.
+
+For the fun of it lets apply a simple linear regression model and predict the score of furture Inaugural Addresses.
+
+```{r, echo=FALSE}
+
+ggplot(fit_results, aes(X, SMOG)) + geom_point_interactive() +
+  geom_smooth(method = 'lm',formula = y ~ x + x) +
+  guides(color=F, alpha=F) +
+  scale_x_discrete(limits=results$doc_id, labels=results$year) +
+  theme_minimal(base_family = "RobotoCondensed-Regular") +
+  theme(plot.title=element_text(family="Roboto-Bold")) +
+  theme(legend.title=element_blank()) +
+  theme(axis.text.x = element_text(angle=90, hjust=1, size=8)) +
+  labs(x = "Year of Inaugural Addresses",
+       y = "SMOG Grade",
+       title = "",
+       subtitle = "")
+```
+
+<!--chapter:end:Inaugural-Address-SMOG.Rmd-->
+
+---
+title: "Donald Trump's sad iPhone Tweets"
+author: "Russell Szumski"
+date: 2017-03-23
+categories: ["R"]
+tags: ["R Markdown", "ggplot2", "tidytext"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(purrr)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(scales)
+library(tidytext)
+library(ggplot2)
+library(stringr)
+library(dplyr)
+library(broom)
+
+by_source_sentiment_iPhone = read.csv('Tweet Analysis/iPhone_sentiment.csv')
+tweet_words_iPhone = read.csv('Tweet Analysis/tweet_words_iPhone.csv')
+
+past_present_ratios_iPhone <- tweet_words_iPhone %>%
+  count(word, source) %>%
+  filter(sum(n) >= 5) %>%
+  spread(source, n, fill = 0) %>%
+  ungroup() %>%
+  mutate_each(funs((. + 1) / sum(. + 1)), -word) %>%
+  mutate(logratio = log2(New / Old)) %>%
+  arrange(desc(logratio))
+
+ratio = past_present_ratios_iPhone %>%
+  group_by(logratio > 0) %>%
+  top_n(15, abs(logratio)) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, logratio)) %>%
+  ggplot(aes(word, logratio, fill = logratio < 0)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_minimal() +
+  ylab("") +
+  xlab("") +
+  scale_fill_manual(name = "", labels = c("After March 25th", "Before March 25th"),
+                    values = c("red", "lightblue"))
+
+sentiment_differences_iPhone <- by_source_sentiment_iPhone %>%
+  group_by(sentiment) %>%
+  do(tidy(poisson.test(.$words, .$total_words)))
+
+sentiment = sentiment_differences_iPhone %>%
+  ungroup() %>%
+  mutate(sentiment = reorder(sentiment, estimate)) %>%
+  mutate_each(funs(. - 1), estimate, conf.low, conf.high) %>%
+  ggplot(aes(estimate, sentiment)) +
+  geom_point() +
+  theme_minimal() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high)) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(x = "% increase after March 25th relative to before", y = "")
+
+nrc <- sentiments %>%
+  filter(lexicon == "nrc") %>%
+  dplyr::select(word, sentiment)
+
+plot = past_present_ratios_iPhone %>%
+  inner_join(nrc, by = "word") %>%
+  filter(!sentiment %in% c("positive", "negative")) %>%
+  mutate(sentiment = reorder(sentiment, -logratio),
+         word = reorder(word, -logratio)) %>%
+  group_by(sentiment) %>%
+  top_n(10, abs(logratio)) %>%
+  ungroup() %>%
+  ggplot(aes(word, logratio, fill = logratio < 0)) +
+  facet_wrap(~ sentiment, scales = "free", nrow = 2) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "", y = "After March 25th / Before March 25th log ratio") +
+  scale_fill_manual(name = "", labels = c("After March 25th", "Before March 25th"),
+                    values = c("red", "lightblue"))
+```
+
+White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.
+
+Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?
+
+### The data
+
+It was reported that Trump got his new iPhone on March 25th, so first we'll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.
+
+Next we'll split the data into a period before and after March 25th. This leaves us with 230 and 225 tweets respectively.
+
+### Comparison of words
+
+First lets look at which words are most common from when Trump got an iPhone relative to before, and vice versa. We'll use the measure of log odds ratio, calculated for each word as
+
+$$\log_2(\frac{\frac{\mbox{# words since Trump got an iPhone} + 1}{\mbox{Total words} + 1}} {\frac{\mbox{# words before Trump got an iPhone} + 1}{\mbox{Total words} + 1}})$$
+
+```{r, echo=FALSE}
+ratio
+```
+
+Words like "join", "support", and "address" came only from before Trump got an iPhone and a lot of "emotionally charged"" words, like "win", "wrong", and "failing" came after Trump got an iPhone.
+
+
+### Sentiment of the tweets
+
+To measure the sentiment of the tweets, we want to count the number of words in each category.
+
+```{r, echo=FALSE}
+head(by_source_sentiment_iPhone[,2:4])
+```
+
+We want to measure how much more likely the iPhone account after March 25th is to use an emotionally-charged term relative to before. Since this is count data, we can use a Poisson test (performs an exact test of a simple null hypothesis about the rate parameter) to measure the difference and we can visualize it with a 95% confidence interval.
+
+```{r, echo=FALSE}
+sentiment
+```
+
+Since Trump got an iPhone the Twitter account uses higher then 100% more words related to sadness and anger sentiments than from before.
+
+But which words drove this different in sentiment?
+Let's consider the words with the largest changes within each category:
+
+```{r, echo=FALSE}
+plot
+```
+
+This confirms that lots of words annotated as negative sentiments are more common in the iPhone tweets after Trump got an iPhone then before.
+
+<!--chapter:end:Tweet-Analysis.Rmd-->
+

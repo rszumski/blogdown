@@ -1,0 +1,243 @@
+---
+title: "Inaugural Addresses are more ... unintelligible"
+author: "Russell Szumski"
+date: 2017-12-03
+categories: ["R"]
+tags: ["ggplot2", "tidytext", "ggiraph"]
+---
+
+I come across an interesting infographic from the [Guardian](https://www.theguardian.com/world/interactive/2013/feb/12/state-of-the-union-reading-level) interactive team. It used the Flesch-Kincaid readability test to track the reading level of every State of the Union. I thought I'd give it a go and try to create something like it.
+
+Instead of using the Flesch-Kincaid readability test I went with the Simple Measure of Gobbledygook (SMOG) grade, which is a measure of readability that estimates the years of education needed to understand a piece of writing, and I just looked at the Inaugural Addresses. 
+
+This was gone in R using ggplot2, for the plotting, and the [ggiraph](https://github.com/davidgohel/ggiraph) package to make it interactive. 
+
+
+So lets take a look.  
+
+```{r setup, include=FALSE, cache = TRUE}
+knitr::opts_chunk$set(echo = F)
+library(dplyr)
+library(tidytext)
+library(tidyr)
+library(purrr)
+library(readtext)
+library(ggplot2)
+library(ggiraph)
+
+syllable_count <- function(ortho) {
+  Specials.2 <- c('every', 'different', 'family', 'girl', 'girls', 'world', 'worlds', 'bein', 'being', 'something', 'mkay', 'mayb')
+  Specials.3 <- c('anyon', 'everyon')
+  SubSyl <- c('cial',
+              'tia',
+              'cius',
+              'cious',
+              'giu',              
+              'ion',
+              'iou',
+              '^every',           
+              'sia$',
+              '.ely$',            
+              '[^szaeiou]es$',    
+              '[^tdaeiou]ed$',    
+              '^ninet',           
+              '^awe'				
+  )
+  AddSyl <- c('ia',
+              'rie[rt]',
+              'dien',
+              'ieth',
+              'iu',
+              'io',
+              'ii',
+              'ienc',	      
+              'les?$',
+              '[aeiouym][bp]l$',  
+              '[aeiou]{3}',       
+              'ndl(ed)?$',        
+              'mpl(ed)?$',	    
+              '^mc',				
+              'ism$',             
+              '([^aeiouy])\\1l(ed)?$',  
+              '[^l]lien',         
+              '^coa[dglx].',      
+              '[^gq]ua[^aeiou]',  
+              '[sd]nt$',          
+              '\\wshes$',          
+              '\\wches$',          
+              '\\wges$',          
+              '\\wces$',	      
+              '\\w[aeiouy]ing[s]?$' 
+  )
+  
+  tot_syls <- 0
+  ortho.l <- tolower(ortho)
+  stripchars <- "[:'\\[\\]]"
+  ortho.cl <- gsub(stripchars, "", ortho.l, perl=T)
+  spacechars <- "[\\W_]" 
+  ortho.cl <- gsub(spacechars, " ", ortho.cl, perl=T)
+  ortho.vec <- unlist(strsplit(ortho.cl, " ", perl=T))
+  ortho.vec <- ortho.vec[ortho.vec!=""]
+  for (w in ortho.vec) {
+    w <- gsub("e$", "", w, perl=T) # strip final -e
+    syl <- 0
+     if (w %in% Specials.2) {
+      syl <- 2
+     } else if (w %in% Specials.3) {
+      syl <- 3
+    } else {
+      for (pat in SubSyl) {
+        if (length(grep(pat, w, perl=T))>=1) 
+          syl <- syl - 1
+      }
+      for (pat in AddSyl) {
+        if (length(grep(pat, w, perl=T))>=1) 
+          syl <- syl + 1
+      }
+      if (nchar(w)==1) {
+        syl <- 1
+      } else {
+        chnk <- unlist(strsplit(w, "[^aeiouy:]+"))
+        chnk <- chnk[chnk!=""]
+        syl <- syl + length(chnk)
+        if (syl==0) syl <- 1
+      }
+    }
+    tot_syls <- tot_syls + syl
+  }
+  tot_syls
+}
+
+
+df <- readtext(paste0('Inaugural Addresses/'))
+
+
+df <- df %>% unnest_tokens(sentences, text, token = 'sentences')
+
+df <- df %>%
+  unnest_tokens(word, sentences, drop = FALSE) %>%
+  rowwise() %>%
+  mutate(n_syllables = syllable_count(word)) %>%
+  ungroup()
+
+results <- left_join(df %>%
+                       group_by(doc_id) %>%
+                       summarise(n_words = n_distinct(word),n_sentences = n_distinct(sentences)),
+                     df %>% 
+                       group_by(doc_id) %>% 
+                       filter(n_syllables >= 3) %>% 
+                       summarise(n_polysyllables = n())) %>%
+  mutate(SMOG = 1.0430 * sqrt(30 * n_polysyllables/n_sentences) + 3.1291)
+
+
+results$doc_id <- gsub('.txt','', results$doc_id)
+
+results$year <- gsub("\\D*","",results$doc_id)
+
+results$president <- gsub('.txt','',results$doc_id) 
+results$president <- gsub('[0-9][0-9][0-9][0-9]_','',results$president)
+
+wordcounts <- df %>%
+  group_by(doc_id, sentences) %>%
+  summarize(words = n()) %>%
+  group_by(doc_id) %>%
+  tally(words)
+
+wordcounts$doc_id <- gsub('.txt','', wordcounts$doc_id)
+
+results <- left_join(results,wordcounts)
+
+#title_ <- paste0(sprintf("<b>%s</b>", as.character(results$president)),
+#                 sprintf("<td>%s</td>", ' '),
+#                 sprintf("<td>%s</td>", '('),
+#                 sprintf("<td>%s</td>", results$year),
+#                 sprintf("<td>%s</td>", ')'))
+
+#table_ <- paste0(
+#  "<table></td>",
+#  sprintf("<td>%.0f</td>", results$n),
+#  sprintf("<td>%s</td>", 'Words'),
+#  "<table><tr><td>SMOG Grade:</td>",
+#  sprintf("<td>%.02f</td>", results$SMOG),
+#  "</tr><tr>",
+#  "</tr></table>"
+#)
+
+
+#results$tooltip <- paste0(title_, table_)
+
+results$tooltip <- paste0('<a style = "margin-right:55px">',
+                             '<b>President:</b> ', as.character(results$president),
+                             '<br><b>Year:</b> ', results$year,
+                             '<br><b>Words:</b> ', results$n,
+                             '<br><b>SMOG Grade:</b> ', round(results$SMOG, 2),
+                             '</a>')
+
+tooltip_css <- "background-color:black;color:white;padding:10px;"
+
+plot <- ggplot(results, aes(doc_id, SMOG, tooltip = tooltip)) + geom_point_interactive(aes(size = n, color=president,
+                                        data_id = president, alpha=0.8)) + 
+  guides(color=F, alpha=F) +
+  scale_x_discrete(limits=results$doc_id, labels=results$year) +
+  theme_minimal(base_family = "RobotoCondensed-Regular") +
+  theme(plot.title=element_text(family="Roboto-Bold")) +
+  theme(legend.title=element_blank()) +
+  theme(axis.text.x = element_text(angle=90, hjust=1, size=7)) +
+  theme(legend.position = c(0.85, 0.75)) +
+  annotate("text", x = 50, y = 25, label = "Number of Words") +
+  
+  labs(x = "Year of Inaugural Address",
+       y = "SMOG Grade",
+       title = "Inaugural Addresses are more ... unintelligible:",
+       subtitle = "Simple Measure of Gobbledygook")
+
+fit_results <- results[,5]
+fit_results$X <- seq(1789,2017,4)
+str(fit_results)
+
+fit <- lm(SMOG~ X, data = fit_results)
+
+new <- data.frame(X = seq(2021,2061,4))
+pred <- predict(fit, new)
+
+pred <- as.data.frame(pred)
+
+Pred_df <- list(new, pred) %>%
+  as.data.frame()
+
+colnames(Pred_df) <- c('Year','SMOG')
+```
+
+
+```{r, echo=FALSE}
+ggiraph(code = print(plot),hover_css = "fill-opacity:5",
+        tooltip_extra_css = tooltip_css, width = .9, height = 4)
+```
+
+We can see that the SMOG grade for Inaugural Addresses in decreasing. Gobbledygook is defined as wordy and generally unintelligible jargon, so it looks like the Inaugural Addresses are becoming filled with more unintelligible jargon.
+
+For the fun of it lets apply a simple linear regression model and predict the score of future Inaugural Addresses.
+
+```{r, echo=FALSE}
+
+ggplot(fit_results, aes(X, SMOG)) + geom_point_interactive() +
+  geom_smooth(method = 'lm',formula = y ~ x + x) +
+  guides(color=F, alpha=F) +
+  scale_x_discrete(limits=results$doc_id, labels=results$year) +
+  theme_minimal(base_family = "RobotoCondensed-Regular") +
+  theme(plot.title=element_text(family="Roboto-Bold")) +
+  theme(legend.title=element_blank()) +
+  theme(axis.text.x = element_text(angle=90, hjust=1, size=8)) +
+  labs(x = "Year of Inaugural Address",
+       y = "SMOG Grade",
+       title = "",
+       subtitle = "")
+```
+
+We end up with a R-squared of 0.7238, indicating that the year of the future presidents Inaugural Address explains an estimated 72% of the variation in SMOG score. Good enough for me. 
+
+```{r, echo=FALSE}
+Pred_df
+```
+
+So it looks like in 2045 the years of education needed to understand the address will be less then 9...

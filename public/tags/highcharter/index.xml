@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Highcharter on szumskiR</title>
+    <link>/tags/highcharter/</link>
+    <description>Recent content in Highcharter on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Thu, 25 Jan 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/highcharter/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CTA Ridership</title>
+      <link>/post/cta-dashboard/</link>
+      <pubDate>Thu, 25 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/cta-dashboard/</guid>
+      <description>Tools: R
+Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.
+I came across the flexdashboard package while I was looking at different ways to create dashboards. So I thought it would be fun make a dashboard with data from the CTA - Ridership - ‘L’ Station Entries dataset. The dashboard will consist of two columns.</description>
+    </item>
+    
+    <item>
+      <title>A Hertzsprung–Russell Diagram</title>
+      <link>/post/hr-diagram/</link>
+      <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/hr-diagram/</guid>
+      <description>Tools: R
+Data Source: The HYG database &amp;amp; In-The-Sky.org
+I like astronomy and I like like charts. One place those two intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star’s brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram.</description>
+    </item>
+    
+  </channel>
+</rss>

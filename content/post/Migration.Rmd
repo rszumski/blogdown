@@ -1,0 +1,50 @@
+---
+title: "The Flow of People"
+author: "Russell Szumski"
+date: 2018-01-15
+categories: ["R"]
+tags: ["parestR", "sunburstR"]
+---
+
+Tools: R
+
+Data Source: [THE GLOBAL FLOW OF PEOPLE](http://www.global-migration.info/) The data is the bilateral migration flows between and within regions for five-year periods, 1990 to 2010.
+
+There has been a lot of talk about immigration lately. President Donald Trump expressed frustration with people coming to the US from "shithole countries". So lets take a look at the flow of people. 
+
+First lets look at the countries with a recorded migration volume of more than 500,000 people in the total span of the time periods.
+ 
+```{r setup, include=FALSE, cache = F}
+library(parsetR)
+library(sunburstR)
+library(widgetframe)
+library(dplyr)
+
+df_parset <- read.csv('Migration/parset.csv')
+
+parset <- parset(df_parset, dimensions = c('Origin', 'Destination'), 
+       value = htmlwidgets::JS("function(d){return d.flow}"), 
+       tension = 0.5)
+
+df_sunburst <- read.csv('Migration/sunburst.csv') %>% select(event, count, depth) %>% mutate_if(is.factor, as.character)
+
+sunburst <- df_sunburst %>%
+  arrange(desc(depth), desc(count), event) %>%
+  sunburst()
+
+```
+
+
+```{r , echo=FALSE}
+frameWidget(parset, height = 400, width = '95%')
+```
+
+We can see that the countries with the highest flow out are Mexico, India, and China, while the countries with the highest flow in are the United States, the United Arab Emirates, and Thailand.  
+
+Now lets look at the total flow of people into the United States to see where people coming to the US from. 
+
+```{r , echo=FALSE}
+frameWidget(sunburst, height = 400, width = '95%')
+```
+
+We can see that about 27% of the people coming to the US are from what President Donald Trump would consider "shithole countries", with El Salvador having the largest amount, while countries that President Donald Trump wants more of, like Norway, account for less the 0.3%.

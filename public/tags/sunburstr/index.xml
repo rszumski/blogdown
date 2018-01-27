@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sunburstr on szumskiR</title>
+    <link>/tags/sunburstr/</link>
+    <description>Recent content in Sunburstr on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Mon, 15 Jan 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/sunburstr/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The Flow of People</title>
+      <link>/post/migration/</link>
+      <pubDate>Mon, 15 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/migration/</guid>
+      <description>Tools: R
+Data Source: THE GLOBAL FLOW OF PEOPLE The data is the bilateral migration flows between and within regions for five-year periods, 1990 to 2010.
+There has been a lot of talk about immigration lately. President Donald Trump expressed frustration with people coming to the US from “shithole countries”. So lets take a look at the flow of people.
+First lets look at the countries with a recorded migration volume of more than 500,000 people in the total span of the time periods.</description>
+    </item>
+    
+  </channel>
+</rss>

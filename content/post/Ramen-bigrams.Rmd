@@ -1,0 +1,81 @@
+---
+title: "Instant Ramen"
+author: "Russell Szumski"
+date: 2018-01-10
+categories: ["R"]
+tags: ["tidytext", "network3D"]
+---
+
+Tools: R
+
+Data Source: [2682 Instant Ramen Noodle Ratings](https://www.theramenrater.com/resources-2/the-list/)
+
+Created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Also because why not, who hasn't enjoyed some instant ramen before.
+
+Used [tidytext](https://github.com/juliasilge/tidytext) for the calculations and [networkD3](https://github.com/christophergandrud/networkD3) for the visualization.
+
+
+```{r setup, include=FALSE, cache = TRUE}
+library(dplyr)
+library(tidytext)
+library(tidyr)
+library(igraph)
+library(ggraph)
+
+df <- read.csv('Ramen/The Ramen Rater - The Big List.csv')
+
+
+ramen_bigrams <- df %>%
+  unnest_tokens(bigram, Name, token = "ngrams", n = 2)
+
+
+bigrams_separated <- ramen_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+# new bigram counts:
+bigram_counts <- bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+bigram_graph <- bigram_counts %>%
+  filter(n > 20) %>%
+  graph_from_data_frame()
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+
+wc <- cluster_walktrap(bigram_graph)
+members <- membership(wc)
+
+
+bigram_D3 <- igraph_to_networkD3(bigram_graph, group = members)
+
+```
+
+```{r , echo=FALSE}
+head(bigram_counts, 15)
+```
+
+Looks like ramen names contain 'instant' and 'noodles' frequently, 'cup' is included a lot, and 'chicken' is a popular flavor, followed by 'beef'.
+
+Let's visualize the bi-grams.
+
+
+```{r , echo=FALSE}
+library(networkD3)
+
+forceNetwork(Links = bigram_D3$links, Nodes = bigram_D3$nodes, 
+             Source = "source", Target = "target",
+             Value = "value", NodeID = "name",
+             Group = "group", opacity = 1.25, zoom = TRUE, bounded = TRUE,
+             linkWidth = 1,
+             colourScale = JS("d3.scaleOrdinal(d3.schemeCategory10);"))
+```
+
+We can see the common "blueprint"" of words in instant ramen names are focused around 'noodle', 'noodles', 'instant', 'flavor', and 'chicken'.

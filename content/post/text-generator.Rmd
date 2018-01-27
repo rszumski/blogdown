@@ -1,0 +1,88 @@
+---
+title: "Infinite Monkey vs. R"
+author: "Russell Szumski"
+date: 2018-01-16
+categories: ["R"]
+tags: ["tidytext"]
+---
+
+Tools: R
+
+Data Source: [Trump Twitter Archive](http://www.trumptwitterarchive.com/)
+
+The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don't have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.
+
+Can we do it by sticking commonly used words together in Donald Trumps tweets?
+
+A lot of his tweets already sound nonsensical to begin with, so lets give it a go.
+
+How? We can take his tweets, generate some tri-grams, write a simple function that, when given two words, tries to find a third word, takes the final two words, tries to find another word, and repeats until we have a sentence.
+
+
+After getting the tweets form the Trump Twitter Archive, I just put it in a data frame called df. Then, using the tidytext package, I created tri-grams.
+
+```{r , eval=FALSE}
+trigrams <- df %>%
+  unnest_tokens(trigram, text, token = "ngrams",to_lower = TRUE, n= 3) %>%
+  separate(trigram, c("word1", "word2", "word3"), sep = " ") %>%
+  count(word1, word2, word3, sort = TRUE)
+```
+
+Next we make a function that returns a third word once given two.
+
+```{r , eval=FALSE}
+return_third_word <- function(word_1, word_2){
+  woord <- trigrams %>%
+    filter_(~word1 == word_1, ~word2 == word_2) %>%
+    sample_n(1) %>%
+    .[["word3"]]
+  woord
+}
+```
+
+Finally we can make a function that generates a sentence by taking two given words, tries to find a third word, takes the final two words, tries to find another word, and repeats until we have a sentence of say 15 words.
+
+```{r , eval=FALSE}
+generate_sentence <- function(word1, word2, sentencelength =15, debug =FALSE){
+  sentence <- c(word1, word2)
+  word_1 <- word1
+  word_2 <- word2
+  for(i in seq_len(sentencelength)){
+    if(debug == TRUE)print(i)
+    word <- return_third_word(word_1, word_2)
+    sentence <- c(sentence, word)
+    word_1 <- word_2
+    word_2 <- word
+  }
+  output <-paste(sentence, collapse = " ")
+  output
+}
+}
+```
+
+Let's generate some sentences.
+
+```{r , eval=FALSE}
+generate_sentence("thank", "you")
+```
+
+"thank you billkritol i am given little cdit for thi country back it time we find a"
+
+
+```{r , eval=FALSE}
+generate_sentence("make", "america")
+```
+
+"make america a too high and getting very nasty the candidates ohio knows this 2 that i"
+
+
+```{r , eval=FALSE}
+generate_sentence("fake", "news")
+```
+
+"fake news china story saying mr.xi has not ported properly on crooked's fbi release they are presidents"
+
+Maybe 15 words isn't enough to finish the thought, but there we go. We can create something that makes nonsensical sentences. It might not be as good if we had monkeys and infinite time, but it kinda works.
+
+
+*Disclaimer: This is a simple function and often fails, but if we keep at it, it often works. 

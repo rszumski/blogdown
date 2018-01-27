@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Donald Trump&#39;s sad iPhone Tweets</title>
+  <meta property="og:title" content="Donald Trump&#39;s sad iPhone Tweets" />
+  <meta name="twitter:title" content="Donald Trump&#39;s sad iPhone Tweets" />
+  <meta name="description" content="White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.
+Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?
+The data It was reported that Trump got his new iPhone on March 25th, so first we’ll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.">
+  <meta property="og:description" content="White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.
+Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?
+The data It was reported that Trump got his new iPhone on March 25th, so first we’ll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.">
+  <meta name="twitter:description" content="White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/tweet-analysis/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/tweet-analysis/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Donald Trump&#39;s sad iPhone Tweets</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on March 23, 2017
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 2 minutes (392 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.</p>
+<p>Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?</p>
+<div id="the-data" class="section level3">
+<h3>The data</h3>
+<p>It was reported that Trump got his new iPhone on March 25th, so first we’ll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.</p>
+<p>Next we’ll split the data into a period before and after March 25th. This leaves us with 230 and 225 tweets respectively.</p>
+</div>
+<div id="comparison-of-words" class="section level3">
+<h3>Comparison of words</h3>
+<p>First lets look at which words are most common from when Trump got an iPhone relative to before, and vice versa. We’ll use the measure of log odds ratio, calculated for each word as</p>
+<p><span class="math display">\[\log_2(\frac{\frac{\mbox{# words since Trump got an iPhone} + 1}{\mbox{Total words} + 1}} {\frac{\mbox{# words before Trump got an iPhone} + 1}{\mbox{Total words} + 1}})\]</span></p>
+<p><img src="/post/Tweet-Analysis_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Words like “join”, “support”, and “address” came only from before Trump got an iPhone and a lot of “emotionally charged”&quot; words, like “win”, “wrong”, and “failing” came after Trump got an iPhone.</p>
+</div>
+<div id="sentiment-of-the-tweets" class="section level3">
+<h3>Sentiment of the tweets</h3>
+<p>To measure the sentiment of the tweets, we want to count the number of words in each category.</p>
+<pre><code>##      sentiment total_words words
+## 1        anger        1702    87
+## 2 anticipation        1702   114
+## 3      disgust        1702    57
+## 4         fear        1702    89
+## 5          joy        1702   100
+## 6     negative        1702   153</code></pre>
+<p>We want to measure how much more likely the iPhone account after March 25th is to use an emotionally-charged term relative to before. Since this is count data, we can use a Poisson test (performs an exact test of a simple null hypothesis about the rate parameter) to measure the difference and we can visualize it with a 95% confidence interval.</p>
+<p><img src="/post/Tweet-Analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Since Trump got an iPhone the Twitter account uses higher then 100% more words related to sadness and anger sentiments than from before.</p>
+<p>But which words drove this different in sentiment? Let’s consider the words with the largest changes within each category:</p>
+<p><img src="/post/Tweet-Analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>This confirms that lots of words annotated as negative sentiments are more common in the iPhone tweets after Trump got an iPhone then before.</p>
+</div>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+          
+            <li class="next">
+              <a href="/post/chicago-census-cluster/" data-toggle="tooltip" data-placement="top" title="Cluster Analysis of Selected Socioeconomic Indicators in Chicago">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

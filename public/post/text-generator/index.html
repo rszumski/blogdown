@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Infinite Monkey vs. R</title>
+  <meta property="og:title" content="Infinite Monkey vs. R" />
+  <meta name="twitter:title" content="Infinite Monkey vs. R" />
+  <meta name="description" content="Tools: R
+Data Source: Trump Twitter Archive
+The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.
+Can we do it by sticking commonly used words together in Donald Trumps tweets?">
+  <meta property="og:description" content="Tools: R
+Data Source: Trump Twitter Archive
+The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.
+Can we do it by sticking commonly used words together in Donald Trumps tweets?">
+  <meta name="twitter:description" content="Tools: R
+Data Source: Trump Twitter Archive
+The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/text-generator/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/text-generator/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Infinite Monkey vs. R</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on January 16, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 3 minutes (432 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>Tools: R</p>
+<p>Data Source: <a href="http://www.trumptwitterarchive.com/">Trump Twitter Archive</a></p>
+<p>The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.</p>
+<p>Can we do it by sticking commonly used words together in Donald Trumps tweets?</p>
+<p>A lot of his tweets already sound nonsensical to begin with, so lets give it a go.</p>
+<p>How? We can take his tweets, generate some tri-grams, write a simple function that, when given two words, tries to find a third word, takes the final two words, tries to find another word, and repeats until we have a sentence.</p>
+<p>After getting the tweets form the Trump Twitter Archive, I just put it in a data frame called df. Then, using the tidytext package, I created tri-grams.</p>
+<pre class="r"><code>trigrams &lt;- df %&gt;%
+  unnest_tokens(trigram, text, token = &quot;ngrams&quot;,to_lower = TRUE, n= 3) %&gt;%
+  separate(trigram, c(&quot;word1&quot;, &quot;word2&quot;, &quot;word3&quot;), sep = &quot; &quot;) %&gt;%
+  count(word1, word2, word3, sort = TRUE)</code></pre>
+<p>Next we make a function that returns a third word once given two.</p>
+<pre class="r"><code>return_third_word &lt;- function(word_1, word_2){
+  woord &lt;- trigrams %&gt;%
+    filter_(~word1 == word_1, ~word2 == word_2) %&gt;%
+    sample_n(1) %&gt;%
+    .[[&quot;word3&quot;]]
+  woord
+}</code></pre>
+<p>Finally we can make a function that generates a sentence by taking two given words, tries to find a third word, takes the final two words, tries to find another word, and repeats until we have a sentence of say 15 words.</p>
+<pre class="r"><code>generate_sentence &lt;- function(word1, word2, sentencelength =15, debug =FALSE){
+  sentence &lt;- c(word1, word2)
+  word_1 &lt;- word1
+  word_2 &lt;- word2
+  for(i in seq_len(sentencelength)){
+    if(debug == TRUE)print(i)
+    word &lt;- return_third_word(word_1, word_2)
+    sentence &lt;- c(sentence, word)
+    word_1 &lt;- word_2
+    word_2 &lt;- word
+  }
+  output &lt;-paste(sentence, collapse = &quot; &quot;)
+  output
+}
+}</code></pre>
+<p>Let’s generate some sentences.</p>
+<pre class="r"><code>generate_sentence(&quot;thank&quot;, &quot;you&quot;)</code></pre>
+<p>“thank you billkritol i am given little cdit for thi country back it time we find a”</p>
+<pre class="r"><code>generate_sentence(&quot;make&quot;, &quot;america&quot;)</code></pre>
+<p>“make america a too high and getting very nasty the candidates ohio knows this 2 that i”</p>
+<pre class="r"><code>generate_sentence(&quot;fake&quot;, &quot;news&quot;)</code></pre>
+<p>“fake news china story saying mr.xi has not ported properly on crooked’s fbi release they are presidents”</p>
+<p>Maybe 15 words isn’t enough to finish the thought, but there we go. We can create something that makes nonsensical sentences. It might not be as good if we had monkeys and infinite time, but it kinda works.</p>
+<p>*Disclaimer: This is a simple function and often fails, but if we keep at it, it often works.</p>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="/post/migration/" data-toggle="tooltip" data-placement="top" title="The Flow of People">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="/post/ufo-sightings-around-the-world/" data-toggle="tooltip" data-placement="top" title=" I Want to Believe">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

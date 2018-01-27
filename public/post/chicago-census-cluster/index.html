@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Cluster Analysis of Selected Socioeconomic Indicators in Chicago</title>
+  <meta property="og:title" content="Cluster Analysis of Selected Socioeconomic Indicators in Chicago" />
+  <meta name="twitter:title" content="Cluster Analysis of Selected Socioeconomic Indicators in Chicago" />
+  <meta name="description" content="K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.
+The dataset This dataset contains a selection of six socioeconomic indicators of public health significance and a “hardship index,” by Chicago community area, for the years 2008 – 2012. The indicators are the percent of occupied housing units with more than one person per room (i.e., crowded housing); the percent of households living below the federal poverty level; the percent of persons in the labor force over the age of 16 years that are unemployed; the percent of persons over the age of 25 years without a high school diploma; the percent of the population under 18 or over 64 years of age (i.">
+  <meta property="og:description" content="K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.
+The dataset This dataset contains a selection of six socioeconomic indicators of public health significance and a “hardship index,” by Chicago community area, for the years 2008 – 2012. The indicators are the percent of occupied housing units with more than one person per room (i.e., crowded housing); the percent of households living below the federal poverty level; the percent of persons in the labor force over the age of 16 years that are unemployed; the percent of persons over the age of 25 years without a high school diploma; the percent of the population under 18 or over 64 years of age (i.">
+  <meta name="twitter:description" content="K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.
+The dataset This dataset contains a selection of six …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/chicago-census-cluster/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/chicago-census-cluster/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Cluster Analysis of Selected Socioeconomic Indicators in Chicago</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on May 18, 2017
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 5 minutes (984 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.</p>
+<div id="the-dataset" class="section level4">
+<h4>The dataset</h4>
+<p>This dataset contains a selection of six socioeconomic indicators of public health significance and a “hardship index,” by Chicago community area, for the years 2008 – 2012. The indicators are the percent of occupied housing units with more than one person per room (i.e., crowded housing); the percent of households living below the federal poverty level; the percent of persons in the labor force over the age of 16 years that are unemployed; the percent of persons over the age of 25 years without a high school diploma; the percent of the population under 18 or over 64 years of age (i.e., dependency); and per capita income</p>
+<p><a href="https://data.cityofchicago.org/Health-Human-Services/Census-Data-Selected-socioeconomic-indicators-in-C/kn9c-c2s2">Link</a></p>
+</div>
+<div id="k-mean" class="section level2">
+<h2>K-mean</h2>
+<p>In k-means clustering, each cluster is represented by its center (i.e, centroid) which corresponds to the mean of points assigned to the cluster. Recall that, k-means algrorithm requires the user to choose the number of clusters (i.e, k) to be generated.</p>
+<p>The algorithm starts by randomly selecting k objects from the dataset as the initial cluster means.</p>
+<p>Next, each of the remaining objects is assigned to it’s closest centroid, where closest is defined using the Euclidean distance between the object and the cluster mean. This step is called cluster assignement step.</p>
+<p>After the assignment step, the algorithm computes the new mean value of each cluster. The term cluster centroid update is used to design this step. All the objects are reassigned again using the updated cluster means.</p>
+<p>The cluster assignment and centroid update steps are iteratively repeated until the cluster assignments stop changing (i.e until convergence is achieved). That is, the clusters formed in the current iteration are the same as those obtained in the previous iteration.</p>
+<p>First we find the number of suggested clusters:</p>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-1-1.png" width="750px" /></p>
+<p>3 clusters are suggested.</p>
+<p>Compute k-means clustering with k = 3:</p>
+<pre class="r"><code>km.res &lt;- kmeans(df, 3)</code></pre>
+<p>We can look the mean of each of the variables in the clusters:</p>
+<pre><code>##   cluster PERCENT.OF.HOUSING.CROWDED PERCENT.HOUSEHOLDS.BELOW.POVERTY
+## 1       1                  10.211765                         21.62941
+## 2       2                   2.852941                         13.02353
+## 3       3                   4.173077                         33.28846
+##   PERCENT.AGED.16..UNEMPLOYED PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA
+## 1                   14.688235                                     36.91765
+## 2                    9.358824                                     11.81765
+## 3                   23.684615                                     20.65000
+##   PERCENT.AGED.UNDER.18.OR.OVER.64 PER.CAPITA.INCOME HARDSHIP.INDEX
+## 1                         37.62941          15980.18       71.29412
+## 2                         30.94118          37462.32       22.02941
+## 3                         40.80000          16268.54       71.19231</code></pre>
+<p>Visualizing the clusters:</p>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-4-1.png" width="750px" /></p>
+<p>Silhouette:</p>
+<p>Silhouette refers to a method of interpretation and validation of consistency within clusters of data.</p>
+<p>Silhouette Plot shows for each cluster:</p>
+<ol style="list-style-type: decimal">
+<li><p>The number of elements (nj) per cluster. Each horizontal line corresponds to an element. The length of the lines corresponds to silhouette width (Si), which is the means similarity of each element to its own cluster minus the mean similarity to the next most similar cluster.</p></li>
+<li><p>The average silhouette width.</p></li>
+</ol>
+<p>Observations with a large Si (almost 1) are very well clustered, a small Si (around 0) means that the observation lies between two clusters, and observations with a negative Si are probably placed in the wrong cluster.</p>
+<pre><code>##   cluster size ave.sil.width
+## 1       1   17          0.38
+## 2       2   34          0.39
+## 3       3   26          0.34</code></pre>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-5-1.png" width="750px" /></p>
+<p>It can be seen that one sample has a negative silhouette. This means that it is not in the right cluster. We can find the name of this sample and determine the cluster it close to.</p>
+<pre><code>##      cluster neighbor    sil_width
+## [1,]       2        3 -0.001543911</code></pre>
+<p>And that community area is -</p>
+<pre><code>## Calumet Heights 
+##               2</code></pre>
+</div>
+<div id="pam-partitioning-around-medoids" class="section level2">
+<h2>PAM: Partitioning Around Medoids</h2>
+<p>The use of means implies that k-means clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. A more robust algorithm is provided by PAM algorithm (Partitioning Around Medoids) which is also known as k-medoids clustering.</p>
+<p>The pam algorithm is based on the search for k representative objects or medoids among the observations of the dataset. These observations should represent the structure of the data. After finding a set of k medoids, k clusters are constructed by assigning each observation to the nearest medoid. The goal is to find k representative objects which minimize the sum of the dissimilarities of the observations to their closest representative object.</p>
+<p>First we find the number of suggested clusters: <img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-8-1.png" width="750px" /></p>
+<p>9 clusters are suggested.</p>
+<p>Compute PAM clustering with k = 9:</p>
+<pre class="r"><code>pam.res &lt;- pam(df, 9)</code></pre>
+<p>We can look the mean of each of the variables in the clusters:</p>
+<pre><code>##   cluster PERCENT.OF.HOUSING.CROWDED PERCENT.HOUSEHOLDS.BELOW.POVERTY
+## 1       1                   3.711111                         18.06667
+## 2       2                   3.893333                         13.34000
+## 3       3                   1.150000                         12.10000
+## 4       4                   1.220000                          4.94000
+## 5       5                   8.610000                         18.20000
+## 6       6                  14.420000                         28.12000
+## 7       7                   5.850000                         31.43333
+## 8       8                   5.500000                         44.18889
+## 9       9                   2.625000                         25.59167
+##   PERCENT.AGED.16..UNEMPLOYED PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA
+## 1                    8.444444                                     11.73333
+## 2                   11.960000                                     17.43333
+## 3                    5.433333                                      3.95000
+## 4                    7.800000                                      6.36000
+## 5                   13.560000                                     34.73000
+## 6                   17.640000                                     45.66000
+## 7                   18.500000                                     26.16667
+## 8                   28.477778                                     25.12222
+## 9                   22.133333                                     15.41667
+##   PERCENT.AGED.UNDER.18.OR.OVER.64 PER.CAPITA.INCOME HARDSHIP.INDEX
+## 1                         25.06667          35034.89       20.11111
+## 2                         36.64667          25835.93       34.80000
+## 3                         20.43333          67000.67        4.00000
+## 4                         38.52000          38380.40       13.60000
+## 5                         37.18000          17318.40       63.70000
+## 6                         37.76000          12441.60       89.80000
+## 7                         40.01667          14852.50       75.66667
+## 8                         43.58889          12311.56       89.55556
+## 9                         39.08333          19691.17       55.91667</code></pre>
+<p>Visualizing the clusters:</p>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-11-1.png" width="750px" /></p>
+<p>Silhouette:</p>
+<pre><code>##   cluster size ave.sil.width
+## 1       1    9          0.37
+## 2       2   15          0.24
+## 3       3    6          0.48
+## 4       4    5          0.60
+## 5       5   10          0.31
+## 6       6    5          0.43
+## 7       7    6          0.29
+## 8       8    9          0.16
+## 9       9   12          0.32</code></pre>
+<p><img src="/post/chicago-census-cluster_files/figure-html/unnamed-chunk-12-1.png" width="750px" /></p>
+<p>Again It can be seen that some samples have a negative silhouette. This means that they are not in the right cluster. We can find the name of these samples and determine the clusters they are closer to.</p>
+<pre><code>##                    cluster neighbor   sil_width
+## Calumet Heights          2        9 -0.05598535
+## Oakland                  8        9 -0.06744838
+## North Lawndale           8        7 -0.09397151
+## East Garfield Park       8        7 -0.19230738</code></pre>
+</div>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="/post/tweet-analysis/" data-toggle="tooltip" data-placement="top" title="Donald Trump&#39;s sad iPhone Tweets">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="/post/inaugural-address-smog/" data-toggle="tooltip" data-placement="top" title="Inaugural Addresses are more ... unintelligible">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

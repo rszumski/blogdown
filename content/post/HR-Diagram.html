@@ -1,0 +1,21 @@
+---
+title: "A Hertzsprung–Russell Diagram"
+author: "Russell Szumski"
+date: 2018-01-23
+categories: ["R"]
+tags: ["highcharter", "rvest", "purrr"]
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/pymjs/pym.v1.js"></script>
+<script src="/rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
+
+
+<p>Tools: R</p>
+<p>Data Source: <a href="http://www.astronexus.com/hyg">The HYG database</a> &amp; <a href="https://in-the-sky.org/index.php">In-The-Sky.org</a></p>
+<p>I like astronomy and I like like charts. One place those two intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star’s brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram. So knowing that lets make one.</p>
+<p>From the HYG database I was able to get a star’s: ID in the Henry Draper catalog, distance in parsecs, absolute visual magnitude, and the color index (blue magnitude - visual magnitude).</p>
+<p>I then used the rvest package to scrap the star’s Henry Draper catalog ID, the constellation it belongs to, and the name (if available). After joining the data together I took a subset of stars that lie within 50 parsecs, used some math to calculate each stars temperature and radius, plotted the Temperature in Kelvin vs. Absolute Magnitude, added a flag for the Sun, and this is what I got.</p>
+<div id="htmlwidget-1" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/HR-Diagram_files/figure-html//widgets/widget_unnamed-chunk-1.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>You can zoom in on an area by clicking and dragging a box over the area of interest and if you want a bigger view click <a href="https://rpubs.com/rszumski/352948">here</a></p>

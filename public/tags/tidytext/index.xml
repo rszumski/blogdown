@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tidytext on szumskiR</title>
+    <link>/tags/tidytext/</link>
+    <description>Recent content in Tidytext on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Tue, 16 Jan 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/tidytext/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Infinite Monkey vs. R</title>
+      <link>/post/text-generator/</link>
+      <pubDate>Tue, 16 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/text-generator/</guid>
+      <description>Tools: R
+Data Source: Trump Twitter Archive
+The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.
+Can we do it by sticking commonly used words together in Donald Trumps tweets?</description>
+    </item>
+    
+    <item>
+      <title>Instant Ramen</title>
+      <link>/post/ramen-bigrams/</link>
+      <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/ramen-bigrams/</guid>
+      <description>Tools: R
+Data Source: 2682 Instant Ramen Noodle Ratings
+Created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Also because why not, who hasn’t enjoyed some instant ramen before.
+Used tidytext for the calculations and networkD3 for the visualization.</description>
+    </item>
+    
+    <item>
+      <title>Inaugural Addresses are more ... unintelligible</title>
+      <link>/post/inaugural-address-smog/</link>
+      <pubDate>Sun, 03 Dec 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/inaugural-address-smog/</guid>
+      <description>I come across an interesting infographic from the Guardian interactive team. It used the Flesch-Kincaid readability test to track the reading level of every State of the Union. I thought I’d give it a go and try to create something like it.
+Instead of using the Flesch-Kincaid readability test I went with the Simple Measure of Gobbledygook (SMOG) grade, which is a measure of readability that estimates the years of education needed to understand a piece of writing, and I just looked at the Inaugural Addresses.</description>
+    </item>
+    
+    <item>
+      <title>Donald Trump&#39;s sad iPhone Tweets</title>
+      <link>/post/tweet-analysis/</link>
+      <pubDate>Thu, 23 Mar 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/tweet-analysis/</guid>
+      <description>White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.
+Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?
+The data It was reported that Trump got his new iPhone on March 25th, so first we’ll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.</description>
+    </item>
+    
+  </channel>
+</rss>

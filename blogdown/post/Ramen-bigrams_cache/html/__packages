@@ -1,0 +1,9 @@
+base
+dplyr
+tidytext
+tidyr
+igraph
+ggplot2
+ggraph
+networkD3
+bindrcpp

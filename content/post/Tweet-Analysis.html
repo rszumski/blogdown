@@ -1,0 +1,41 @@
+---
+title: "Donald Trump's sad iPhone Tweets"
+author: "Russell Szumski"
+date: 2017-03-23
+categories: ["R"]
+tags: ["ggplot2", "tidytext"]
+---
+
+
+
+<p>White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.</p>
+<p>Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?</p>
+<div id="the-data" class="section level3">
+<h3>The data</h3>
+<p>It was reported that Trump got his new iPhone on March 25th, so first we’ll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.</p>
+<p>Next we’ll split the data into a period before and after March 25th. This leaves us with 230 and 225 tweets respectively.</p>
+</div>
+<div id="comparison-of-words" class="section level3">
+<h3>Comparison of words</h3>
+<p>First lets look at which words are most common from when Trump got an iPhone relative to before, and vice versa. We’ll use the measure of log odds ratio, calculated for each word as</p>
+<p><span class="math display">\[\log_2(\frac{\frac{\mbox{# words since Trump got an iPhone} + 1}{\mbox{Total words} + 1}} {\frac{\mbox{# words before Trump got an iPhone} + 1}{\mbox{Total words} + 1}})\]</span></p>
+<p><img src="/post/Tweet-Analysis_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Words like “join”, “support”, and “address” came only from before Trump got an iPhone and a lot of “emotionally charged”&quot; words, like “win”, “wrong”, and “failing” came after Trump got an iPhone.</p>
+</div>
+<div id="sentiment-of-the-tweets" class="section level3">
+<h3>Sentiment of the tweets</h3>
+<p>To measure the sentiment of the tweets, we want to count the number of words in each category.</p>
+<pre><code>##      sentiment total_words words
+## 1        anger        1702    87
+## 2 anticipation        1702   114
+## 3      disgust        1702    57
+## 4         fear        1702    89
+## 5          joy        1702   100
+## 6     negative        1702   153</code></pre>
+<p>We want to measure how much more likely the iPhone account after March 25th is to use an emotionally-charged term relative to before. Since this is count data, we can use a Poisson test (performs an exact test of a simple null hypothesis about the rate parameter) to measure the difference and we can visualize it with a 95% confidence interval.</p>
+<p><img src="/post/Tweet-Analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Since Trump got an iPhone the Twitter account uses higher then 100% more words related to sadness and anger sentiments than from before.</p>
+<p>But which words drove this different in sentiment? Let’s consider the words with the largest changes within each category:</p>
+<p><img src="/post/Tweet-Analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>This confirms that lots of words annotated as negative sentiments are more common in the iPhone tweets after Trump got an iPhone then before.</p>
+</div>

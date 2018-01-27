@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on szumskiR</title>
+    <link>/categories/r/</link>
+    <description>Recent content in R on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Thu, 25 Jan 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CTA Ridership</title>
+      <link>/post/cta-dashboard/</link>
+      <pubDate>Thu, 25 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/cta-dashboard/</guid>
+      <description>Tools: R
+Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.
+I came across the flexdashboard package while I was looking at different ways to create dashboards. So I thought it would be fun make a dashboard with data from the CTA - Ridership - ‘L’ Station Entries dataset. The dashboard will consist of two columns.</description>
+    </item>
+    
+    <item>
+      <title>A Hertzsprung–Russell Diagram</title>
+      <link>/post/hr-diagram/</link>
+      <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/hr-diagram/</guid>
+      <description>Tools: R
+Data Source: The HYG database &amp;amp; In-The-Sky.org
+I like astronomy and I like like charts. One place those two intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star’s brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram.</description>
+    </item>
+    
+    <item>
+      <title> I Want to Believe</title>
+      <link>/post/ufo-sightings-around-the-world/</link>
+      <pubDate>Wed, 17 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/ufo-sightings-around-the-world/</guid>
+      <description>Tools: R, LibreOffice Calc
+Data Source: UFO Sightings around the world
+I’ve been watching the 11th season of The X-Files and it got me thinking about UFOs. In my search for data on UFO sightings I came across a dataset on Kaggle that has 80,000+ documented close encounters from the past 70 years. Then I came across a R package called dygraphs, for charting time-series data in R, and the three.</description>
+    </item>
+    
+    <item>
+      <title>Infinite Monkey vs. R</title>
+      <link>/post/text-generator/</link>
+      <pubDate>Tue, 16 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/text-generator/</guid>
+      <description>Tools: R
+Data Source: Trump Twitter Archive
+The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.
+Can we do it by sticking commonly used words together in Donald Trumps tweets?</description>
+    </item>
+    
+    <item>
+      <title>The Flow of People</title>
+      <link>/post/migration/</link>
+      <pubDate>Mon, 15 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/migration/</guid>
+      <description>Tools: R
+Data Source: THE GLOBAL FLOW OF PEOPLE The data is the bilateral migration flows between and within regions for five-year periods, 1990 to 2010.
+There has been a lot of talk about immigration lately. President Donald Trump expressed frustration with people coming to the US from “shithole countries”. So lets take a look at the flow of people.
+First lets look at the countries with a recorded migration volume of more than 500,000 people in the total span of the time periods.</description>
+    </item>
+    
+    <item>
+      <title>Instant Ramen</title>
+      <link>/post/ramen-bigrams/</link>
+      <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/ramen-bigrams/</guid>
+      <description>Tools: R
+Data Source: 2682 Instant Ramen Noodle Ratings
+Created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Also because why not, who hasn’t enjoyed some instant ramen before.
+Used tidytext for the calculations and networkD3 for the visualization.</description>
+    </item>
+    
+    <item>
+      <title>Sad Songs</title>
+      <link>/post/gregory-alan-isakov/</link>
+      <pubDate>Wed, 20 Dec 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/gregory-alan-isakov/</guid>
+      <description>Tools: R
+Data Source: Spotify
+Gregory Alan Isakov has been one of my favorite singer-songwriters for a while, and I’ve gotten used to people suggesting that I play something ‘less depressing’. Most singer-songwriter’s music is indeed sad, but his music can’t be that sad. Can it?
+Using the spotifyr package we can pull track audio features from the ‘Spotify’ Web API, including valence and energy of a track.</description>
+    </item>
+    
+    <item>
+      <title>Weather Is Not Climate</title>
+      <link>/post/annual-temp-dev/</link>
+      <pubDate>Wed, 20 Dec 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/annual-temp-dev/</guid>
+      <description>Tools: R
+Data Source: NASA
+I live in Chicago and it’s cold old, but weather is not climate. The difference between weather and climate is a measure of time. Weather is what conditions of the atmosphere are over a short period of time, and climate is how the atmosphere “behaves” over relatively long periods of time.
+So lets take the data and plot the deviations from the 1951 - 1980 average going back to 1880 and see what it looks like.</description>
+    </item>
+    
+    <item>
+      <title>Inaugural Addresses are more ... unintelligible</title>
+      <link>/post/inaugural-address-smog/</link>
+      <pubDate>Sun, 03 Dec 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/inaugural-address-smog/</guid>
+      <description>I come across an interesting infographic from the Guardian interactive team. It used the Flesch-Kincaid readability test to track the reading level of every State of the Union. I thought I’d give it a go and try to create something like it.
+Instead of using the Flesch-Kincaid readability test I went with the Simple Measure of Gobbledygook (SMOG) grade, which is a measure of readability that estimates the years of education needed to understand a piece of writing, and I just looked at the Inaugural Addresses.</description>
+    </item>
+    
+    <item>
+      <title>Cluster Analysis of Selected Socioeconomic Indicators in Chicago</title>
+      <link>/post/chicago-census-cluster/</link>
+      <pubDate>Thu, 18 May 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/chicago-census-cluster/</guid>
+      <description>K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.
+The dataset This dataset contains a selection of six socioeconomic indicators of public health significance and a “hardship index,” by Chicago community area, for the years 2008 – 2012. The indicators are the percent of occupied housing units with more than one person per room (i.e., crowded housing); the percent of households living below the federal poverty level; the percent of persons in the labor force over the age of 16 years that are unemployed; the percent of persons over the age of 25 years without a high school diploma; the percent of the population under 18 or over 64 years of age (i.</description>
+    </item>
+    
+    <item>
+      <title>Donald Trump&#39;s sad iPhone Tweets</title>
+      <link>/post/tweet-analysis/</link>
+      <pubDate>Thu, 23 Mar 2017 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/tweet-analysis/</guid>
+      <description>White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.
+Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?
+The data It was reported that Trump got his new iPhone on March 25th, so first we’ll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.</description>
+    </item>
+    
+  </channel>
+</rss>

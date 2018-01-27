@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dygraphs on szumskiR</title>
+    <link>/tags/dygraphs/</link>
+    <description>Recent content in Dygraphs on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Wed, 17 Jan 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/dygraphs/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title> I Want to Believe</title>
+      <link>/post/ufo-sightings-around-the-world/</link>
+      <pubDate>Wed, 17 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/ufo-sightings-around-the-world/</guid>
+      <description>Tools: R, LibreOffice Calc
+Data Source: UFO Sightings around the world
+I’ve been watching the 11th season of The X-Files and it got me thinking about UFOs. In my search for data on UFO sightings I came across a dataset on Kaggle that has 80,000+ documented close encounters from the past 70 years. Then I came across a R package called dygraphs, for charting time-series data in R, and the three.</description>
+    </item>
+    
+  </channel>
+</rss>

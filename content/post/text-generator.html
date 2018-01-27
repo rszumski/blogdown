@@ -1,0 +1,54 @@
+---
+title: "Infinite Monkey vs. R"
+author: "Russell Szumski"
+date: 2018-01-16
+categories: ["R"]
+tags: ["tidytext"]
+---
+
+
+
+<p>Tools: R</p>
+<p>Data Source: <a href="http://www.trumptwitterarchive.com/">Trump Twitter Archive</a></p>
+<p>The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.</p>
+<p>Can we do it by sticking commonly used words together in Donald Trumps tweets?</p>
+<p>A lot of his tweets already sound nonsensical to begin with, so lets give it a go.</p>
+<p>How? We can take his tweets, generate some tri-grams, write a simple function that, when given two words, tries to find a third word, takes the final two words, tries to find another word, and repeats until we have a sentence.</p>
+<p>After getting the tweets form the Trump Twitter Archive, I just put it in a data frame called df. Then, using the tidytext package, I created tri-grams.</p>
+<pre class="r"><code>trigrams &lt;- df %&gt;%
+  unnest_tokens(trigram, text, token = &quot;ngrams&quot;,to_lower = TRUE, n= 3) %&gt;%
+  separate(trigram, c(&quot;word1&quot;, &quot;word2&quot;, &quot;word3&quot;), sep = &quot; &quot;) %&gt;%
+  count(word1, word2, word3, sort = TRUE)</code></pre>
+<p>Next we make a function that returns a third word once given two.</p>
+<pre class="r"><code>return_third_word &lt;- function(word_1, word_2){
+  woord &lt;- trigrams %&gt;%
+    filter_(~word1 == word_1, ~word2 == word_2) %&gt;%
+    sample_n(1) %&gt;%
+    .[[&quot;word3&quot;]]
+  woord
+}</code></pre>
+<p>Finally we can make a function that generates a sentence by taking two given words, tries to find a third word, takes the final two words, tries to find another word, and repeats until we have a sentence of say 15 words.</p>
+<pre class="r"><code>generate_sentence &lt;- function(word1, word2, sentencelength =15, debug =FALSE){
+  sentence &lt;- c(word1, word2)
+  word_1 &lt;- word1
+  word_2 &lt;- word2
+  for(i in seq_len(sentencelength)){
+    if(debug == TRUE)print(i)
+    word &lt;- return_third_word(word_1, word_2)
+    sentence &lt;- c(sentence, word)
+    word_1 &lt;- word_2
+    word_2 &lt;- word
+  }
+  output &lt;-paste(sentence, collapse = &quot; &quot;)
+  output
+}
+}</code></pre>
+<p>Let’s generate some sentences.</p>
+<pre class="r"><code>generate_sentence(&quot;thank&quot;, &quot;you&quot;)</code></pre>
+<p>“thank you billkritol i am given little cdit for thi country back it time we find a”</p>
+<pre class="r"><code>generate_sentence(&quot;make&quot;, &quot;america&quot;)</code></pre>
+<p>“make america a too high and getting very nasty the candidates ohio knows this 2 that i”</p>
+<pre class="r"><code>generate_sentence(&quot;fake&quot;, &quot;news&quot;)</code></pre>
+<p>“fake news china story saying mr.xi has not ported properly on crooked’s fbi release they are presidents”</p>
+<p>Maybe 15 words isn’t enough to finish the thought, but there we go. We can create something that makes nonsensical sentences. It might not be as good if we had monkeys and infinite time, but it kinda works.</p>
+<p>*Disclaimer: This is a simple function and often fails, but if we keep at it, it often works.</p>

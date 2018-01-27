@@ -1,0 +1,157 @@
+---
+title: " I Want to Believe"
+author: "Russell Szumski"
+date: 2018-01-17
+categories: ["R"]
+tags: ["dygraphs", "threejs"]
+---
+
+Tools: R, LibreOffice Calc
+
+Data Source: [UFO Sightings around the world](https://www.kaggle.com/camnugent/ufo-sightings-around-the-world)
+
+I've been watching the 11th season of The X-Files and it got me thinking about UFOs. In my search for data on UFO sightings I came across a dataset on Kaggle that has 80,000+ documented close encounters from the past 70 years. Then I came across a R package called [dygraphs](https://rstudio.github.io/dygraphs/), for charting time-series data in R, and the [three.js](https://github.com/bwlewis/rthreejs) package, that has globejs: a somewhat silly widget that plots data and images on a 3-d globe. So lets put this all together. 
+
+
+```{r setup, include=FALSE, cache = FALSE}
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(threejs)
+library(dygraphs)
+
+df <- read.csv('UFO Sightings/ufo_sighting_data.csv')
+
+df$latitude <- as.numeric(as.character(df$latitude))
+
+df_ <- df %>%
+  mutate(latitude = round(latitude, 2), longitude = round(longitude, 2)) %>%
+  .[,10:11] %>%
+  group_by(latitude, longitude) %>%
+  summarize(count = n()) %>%
+  na.omit() 
+
+
+df_$q <- as.numeric(
+  cut(df_$count,
+      breaks=quantile(df_$count, probs=c(0,0.90,0.95,0.99,1)),
+      include.lowest=TRUE))
+
+col = c("#0055ff","#00aaff","#00ffaa","#aaff00")[df_$q]
+
+globe <- globejs(lat=df_$latitude, long=df_$longitude,
+        val = df_$q^3,
+        color=col,
+        pointsize=0.5,
+        atmosphere=TRUE)
+
+df_country <- read.csv('UFO Sightings/ufo per country.csv')
+
+ts_us <- ts(df_country$us, start = 1940, end = 2014)
+ts_gb <- ts(df_country$gb, start = 1940, end = 2014)
+ts_de <- ts(df_country$de, start = 1940, end = 2014)
+ts_ca <- ts(df_country$ca, start = 1940, end = 2014)
+ts_au <- ts(df_country$au, start = 1940, end = 2014)
+ts_unknown <- ts(df_country$unknown, start = 1940, end = 2014)
+
+UFO <- cbind(ts_au, ts_ca, ts_de, ts_gb, ts_unknown, ts_us)
+
+dy_ts <- dygraph(UFO, main = 'The Truth is Out There') %>%
+  dyOptions(colors = RColorBrewer::brewer.pal(6, 'Dark2'),
+            fillGraph = T, fillAlpha = 0.4) %>%
+  dyHighlight(highlightCircleSize = 4,
+              hideOnMouseOut = F,
+              highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyAxis("x", label = 'Year', drawGrid = F) %>%
+  dyAxis("y", label = 'UFO Sightings') %>%
+  dySeries("ts_au", label = 'Australia') %>%
+  dySeries("ts_ca", label = 'Canada') %>%
+  dySeries("ts_de", label = 'Germany') %>%
+  dySeries("ts_gb", label = 'United Kingdom') %>%
+  dySeries("ts_unknown", label = 'Unknown') %>%
+  dySeries("ts_us", label = 'United States') %>%
+  dyLegend(width = 650) %>%
+  dyRangeSelector(dateWindow = c('1950-1-1', '2014-1-1')) %>%
+  dyEvent("1993-09-10", 'The X-Files Starts', 'bottom') %>%
+  dyAnnotation('1947-1-1', text = 'R', tooltip = 'Trust no one')
+
+```
+
+First a little data preparation, then lets count the occurrences for each country
+
+```{r , eval=FALSE}
+df$Date_time <- as.POSIXct(df$Date_time,format="%m/%d/%Y %H:%M")
+df$Date_time <- as.Date(df$Date_time)
+df$Date_time <- year(df$Date_time)
+
+df_country <- df %>%
+  group_by(Date_time,country) %>% 
+  summarize(count=n())
+
+df_country <- df_country %>% 
+  spread(country, count) %>%
+  replace(is.na(.), 0)
+
+colnames(df_country)[2] <- "unknown"
+
+df_country <- df_country %>%
+  filter(date >= "1940")
+```
+
+dygraphs plots xts time series objects so lets transform the data in time series and use cbind the combined time series for each country into one time series object.
+
+```{r , eval=FALSE}
+ts_us <- ts(df_country$us, start = 1940, end = 2014)
+ts_gb <- ts(df_country$gb, start = 1940, end = 2014)
+ts_de <- ts(df_country$de, start = 1940, end = 2014)
+ts_ca <- ts(df_country$ca, start = 1940, end = 2014)
+ts_au <- ts(df_country$au, start = 1940, end = 2014)
+ts_unknown <- ts(df_country$unknown, start = 1940, end = 2014)
+
+UFO <- cbind(ts_au, ts_ca, ts_de, ts_gb, ts_unknown, ts_us)
+```
+
+Finally the plot
+
+```{r , echo=FALSE}
+dy_ts
+```
+
+We can see a large increase of sightings at the beginning of the 90's, when The X-Files started, and that most of the sightings occur in the US.
+
+Coincidence?
+
+Next lets make that somewhat silly 3-d globe widget.
+
+Again a little data preparation, then lets count the occurrences for groups of latitude and longitude.
+
+```{r , eval=FALSE}
+df$latitude <- as.numeric(as.character(df$latitude))
+
+df_ <- df %>%
+  mutate(latitude = round(latitude, 2), longitude = round(longitude, 2)) %>%
+  .[,10:11] %>%
+  group_by(latitude, longitude) %>%
+  summarize(count = n()) %>%
+  na.omit() 
+
+# Cut the values up into levels corresponding to the
+# 99th, 95th, 90th, percentiles and then all the rest
+
+df_$q <- as.numeric(
+  cut(df_$count,
+      breaks=quantile(df_$count, probs=c(0,0.90,0.95,0.99,1)),
+      include.lowest=TRUE))
+
+# Colors for each level
+
+col = c("#0055ff","#00aaff","#00ffaa","#aaff00")[df_$q]
+```
+
+The widget.
+
+```{r , echo=FALSE}
+globe
+```
+
+Sure looks like aliens like the US...

@@ -1,0 +1,147 @@
+---
+title: "Cluster Analysis of Selected Socioeconomic Indicators in Chicago"
+author: "Russell Szumski"
+date: 2017-05-18
+categories: ["R"]
+tags: ["cluster", "factoextra"]
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+knitr::opts_chunk$set(echo = TRUE, out.width='750px', dpi=200)
+library(ggthemes)
+library(factoextra)
+library(cluster)
+
+setwd("Census Cluster/")
+df_census = read.csv('Census_Data_-_Selected_socioeconomic_indicators_in_Chicago__2008___2012.csv', na.strings = c("", "NA"))
+df_census <- na.omit(df_census)
+
+df = df_census
+rownames(df) <- df[,1]
+df[,1] <- NULL
+
+df = scale(df)
+```
+
+K-mean and PAM (Partitioning Around Medoids) cluster analysis of Census Data with selected socioeconomic indicators in Chicago from 2008 – 2012.
+
+#### The dataset
+
+This dataset contains a selection of six socioeconomic indicators of public health significance and a “hardship index,” by Chicago community area, for the years 2008 – 2012. The indicators are the percent of occupied housing units with more than one person per room (i.e., crowded housing); the percent of households living below the federal poverty level; the percent of persons in the labor force over the age of 16 years that are unemployed; the percent of persons over the age of 25 years without a high school diploma; the percent of the population under 18 or over 64 years of age (i.e., dependency); and per capita income
+
+[Link](https://data.cityofchicago.org/Health-Human-Services/Census-Data-Selected-socioeconomic-indicators-in-C/kn9c-c2s2)
+
+## K-mean
+
+In k-means clustering, each cluster is represented by its center (i.e, centroid) which corresponds to the mean of points assigned to the cluster. Recall that, k-means algrorithm requires the user to choose the number of clusters (i.e, k) to be generated.
+
+The algorithm starts by randomly selecting k objects from the dataset as the initial cluster means.
+
+Next, each of the remaining objects is assigned to it’s closest centroid, where closest is defined using the Euclidean distance between the object and the cluster mean. This step is called cluster assignement step.
+
+After the assignment step, the algorithm computes the new mean value of each cluster. The term cluster centroid update is used to design this step. All the objects are reassigned again using the updated cluster means.
+
+The cluster assignment and centroid update steps are iteratively repeated until the cluster assignments stop changing (i.e until convergence is achieved). That is, the clusters formed in the current iteration are the same as those obtained in the previous iteration.
+
+First we find the number of suggested clusters:
+
+```{r, echo=FALSE}
+fviz_nbclust(df, kmeans, method = "gap_stat")
+```
+
+3 clusters are suggested.
+
+Compute k-means clustering with k = 3:
+
+```{r, echo=T}
+km.res <- kmeans(df, 3)
+```
+
+We can look the mean of each of the variables in the clusters:
+
+```{r, echo=F}
+aggregate(df_census[ ,2:8], by=list(cluster=km.res$cluster), mean)
+```
+
+Visualizing the clusters:
+
+```{r, echo=FALSE}
+fviz_cluster(km.res, data = df)+
+  theme_minimal()
+```
+
+Silhouette:
+
+Silhouette refers to a method of interpretation and validation of consistency within clusters of data.
+
+Silhouette Plot shows for each cluster:
+
+1) The number of elements (nj) per cluster. Each horizontal line corresponds to an element. The length of the lines corresponds to silhouette width (Si), which is the means similarity of each element to its own cluster minus the mean similarity to the next most similar cluster.
+
+2) The average silhouette width.
+
+Observations with a large Si (almost 1) are very well clustered, a small Si (around 0) means that the observation lies between two clusters, and observations with a negative Si are probably placed in the wrong cluster.
+
+```{r, echo=FALSE}
+dissE = daisy(df)
+fviz_silhouette(silhouette(km.res$cl, dissE)) + theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+It can be seen that one sample has a negative silhouette. This means that it is not in the right cluster. We can find the name of this sample and determine the cluster it close to.
+
+```{r, echo=FALSE}
+sil_km <- silhouette(km.res$cl, dissE)[, 1:3]
+neg_sil_index <- which(sil_km[, 'sil_width'] < 0)
+sil_km[neg_sil_index, , drop = FALSE]
+```
+And that community area is -
+```{r, echo=FALSE}
+km.res$cluster[48]
+```
+## PAM: Partitioning Around Medoids
+
+The use of means implies that k-means clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. A more robust algorithm is provided by PAM algorithm (Partitioning Around Medoids) which is also known as k-medoids clustering.
+
+The pam algorithm is based on the search for k representative objects or medoids among the observations of the dataset. These observations should represent the structure of the data. After finding a set of k medoids, k clusters are constructed by assigning each observation to the nearest medoid. The goal is to find k representative objects which minimize the sum of the dissimilarities of the observations to their closest representative object.
+
+First we find the number of suggested clusters:
+```{r, echo=FALSE}
+fviz_nbclust(df, pam, method = "gap_stat")
+```
+
+9 clusters are suggested.
+
+Compute PAM clustering with k = 9:
+
+```{r, echo=T}
+pam.res <- pam(df, 9)
+```
+
+We can look the mean of each of the variables in the clusters:
+
+```{r, echo=F}
+aggregate(df_census[ ,2:8], by=list(cluster=pam.res$clustering), mean)
+```
+
+Visualizing the clusters:
+
+```{r, echo=FALSE}
+fviz_cluster(pam.res) + theme_minimal()
+```
+
+Silhouette:
+
+```{r, echo=FALSE}
+fviz_silhouette(silhouette(pam.res)) + theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+Again It can be seen that some samples have a negative silhouette. This means that they are not in the right cluster. We can find the name of these samples and determine the clusters they are closer to.
+
+```{r, echo=FALSE}
+sil <- silhouette(pam.res)[, 1:3]
+neg_sil_index <- which(sil[, 'sil_width'] < 0)
+sil[neg_sil_index, , drop = FALSE]
+```
+

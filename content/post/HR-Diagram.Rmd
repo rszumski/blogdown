@@ -1,0 +1,66 @@
+---
+title: "A Hertzsprung–Russell Diagram"
+author: "Russell Szumski"
+date: 2018-01-23
+categories: ["R"]
+tags: ["highcharter", "rvest", "purrr"]
+---
+
+Tools: R
+
+Data Source: [The HYG database](http://www.astronexus.com/hyg) & [In-The-Sky.org](https://in-the-sky.org/index.php)
+
+I like astronomy and I like like charts. One place those two  intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star's brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram. So knowing that lets make one.
+
+From the HYG database I was able to get a star's: ID in the Henry Draper catalog, distance in parsecs, absolute visual magnitude, and the color index (blue magnitude - visual magnitude). 
+
+I then used the rvest package to scrap the star's Henry Draper catalog ID, the constellation it belongs to, and the name (if available). After joining the data together I took a subset of stars that lie within 50 parsecs, used some math to calculate each stars temperature and radius, plotted the Temperature in Kelvin vs. Absolute Magnitude, added a flag for the Sun, and this is what I got. 
+
+```{r setup, include=FALSE, cache = F}
+library(dplyr)
+library(highcharter)
+library(widgetframe)
+
+df <- read.csv('HR Diagram/HRDiagram.csv')
+
+colors <- c("#FB1108","#FD150B","#FA7806","#FBE426","#FCFB8F",
+            "#F3F5E7", "#C7E4EA","#ABD6E6","#9AD2E1")
+
+
+df$color <- colorize(df$ColorIndex, rev(colors))
+
+df$temp <- (7923 / (df$ColorIndex + 0.71))
+
+df$radius <- (((5800/df$temp)^2)*((2.512^(4.85 - df$AbsMag))^0.5))
+
+x <- c("Constellation:", "Star:", "Absolute Magnitude:", "Color Index(B-V):", "Distance(pc):", "R/Rsun:", "Temperature(K):")
+
+y <- sprintf("{point.%s:.2f}", c("AbsMag", "ColorIndex", "Distance", "radius", "temp"))
+z <- sprintf("{point.%s}", c("constellation", "Star"))
+
+y <- c(z,y)
+
+tltip <- tooltip_table(x, y)
+
+df_flag <- df %>%
+  filter(Star == 'Sol') %>%
+  mutate(title = sprintf("The Sun"))
+
+diagram <- hchart(df, "scatter", hcaes(temp, AbsMag, size = radius, color = color)) %>% 
+  hc_chart(backgroundColor = "black", zoomType = "xy") %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip) %>% 
+  hc_xAxis(title = list(text = "Temperature (K)"),
+           reversed = TRUE) %>% 
+  hc_yAxis(title = list(text = "Absolute Magnitude"),
+           type = "logarithmic", gridLineWidth = 0) %>% 
+  hc_title(text = "Stars Within 50 Parsecs") %>% 
+  hc_subtitle(text = "In a Hertzsprung-Russell diagram") %>%
+  hc_add_series(df_flag, hcaes(temp, AbsMag),type = "flags")
+```
+
+
+```{r , echo=FALSE}
+frameWidget(diagram, height = 400, width = '95%')
+```
+
+You can zoom in on an area by clicking and dragging a box over the area of interest and if you want a bigger view click [here](https://rpubs.com/rszumski/352948)

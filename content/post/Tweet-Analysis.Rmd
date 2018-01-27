@@ -1,0 +1,130 @@
+---
+title: "Donald Trump's sad iPhone Tweets"
+author: "Russell Szumski"
+date: 2017-03-23
+categories: ["R"]
+tags: ["ggplot2", "tidytext"]
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(purrr)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(scales)
+library(tidytext)
+library(ggplot2)
+library(stringr)
+library(dplyr)
+library(broom)
+
+by_source_sentiment_iPhone = read.csv('Tweet Analysis/iPhone_sentiment.csv')
+tweet_words_iPhone = read.csv('Tweet Analysis/tweet_words_iPhone.csv')
+
+past_present_ratios_iPhone <- tweet_words_iPhone %>%
+  count(word, source) %>%
+  filter(sum(n) >= 5) %>%
+  spread(source, n, fill = 0) %>%
+  ungroup() %>%
+  mutate_each(funs((. + 1) / sum(. + 1)), -word) %>%
+  mutate(logratio = log2(New / Old)) %>%
+  arrange(desc(logratio))
+
+ratio = past_present_ratios_iPhone %>%
+  group_by(logratio > 0) %>%
+  top_n(15, abs(logratio)) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, logratio)) %>%
+  ggplot(aes(word, logratio, fill = logratio < 0)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_minimal() +
+  ylab("") +
+  xlab("") +
+  scale_fill_manual(name = "", labels = c("After March 25th", "Before March 25th"),
+                    values = c("red", "lightblue"))
+
+sentiment_differences_iPhone <- by_source_sentiment_iPhone %>%
+  group_by(sentiment) %>%
+  do(tidy(poisson.test(.$words, .$total_words)))
+
+sentiment = sentiment_differences_iPhone %>%
+  ungroup() %>%
+  mutate(sentiment = reorder(sentiment, estimate)) %>%
+  mutate_each(funs(. - 1), estimate, conf.low, conf.high) %>%
+  ggplot(aes(estimate, sentiment)) +
+  geom_point() +
+  theme_minimal() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high)) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(x = "% increase after March 25th relative to before", y = "")
+
+nrc <- sentiments %>%
+  filter(lexicon == "nrc") %>%
+  dplyr::select(word, sentiment)
+
+plot = past_present_ratios_iPhone %>%
+  inner_join(nrc, by = "word") %>%
+  filter(!sentiment %in% c("positive", "negative")) %>%
+  mutate(sentiment = reorder(sentiment, -logratio),
+         word = reorder(word, -logratio)) %>%
+  group_by(sentiment) %>%
+  top_n(10, abs(logratio)) %>%
+  ungroup() %>%
+  ggplot(aes(word, logratio, fill = logratio < 0)) +
+  facet_wrap(~ sentiment, scales = "free", nrow = 2) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "", y = "After March 25th / Before March 25th log ratio") +
+  scale_fill_manual(name = "", labels = c("After March 25th", "Before March 25th"),
+                    values = c("red", "lightblue"))
+```
+
+White House director of social media Dan Scavino Jr. tweeted that Trump had switched his personal device to an iPhone. In the past Trump tweeted from his Andriod device and his staff from an iPhone. It was shown that the Android tweets where angrier and more negative.
+
+Since the switch to an iPhone have the overall iPhone tweets become angrier and more negative?
+
+### The data
+
+It was reported that Trump got his new iPhone on March 25th, so first we'll get the past 600 tweets from the realDonaldTrump using the twitteR package for R.
+
+Next we'll split the data into a period before and after March 25th. This leaves us with 230 and 225 tweets respectively.
+
+### Comparison of words
+
+First lets look at which words are most common from when Trump got an iPhone relative to before, and vice versa. We'll use the measure of log odds ratio, calculated for each word as
+
+$$\log_2(\frac{\frac{\mbox{# words since Trump got an iPhone} + 1}{\mbox{Total words} + 1}} {\frac{\mbox{# words before Trump got an iPhone} + 1}{\mbox{Total words} + 1}})$$
+
+```{r, echo=FALSE}
+ratio
+```
+
+Words like "join", "support", and "address" came only from before Trump got an iPhone and a lot of "emotionally charged"" words, like "win", "wrong", and "failing" came after Trump got an iPhone.
+
+
+### Sentiment of the tweets
+
+To measure the sentiment of the tweets, we want to count the number of words in each category.
+
+```{r, echo=FALSE}
+head(by_source_sentiment_iPhone[,2:4])
+```
+
+We want to measure how much more likely the iPhone account after March 25th is to use an emotionally-charged term relative to before. Since this is count data, we can use a Poisson test (performs an exact test of a simple null hypothesis about the rate parameter) to measure the difference and we can visualize it with a 95% confidence interval.
+
+```{r, echo=FALSE}
+sentiment
+```
+
+Since Trump got an iPhone the Twitter account uses higher then 100% more words related to sadness and anger sentiments than from before.
+
+But which words drove this different in sentiment?
+Let's consider the words with the largest changes within each category:
+
+```{r, echo=FALSE}
+plot
+```
+
+This confirms that lots of words annotated as negative sentiments are more common in the iPhone tweets after Trump got an iPhone then before.

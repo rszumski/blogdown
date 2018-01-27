@@ -10,9 +10,9 @@ Tools: R
 
 Data Source: [THE GLOBAL FLOW OF PEOPLE](http://www.global-migration.info/) The data is the bilateral migration flows between and within regions for five-year periods, 1990 to 2010.
 
-There has been a lot of talk about immigration lately. President Donald Trump expressed frustration with people coming to the US from "shithole countries". So lets take a look at the flow of people. 
+There has been a lot of talk about immigration lately. President Donald Trump expressed frustration with people coming to the US from "shithole countries". So let's take a look at the flow of people. 
 
-First lets look at the countries with a recorded migration volume of more than 500,000 people in the total span of the time periods.
+First let's look at the countries with a recorded migration volume of more than 500,000 people in the total span of the time periods.
  
 ```{r setup, include=FALSE, cache = F}
 library(parsetR)
@@ -41,7 +41,7 @@ frameWidget(parset, height = 400, width = '95%')
 
 We can see that the countries with the highest flow out are Mexico, India, and China, while the countries with the highest flow in are the United States, the United Arab Emirates, and Thailand.  
 
-Now lets look at the total flow of people into the United States to see where people coming to the US from. 
+Now let's look at the total flow of people into the United States to see where people coming to the US from. 
 
 ```{r , echo=FALSE}
 frameWidget(sunburst, height = 400, width = '95%')

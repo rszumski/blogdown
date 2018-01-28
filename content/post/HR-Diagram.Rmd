@@ -1,26 +1,18 @@
 ---
 title: "A Hertzsprung–Russell Diagram"
 author: "Russell Szumski"
-date: 2018-01-23
+date: 2018-01-25
 categories: ["R"]
 tags: ["highcharter", "rvest", "purrr"]
 ---
-
-Tools: R
-
-Data Source: [The HYG database](http://www.astronexus.com/hyg) & [In-The-Sky.org](https://in-the-sky.org/index.php)
-
-I like astronomy and I like like charts. One place those two  intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star's brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram. So knowing that lets make one.
-
-From the HYG database I was able to get a star's: ID in the Henry Draper catalog, distance in parsecs, absolute visual magnitude, and the color index (blue magnitude - visual magnitude). 
-
-I then used the rvest package to scrap the star's Henry Draper catalog ID, the constellation it belongs to, and the name (if available). After joining the data together I took a subset of stars that lie within 50 parsecs, used some math to calculate each stars temperature and radius, plotted the Temperature in Kelvin vs. Absolute Magnitude, added a flag for the Sun, and this is what I got. 
 
 ```{r setup, include=FALSE, cache = F}
 library(dplyr)
 library(highcharter)
 library(widgetframe)
 
+HYG <- read.csv('HR Diagram/HYG.csv')
+df_names <- read.csv('HR Diagram/HD_names.csv')
 df <- read.csv('HR Diagram/HRDiagram.csv')
 
 colors <- c("#FB1108","#FD150B","#FA7806","#FBE426","#FCFB8F",
@@ -29,33 +21,139 @@ colors <- c("#FB1108","#FD150B","#FA7806","#FBE426","#FCFB8F",
 
 df$color <- colorize(df$ColorIndex, rev(colors))
 
-df$temp <- (7923 / (df$ColorIndex + 0.71))
+df$temp <- (8540 / (df$ColorIndex + 0.865))
 
 df$radius <- (((5800/df$temp)^2)*((2.512^(4.85 - df$AbsMag))^0.5))
 
-x <- c("Constellation:", "Star:", "Absolute Magnitude:", "Color Index(B-V):", "Distance(pc):", "R/Rsun:", "Temperature(K):")
+df$lum <- ((df$radius)^2)*((df$temp/5800)^4) 
 
-y <- sprintf("{point.%s:.2f}", c("AbsMag", "ColorIndex", "Distance", "radius", "temp"))
+x <- c("Constellation:", "Star:", "Luminosity(Lsun):", "Color Index(B-V):", "Distance(pc):", "R(Rsun):", "Temperature(K):")
+
+y <- sprintf("{point.%s:.2f}", c("lum", "ColorIndex", "Distance", "radius", "temp"))
 z <- sprintf("{point.%s}", c("constellation", "Star"))
 
 y <- c(z,y)
 
 tltip <- tooltip_table(x, y)
 
-df_flag <- df %>%
-  filter(Star == 'Sol') %>%
-  mutate(title = sprintf("The Sun"))
 
-diagram <- hchart(df, "scatter", hcaes(temp, AbsMag, size = radius, color = color)) %>% 
+diagram <- hchart(df, "scatter", hcaes(temp, lum, size = radius, color = color)) %>% 
   hc_chart(backgroundColor = "black", zoomType = "xy") %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip) %>% 
   hc_xAxis(title = list(text = "Temperature (K)"),
            reversed = TRUE) %>% 
-  hc_yAxis(title = list(text = "Absolute Magnitude"),
+  hc_yAxis(title = list(text = "Luminosity (Solar Units)"),
            type = "logarithmic", gridLineWidth = 0) %>% 
   hc_title(text = "Stars Within 50 Parsecs") %>% 
-  hc_subtitle(text = "In a Hertzsprung-Russell diagram") %>%
-  hc_add_series(df_flag, hcaes(temp, AbsMag),type = "flags")
+  hc_subtitle(text = "In a Hertzsprung-Russell diagram")
+
+```
+
+
+Fact, Hertzsprung–Russell diagrams (HR diagrams) are cool. They are one of the most important tools in the study of the way that stars change with time. Developed independently in the early 1900s by Ejnar Hertzsprung and Henry Norris Russell, it plots each star on a graph measuring the star's brightness against its temperature (color). Depending on its initial mass, every star goes through specific evolutionary stages dictated by its internal structure and how it produces energy. Each of these stages corresponds to a change in the temperature and luminosity of the star, which can be seen to move to different regions on the HR diagram as it evolves. This reveals the true power of the HR diagram – astronomers can know a star’s internal structure and evolutionary stage simply by determining its position in the diagram. Simple put, Hertzsprung-Russell diagram shows a group of stars in various stages of their evolution.
+
+So let's make one.
+
+First up, we need data. 
+
+First we have [The HYG database](http://www.astronexus.com/hyg). A database that contains all stars in Hipparcos, Yale Bright Star, and Gliese catalogs (almost 120,000 stars).
+
+```{r , echo=FALSE}
+head(HYG)
+```
+
+Looking at the fields we are going to take: HD (The star's ID in the Henry Draper catalog), Distance (The star's distance in parsecs), AbsMag (The star's absolute visual magnitude), and the ColorIndex (The star's color index (blue magnitude - visual magnitude)).
+
+With the Henry Draper ID I thought it would be fun to use that and get the star's name. Luckily for me over at [In-The-Sky.org](https://in-the-sky.org/index.php) they have just that information. Unluckily for me is, as it turns out, not a lot of the stars have a 'proper' name, but they do have the constellation the star belongs to. So let's grab the constellation and name (when available) for each star's Henry Draper ID. I used rvest to scrape through the 63 pages in the catalog and grab the Henry Draper ID and constellation
+
+```{r , eval=FALSE}
+library(rvest)
+library(purrr)
+
+url_base <- 'https://in-the-sky.org/data/catalogue.php?cat=HD&const=1&sort=0&view=0&page=%d'
+
+map_df(1:63, function(i) {
+  
+  # progress indicator
+  cat(".")
+  
+  pg <- read_html(sprintf(url_base, i))
+  
+  data.frame(HD = gsub('[[:space:]]|\n|HD','', html_text(html_nodes(pg, 'b a'))),
+             constellation=gsub('[[:space:]]|\n','',html_text(html_nodes(pg, '.item p+ p a'))),
+             stringsAsFactors=FALSE)
+  
+}) -> hd_df
+```
+
+The star's name was not so easy (I'm sure there was an easier way to do this). From the .item element on the I was able to pull one field that was a combination of the ID, constellation, the word star, and the name if given. Such as "123 Cassiopeia Star V640 Cas".
+
+```{r , eval=FALSE}
+url_base <- 'https://in-the-sky.org/data/catalogue.php?cat=HD&const=1&sort=0&view=0&page=%d'
+
+map_df(1:63, function(i) {
+  
+  # progress indicator
+  cat(".")
+  
+  pg <- read_html(sprintf(url_base, i))
+  
+  data.frame(Y = gsub('\n|HD','', html_text(html_nodes(pg, '.item'))),
+             stringsAsFactors=FALSE)
+  
+}) -> star
+```
+
+After some gsubin', separating, and renaming I was left with this 
+
+```{r , echo=FALSE}
+head(df_names)
+```
+
+And finally using dplyr::left_join, We are left with
+
+```{r , echo=FALSE}
+head(df[,1:6])
+```
+
+Now that I have everything I need it's time for some math. First I used the ColorIndex to calculate the star's [temperature](http://www.astro.sunysb.edu/fwalter/AST443/b-v_temp.html), second I used the newly found temperature and the star's absolute magnitude to calculate the [radius](http://skyserver.sdss.org/dr1/en/proj/advanced/hr/radius1.asp), and third the radius and temperature to calculate the [luminosity](http://www.astronomy.ohio-state.edu/~pogge/Ast162/Unit1/hrdiag.html).
+
+```{r , eval=FALSE}
+df$temp <- (8540 / (df$ColorIndex + 0.865))
+
+df$radius <- (((5800/df$temp)^2)*((2.512^(4.85 - df$AbsMag))^0.5))
+
+df$lum <- ((df$radius)^2)*((df$temp/5800)^4) 
+```
+
+
+Final I set some colors that ranged from red to light blue, used colorize to create a vector of color for each star, set up a tooltip, and put it all together to make the diagram
+
+```{r , eval=FALSE}
+colors <- c("#FB1108","#FD150B","#FA7806","#FBE426","#FCFB8F",
+            "#F3F5E7", "#C7E4EA","#ABD6E6","#9AD2E1")
+
+df$color <- colorize(df$ColorIndex, rev(colors))
+
+x <- c("Constellation:", "Star:", "Luminosity(Lsun):", "Color Index(B-V):", "Distance(pc):", "R(Rsun):", "Temperature(K):")
+
+y <- sprintf("{point.%s:.2f}", c("lum", "ColorIndex", "Distance", "radius", "temp"))
+z <- sprintf("{point.%s}", c("constellation", "Star"))
+
+y <- c(z,y)
+
+tltip <- tooltip_table(x, y)
+
+
+diagram <- hchart(df, "scatter", hcaes(temp, lum, size = radius, color = color)) %>% 
+  hc_chart(backgroundColor = "black", zoomType = "xy") %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip) %>% 
+  hc_xAxis(title = list(text = "Temperature (K)"),
+           reversed = TRUE) %>% 
+  hc_yAxis(title = list(text = "Luminosity (Solar Units)"),
+           type = "logarithmic", gridLineWidth = 0) %>% 
+  hc_title(text = "Stars Within 50 Parsecs") %>% 
+  hc_subtitle(text = "In a Hertzsprung-Russell diagram")
 ```
 
 
@@ -63,4 +161,11 @@ diagram <- hchart(df, "scatter", hcaes(temp, AbsMag, size = radius, color = colo
 frameWidget(diagram, height = 400, width = '95%')
 ```
 
-You can zoom in on an area by clicking and dragging a box over the area of interest and if you want a bigger view click [here](https://rpubs.com/rszumski/352948)
+You can zoom in on an area by clicking and dragging a box over the area of interest. If you want a bigger view click [here](http://rpubs.com/rszumski/353413)
+
+We can now use the diagram to see groups of stars in various stages of their evolution. Looking at the diagram the most prominent is the diagonal, going from the upper-left (hot and bright) to the lower-right (cooler and less bright), called the main sequence. Above the main sequence are the subgiants, giants and supergiants. See, cool!
+
+Tools: R
+
+Data Source: [The HYG database](http://www.astronexus.com/hyg) & [In-The-Sky.org](https://in-the-sky.org/index.php)
+

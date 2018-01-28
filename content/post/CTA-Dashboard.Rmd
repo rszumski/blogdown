@@ -1,7 +1,7 @@
 ---
 title: "CTA Ridership"
 author: "Russell Szumski"
-date: 2018-01-25
+date: 2018-01-23
 categories: ["R"]
 tags: ["flexdashboard", "highcharter", "forecast", "treemap", "leaflet"]
 ---

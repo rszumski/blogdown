@@ -8,15 +8,9 @@
   <title>A Hertzsprung–Russell Diagram</title>
   <meta property="og:title" content="A Hertzsprung–Russell Diagram" />
   <meta name="twitter:title" content="A Hertzsprung–Russell Diagram" />
-  <meta name="description" content="Tools: R
-Data Source: The HYG database &amp; In-The-Sky.org
-I like astronomy and I like like charts. One place those two intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star’s brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram.">
-  <meta property="og:description" content="Tools: R
-Data Source: The HYG database &amp; In-The-Sky.org
-I like astronomy and I like like charts. One place those two intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star’s brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram.">
-  <meta name="twitter:description" content="Tools: R
-Data Source: The HYG database &amp; In-The-Sky.org
-I like astronomy and I like like charts. One place those two intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots …">
+  <meta name="description" content="Fact, Hertzsprung–Russell diagrams (HR diagrams) are cool. They are one of the most important tools in the study of the way that stars change with time. Developed independently in the early 1900s by Ejnar Hertzsprung and Henry Norris Russell, it plots each star on a graph measuring the star’s brightness against its temperature (color). Depending on its initial mass, every star goes through specific evolutionary stages dictated by its internal structure and how it produces energy.">
+  <meta property="og:description" content="Fact, Hertzsprung–Russell diagrams (HR diagrams) are cool. They are one of the most important tools in the study of the way that stars change with time. Developed independently in the early 1900s by Ejnar Hertzsprung and Henry Norris Russell, it plots each star on a graph measuring the star’s brightness against its temperature (color). Depending on its initial mass, every star goes through specific evolutionary stages dictated by its internal structure and how it produces energy.">
+  <meta name="twitter:description" content="Fact, Hertzsprung–Russell diagrams (HR diagrams) are cool. They are one of the most important tools in the study of the way that stars change with time. Developed independently in the early 1900s by …">
   <meta name="author" content="Russell Szumski"/>
   <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="/img/avatar-icon.png" />
@@ -166,11 +160,11 @@ I like astronomy and I like like charts. One place those two intersect is The He
                   <span class="post-meta">
   
   
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on January 23, 2018
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on January 25, 2018
   
   
   &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 2 minutes (229 words)
+  <i class="fa fa-clock-o"></i> 5 minutes (1026 words)
   
   
 </span>
@@ -195,14 +189,124 @@ I like astronomy and I like like charts. One place those two intersect is The He
 <script src="/rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
 
 
+<p>Fact, Hertzsprung–Russell diagrams (HR diagrams) are cool. They are one of the most important tools in the study of the way that stars change with time. Developed independently in the early 1900s by Ejnar Hertzsprung and Henry Norris Russell, it plots each star on a graph measuring the star’s brightness against its temperature (color). Depending on its initial mass, every star goes through specific evolutionary stages dictated by its internal structure and how it produces energy. Each of these stages corresponds to a change in the temperature and luminosity of the star, which can be seen to move to different regions on the HR diagram as it evolves. This reveals the true power of the HR diagram – astronomers can know a star’s internal structure and evolutionary stage simply by determining its position in the diagram. Simple put, Hertzsprung-Russell diagram shows a group of stars in various stages of their evolution.</p>
+<p>So let’s make one.</p>
+<p>First up, we need data.</p>
+<p>First we have <a href="http://www.astronexus.com/hyg">The HYG database</a>. A database that contains all stars in Hipparcos, Yale Bright Star, and Gliese catalogs (almost 120,000 stars).</p>
+<pre><code>##   StarID HIP     HD HR Gliese BayerFlamsteed ProperName         RA
+## 1      0  NA     NA NA     NA             NA        Sol 0.00000000
+## 2      1   1 224700 NA     NA             NA            0.00006079
+## 3      2   2 224690 NA     NA             NA            0.00025315
+## 4      3   3 224699 NA     NA             NA            0.00033386
+## 5      4   4 224707 NA     NA             NA            0.00055878
+## 6      5   5 224705 NA     NA             NA            0.00066435
+##          Dec     Distance   PMRA PMDec RV    Mag     AbsMag Spectrum
+## 1   0.000000 4.848000e-06   0.00  0.00  0 -26.73  4.8500000      G2V
+## 2   1.089013 2.824859e+02  -5.20 -1.88 NA   9.10  1.8450163       F5
+## 3 -19.498837 4.566210e+01 181.21 -0.93 NA   9.27  5.9722206      K3V
+## 4  38.859286 3.558719e+02   5.24 -2.91 NA   6.61 -1.1464684       B9
+## 5 -51.893546 1.290323e+02  62.85  0.16 NA   8.06  2.5065085      F0V
+## 6 -40.591224 3.484321e+02   2.53  9.07 NA   8.55  0.8394095    G8III
+##   ColorIndex         X       Y          Z         VX          VY
+## 1      0.656   0.00000 0.00000    0.00000  0.000e+00  0.0000e+00
+## 2      0.482 282.43485 0.00449    5.36884  4.900e-08 -7.1200e-06
+## 3      0.999  43.04329 0.00285  -15.24144 -7.100e-08  4.0112e-05
+## 4     -0.019 277.11358 0.02422  223.27753  3.148e-06  9.0400e-06
+## 5      0.370  79.62896 0.01164 -101.53103  7.200e-08  3.9313e-05
+## 6      0.902 264.58918 0.04601 -226.71007  9.967e-06  4.2750e-06
+##            VZ
+## 1  0.0000e+00
+## 2 -2.5740e-06
+## 3 -1.9400e-07
+## 4 -3.9090e-06
+## 5  6.1000e-08
+## 6  1.1633e-05</code></pre>
+<p>Looking at the fields we are going to take: HD (The star’s ID in the Henry Draper catalog), Distance (The star’s distance in parsecs), AbsMag (The star’s absolute visual magnitude), and the ColorIndex (The star’s color index (blue magnitude - visual magnitude)).</p>
+<p>With the Henry Draper ID I thought it would be fun to use that and get the star’s name. Luckily for me over at <a href="https://in-the-sky.org/index.php">In-The-Sky.org</a> they have just that information. Unluckily for me is, as it turns out, not a lot of the stars have a ‘proper’ name, but they do have the constellation the star belongs to. So let’s grab the constellation and name (when available) for each star’s Henry Draper ID. I used rvest to scrape through the 63 pages in the catalog and grab the Henry Draper ID and constellation</p>
+<pre class="r"><code>library(rvest)
+library(purrr)
+
+url_base &lt;- &#39;https://in-the-sky.org/data/catalogue.php?cat=HD&amp;const=1&amp;sort=0&amp;view=0&amp;page=%d&#39;
+
+map_df(1:63, function(i) {
+  
+  # progress indicator
+  cat(&quot;.&quot;)
+  
+  pg &lt;- read_html(sprintf(url_base, i))
+  
+  data.frame(HD = gsub(&#39;[[:space:]]|\n|HD&#39;,&#39;&#39;, html_text(html_nodes(pg, &#39;b a&#39;))),
+             constellation=gsub(&#39;[[:space:]]|\n&#39;,&#39;&#39;,html_text(html_nodes(pg, &#39;.item p+ p a&#39;))),
+             stringsAsFactors=FALSE)
+  
+}) -&gt; hd_df</code></pre>
+<p>The star’s name was not so easy (I’m sure there was an easier way to do this). From the .item element on the I was able to pull one field that was a combination of the ID, constellation, the word star, and the name if given. Such as “123 Cassiopeia Star V640 Cas”.</p>
+<pre class="r"><code>url_base &lt;- &#39;https://in-the-sky.org/data/catalogue.php?cat=HD&amp;const=1&amp;sort=0&amp;view=0&amp;page=%d&#39;
+
+map_df(1:63, function(i) {
+  
+  # progress indicator
+  cat(&quot;.&quot;)
+  
+  pg &lt;- read_html(sprintf(url_base, i))
+  
+  data.frame(Y = gsub(&#39;\n|HD&#39;,&#39;&#39;, html_text(html_nodes(pg, &#39;.item&#39;))),
+             stringsAsFactors=FALSE)
+  
+}) -&gt; star</code></pre>
+<p>After some gsubin’, separating, and renaming I was left with this</p>
+<pre><code>##    HD     Star
+## 1  28         
+## 2  87         
+## 3 123 V640 Cas
+## 4 142         
+## 5 144         
+## 6 315</code></pre>
+<p>And finally using dplyr::left_join, We are left with</p>
+<pre><code>##    HD constellation      Star ColorIndex     Distance     AbsMag
+## 1  NA                     Sol      0.656  0.000004848  4.8500000
+## 2  28        Pisces                1.029 39.401103231  1.6324581
+## 3 123    Cassiopeia  V640 Cas      0.687 20.283975659  4.4442346
+## 4 142       Phoenix                0.519 25.641025641  3.6553230
+## 5 358     Andromeda Alpheratz     -0.038 29.761904762 -0.2983036
+## 6 432    Cassiopeia      Caph      0.380 16.697278344  1.1667716</code></pre>
+<p>Now that I have everything I need it’s time for some math. First I used the ColorIndex to calculate the star’s <a href="http://www.astro.sunysb.edu/fwalter/AST443/b-v_temp.html">temperature</a>, second I used the newly found temperature and the star’s absolute magnitude to calculate the <a href="http://skyserver.sdss.org/dr1/en/proj/advanced/hr/radius1.asp">radius</a>, and third the radius and temperature to calculate the <a href="http://www.astronomy.ohio-state.edu/~pogge/Ast162/Unit1/hrdiag.html">luminosity</a>.</p>
+<pre class="r"><code>df$temp &lt;- (8540 / (df$ColorIndex + 0.865))
+
+df$radius &lt;- (((5800/df$temp)^2)*((2.512^(4.85 - df$AbsMag))^0.5))
+
+df$lum &lt;- ((df$radius)^2)*((df$temp/5800)^4) </code></pre>
+<p>Final I set some colors that ranged from red to light blue, used colorize to create a vector of color for each star, set up a tooltip, and put it all together to make the diagram</p>
+<pre class="r"><code>colors &lt;- c(&quot;#FB1108&quot;,&quot;#FD150B&quot;,&quot;#FA7806&quot;,&quot;#FBE426&quot;,&quot;#FCFB8F&quot;,
+            &quot;#F3F5E7&quot;, &quot;#C7E4EA&quot;,&quot;#ABD6E6&quot;,&quot;#9AD2E1&quot;)
+
+df$color &lt;- colorize(df$ColorIndex, rev(colors))
+
+x &lt;- c(&quot;Constellation:&quot;, &quot;Star:&quot;, &quot;Luminosity(Lsun):&quot;, &quot;Color Index(B-V):&quot;, &quot;Distance(pc):&quot;, &quot;R(Rsun):&quot;, &quot;Temperature(K):&quot;)
+
+y &lt;- sprintf(&quot;{point.%s:.2f}&quot;, c(&quot;lum&quot;, &quot;ColorIndex&quot;, &quot;Distance&quot;, &quot;radius&quot;, &quot;temp&quot;))
+z &lt;- sprintf(&quot;{point.%s}&quot;, c(&quot;constellation&quot;, &quot;Star&quot;))
+
+y &lt;- c(z,y)
+
+tltip &lt;- tooltip_table(x, y)
+
+
+diagram &lt;- hchart(df, &quot;scatter&quot;, hcaes(temp, lum, size = radius, color = color)) %&gt;% 
+  hc_chart(backgroundColor = &quot;black&quot;, zoomType = &quot;xy&quot;) %&gt;%
+  hc_tooltip(useHTML = TRUE, headerFormat = &quot;&quot;, pointFormat = tltip) %&gt;% 
+  hc_xAxis(title = list(text = &quot;Temperature (K)&quot;),
+           reversed = TRUE) %&gt;% 
+  hc_yAxis(title = list(text = &quot;Luminosity (Solar Units)&quot;),
+           type = &quot;logarithmic&quot;, gridLineWidth = 0) %&gt;% 
+  hc_title(text = &quot;Stars Within 50 Parsecs&quot;) %&gt;% 
+  hc_subtitle(text = &quot;In a Hertzsprung-Russell diagram&quot;)</code></pre>
+<div id="htmlwidget-1" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/HR-Diagram_files/figure-html//widgets/widget_unnamed-chunk-8.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>You can zoom in on an area by clicking and dragging a box over the area of interest. If you want a bigger view click <a href="http://rpubs.com/rszumski/353413">here</a></p>
+<p>We can now use the diagram to see groups of stars in various stages of their evolution. Looking at the diagram the most prominent is the diagonal, going from the upper-left (hot and bright) to the lower-right (cooler and less bright), called the main sequence. Above the main sequence are the subgiants, giants and supergiants. See, cool!</p>
 <p>Tools: R</p>
 <p>Data Source: <a href="http://www.astronexus.com/hyg">The HYG database</a> &amp; <a href="https://in-the-sky.org/index.php">In-The-Sky.org</a></p>
-<p>I like astronomy and I like like charts. One place those two intersect is The Hertzsprung–Russell diagram (HRD). Simply put, a HRD plots each star on a graph measuring the star’s brightness against its temperature (color). There are several forms of the Hertzsprung–Russell diagram, and the nomenclature is not very well defined. All forms share the same general layout: stars of greater luminosity are toward the top of the diagram, and stars with higher surface temperature are toward the left side of the diagram. So knowing that lets make one.</p>
-<p>From the HYG database I was able to get a star’s: ID in the Henry Draper catalog, distance in parsecs, absolute visual magnitude, and the color index (blue magnitude - visual magnitude).</p>
-<p>I then used the rvest package to scrap the star’s Henry Draper catalog ID, the constellation it belongs to, and the name (if available). After joining the data together I took a subset of stars that lie within 50 parsecs, used some math to calculate each stars temperature and radius, plotted the Temperature in Kelvin vs. Absolute Magnitude, added a flag for the Sun, and this is what I got.</p>
-<div id="htmlwidget-1" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/HR-Diagram_files/figure-html//widgets/widget_unnamed-chunk-1.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
-<p>You can zoom in on an area by clicking and dragging a box over the area of interest and if you want a bigger view click <a href="https://rpubs.com/rszumski/352948">here</a></p>
 
       </article>
 
@@ -210,13 +314,9 @@ I like astronomy and I like like charts. One place those two intersect is The He
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="/post/ufo-sightings-around-the-world/" data-toggle="tooltip" data-placement="top" title=" I Want to Believe">&larr; Previous Post</a>
+              <a href="/post/cta-dashboard/" data-toggle="tooltip" data-placement="top" title="CTA Ridership">&larr; Previous Post</a>
             </li>
           
-          
-            <li class="next">
-              <a href="/post/cta-dashboard/" data-toggle="tooltip" data-placement="top" title="CTA Ridership">Next Post &rarr;</a>
-            </li>
           
         </ul>
       

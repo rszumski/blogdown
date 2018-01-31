@@ -6,11 +6,7 @@ categories: ["R"]
 tags: ["tidytext", "network3D"]
 ---
 
-Tools: R
-
-Data Source: [2682 Instant Ramen Noodle Ratings](https://www.theramenrater.com/resources-2/the-list/)
-
-Created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Also because why not, who hasn't enjoyed some instant ramen before.
+A dataset of 2682 Instant Noodle Ratings was poseted on the [datasets](https://www.reddit.com/r/datasets/) subreddit. So I created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Why? Why not, who hasn't enjoyed some instant ramen before.
 
 Used [tidytext](https://github.com/juliasilge/tidytext) for the calculations and [networkD3](https://github.com/christophergandrud/networkD3) for the visualization.
 
@@ -79,3 +75,7 @@ forceNetwork(Links = bigram_D3$links, Nodes = bigram_D3$nodes,
 ```
 
 We can see the common "blueprint"" of words in instant ramen names are focused around 'noodle', 'noodles', 'instant', 'flavor', and 'chicken'.
+
+Tools: R
+
+Data Source: [2682 Instant Ramen Noodle Ratings](https://www.theramenrater.com/resources-2/the-list/)

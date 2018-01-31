@@ -6,9 +6,6 @@ categories: ["R"]
 tags: ["spotifyr", "ggplot2", "ggiraph"]
 ---
 
-Tools: R
-
-Data Source: Spotify
 
 [Gregory Alan Isakov](https://gregoryalanisakov.com/) has been one of my favorite singer-songwriters for a while, and I've gotten used to people suggesting that I play something 'less depressing'. Most singer-songwriter's music is indeed sad, but his music can't be that sad. Can it?
 
@@ -21,7 +18,7 @@ Energy: a measure from 0.0 to 1.0 and represents a perceptual measure of intensi
 Plotting valence vs. energy we can get an idea of the emotion of a song. 
 
 
-```{r setup, include=FALSE, cache = TRUE}
+```{r setup, include=FALSE}
 library(tidyverse)
 library(ggplot2)
 library(ggiraph)
@@ -59,12 +56,18 @@ plot <- ggplot(spotify_df, aes(valence, energy, color = album_name, tooltip = to
        y = "Energy",
        title = " ",
        subtitle = "")
+
+p <- ggiraph(code = {print(plot)},tooltip_offx = 20, tooltip_offy = -10)
 ```
 
 
 
 ```{r , echo=FALSE}
-ggiraph(code = {print(plot)},tooltip_offx = 20, tooltip_offy = -10)
+p
 ```
 
 Turns out yes. Of all five albums, and 55 songs,  Greg only has three songs that fall out of the sad/depressing area, with nothing landing in the happy/joyful area. 
+
+Tools: R
+
+Data Source: Spotify

@@ -9,14 +9,11 @@
   <meta property="og:title" content="CTA Ridership" />
   <meta name="twitter:title" content="CTA Ridership" />
   <meta name="description" content="Tools: R
-Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.
-I came across the flexdashboard package while I was looking at different ways to create dashboards. So I thought it would be fun make a dashboard with data from the CTA - Ridership - ‘L’ Station Entries dataset. The dashboard will consist of two columns.">
+Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.">
   <meta property="og:description" content="Tools: R
-Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.
-I came across the flexdashboard package while I was looking at different ways to create dashboards. So I thought it would be fun make a dashboard with data from the CTA - Ridership - ‘L’ Station Entries dataset. The dashboard will consist of two columns.">
+Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.">
   <meta name="twitter:description" content="Tools: R
-Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.
-I came …">
+Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.">
   <meta name="author" content="Russell Szumski"/>
   <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="/img/avatar-icon.png" />
@@ -170,7 +167,7 @@ I came …">
   
   
   &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 2 minutes (258 words)
+  <i class="fa fa-clock-o"></i> 1 minutes (29 words)
   
   
 </span>
@@ -190,55 +187,9 @@ I came …">
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="/rmarkdown-libs/pymjs/pym.v1.js"></script>
-<script src="/rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
-
-
-<p>Tools: R</p>
+        <p>Tools: R</p>
 <p>Data Source: <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Monthly-Day-Type-A/t2rn-p8d7">Chicago Data Portal</a> The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.</p>
-<p>I came across the <a href="http://rmarkdown.rstudio.com/flexdashboard/">flexdashboard</a> package while I was looking at different ways to create dashboards. So I thought it would be fun make a dashboard with data from the CTA - Ridership - ‘L’ Station Entries dataset. The dashboard will consist of two columns. The first column will have two rows with a time series in the top row and a map in the bottom row. In the second column the user will have the option to select between viewing a treemap or a bar chart.</p>
-<p>This a static website so I can’t include the actual dashboard, but here is a <a href="https://rpubs.com/rszumski/352541">link</a> and below is what I did to make each plot after a little data prep.</p>
-<p>Time series:</p>
-<pre class="r"><code>df &lt;- df %&gt;%
-  group_by(date) %&gt;%
-  summarise(Count = sum(rides))
-
-df_ts &lt;- ts(df$Count, start=c(2001, 1), end=c(2017, 11), frequency=12) 
-
-df_ts %&gt;%
-  forecast(level = 90) %&gt;%
-  hchart()</code></pre>
-<div id="htmlwidget-1" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/CTA-Dashboard_files/figure-html//widgets/widget_unnamed-chunk-2.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
-<p>Map:</p>
-<pre class="r"><code>df_map$Count = format(df_map$Count,big.mark=&quot;,&quot;,scientific=FALSE)
-
-content &lt;- paste(as.character(df_map$Station),
-                 &quot;Rides:&quot;,df_map$Count)
-
-shapeData &lt;- shapefile(&quot;ShapeFiles/CTA_RailLines.shp&quot;)
-shapeData &lt;- spTransform(shapeData, CRS(&quot;+proj=longlat&quot;))
-
-leaf_map = leaflet(df_map) %&gt;% addTiles() %&gt;%
-  addPolylines(data = shapeData, color = &quot;black&quot;,fill = NULL) %&gt;%
-  addMarkers(clusterOptions = markerClusterOptions(),~long, ~lat, label = content,
-             labelOptions = labelOptions(noHide = F,direction = &#39;top&#39;))</code></pre>
-<div id="htmlwidget-2" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2">{"x":{"url":"/post/CTA-Dashboard_files/figure-html//widgets/widget_unnamed-chunk-4.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
-<p>Treemap:</p>
-<pre class="r"><code>hctreemap(treemap(df_tree, index = c(&quot;Line&quot;, &quot;stationname&quot;),
-                  vSize = &quot;Count&quot;, vColor = &quot;lines&quot;,
-                  type = &quot;value&quot;, palette = &quot;RdYlBu&quot;))</code></pre>
-<div id="htmlwidget-3" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3">{"x":{"url":"/post/CTA-Dashboard_files/figure-html//widgets/widget_unnamed-chunk-6.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
-<p>Bar chart:</p>
-<pre class="r"><code>highchart() %&gt;%
-  hc_xAxis(categories = df_bar$Line) %&gt;% 
-  hc_add_series(df_bar$Count, name = &quot;Rides&quot;, showInLegend = FALSE) %&gt;%
-  hc_chart(type = &quot;bar&quot;)</code></pre>
-<div id="htmlwidget-4" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4">{"x":{"url":"/post/CTA-Dashboard_files/figure-html//widgets/widget_unnamed-chunk-8.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<iframe align = "center" src="https://rpubs.com/rszumski/352541" width="900" height="780" style="border: none;/>
 
       </article>
 

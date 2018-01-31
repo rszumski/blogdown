@@ -8,17 +8,13 @@
   <title>Infinite Monkey vs. R</title>
   <meta property="og:title" content="Infinite Monkey vs. R" />
   <meta name="twitter:title" content="Infinite Monkey vs. R" />
-  <meta name="description" content="Tools: R
-Data Source: Trump Twitter Archive
-The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.
-Can we do it by sticking commonly used words together in Donald Trumps tweets?">
-  <meta property="og:description" content="Tools: R
-Data Source: Trump Twitter Archive
-The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.
-Can we do it by sticking commonly used words together in Donald Trumps tweets?">
-  <meta name="twitter:description" content="Tools: R
-Data Source: Trump Twitter Archive
-The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something …">
+  <meta name="description" content="The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking commonly related words together? Maybe.
+Can we do it by sticking commonly used words together in Donald Trumps tweets?
+A lot of his tweets already sound nonsensical to begin with, so let,s give it a try.">
+  <meta property="og:description" content="The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking commonly related words together? Maybe.
+Can we do it by sticking commonly used words together in Donald Trumps tweets?
+A lot of his tweets already sound nonsensical to begin with, so let,s give it a try.">
+  <meta name="twitter:description" content="The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an …">
   <meta name="author" content="Russell Szumski"/>
   <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="/img/avatar-icon.png" />
@@ -172,7 +168,7 @@ The infinite monkey theorem states that a monkey hitting keys at random on a typ
   
   
   &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 3 minutes (432 words)
+  <i class="fa fa-clock-o"></i> 3 minutes (429 words)
   
   
 </span>
@@ -192,11 +188,9 @@ The infinite monkey theorem states that a monkey hitting keys at random on a typ
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>Tools: R</p>
-<p>Data Source: <a href="http://www.trumptwitterarchive.com/">Trump Twitter Archive</a></p>
-<p>The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking words, that often are used together, together? Maybe.</p>
+        <p>The infinite monkey theorem states that a monkey hitting keys at random on a typewriter for an infinite amount of time will almost surely type something that makes sense. I don’t have a monkey or an infinite amount of time, but can I make somewhat understandable sentences by sticking commonly related words together? Maybe.</p>
 <p>Can we do it by sticking commonly used words together in Donald Trumps tweets?</p>
-<p>A lot of his tweets already sound nonsensical to begin with, so lets give it a go.</p>
+<p>A lot of his tweets already sound nonsensical to begin with, so let,s give it a try.</p>
 <p>How? We can take his tweets, generate some tri-grams, write a simple function that, when given two words, tries to find a third word, takes the final two words, tries to find another word, and repeats until we have a sentence.</p>
 <p>After getting the tweets form the Trump Twitter Archive, I just put it in a data frame called df. Then, using the tidytext package, I created tri-grams.</p>
 <pre class="r"><code>trigrams &lt;- df %&gt;%
@@ -236,6 +230,8 @@ The infinite monkey theorem states that a monkey hitting keys at random on a typ
 <p>“fake news china story saying mr.xi has not ported properly on crooked’s fbi release they are presidents”</p>
 <p>Maybe 15 words isn’t enough to finish the thought, but there we go. We can create something that makes nonsensical sentences. It might not be as good if we had monkeys and infinite time, but it kinda works.</p>
 <p>*Disclaimer: This is a simple function and often fails, but if we keep at it, it often works.</p>
+<p>Tools: R</p>
+<p>Data Source: <a href="http://www.trumptwitterarchive.com/">Trump Twitter Archive</a></p>
 
       </article>
 

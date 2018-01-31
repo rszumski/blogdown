@@ -3,7 +3,7 @@ title: "The Flow of People"
 author: "Russell Szumski"
 date: 2018-01-15
 categories: ["R"]
-tags: ["parestR", "sunburstR"]
+tags: ["sunburstR"]
 ---
 
 <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
@@ -11,14 +11,78 @@ tags: ["parestR", "sunburstR"]
 <script src="/rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
 
 
+<p>There has been a lot of talk about immigration lately. President Trump balked at an immigration deal that would include protections for people from Haiti and nations in Africa, demanding to know at a White House meeting why he should accept immigrants from “shithole countries” rather than from places like Norway, according to people with direct knowledge of the conversation.</p>
+<p>What percent of people that come to the US come from “shithole countries”? What percent actual come from Norway? Of the people that migrate to the US, what countries are most people coming from?</p>
+<p>Lets answers these questions by looking at the data. <a href="http://www.global-migration.info/">THE GLOBAL FLOW OF PEOPLE</a> is a dataset that contains the bilateral migration flows between and within regions for five-year periods, 1990 to 2010.</p>
+<pre><code>## Observations: 38,416
+## Variables: 16
+## $ region_orig      &lt;fctr&gt; North America, North America, North America,...
+## $ region_orig_id   &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+## $ region_dest      &lt;fctr&gt; North America, North America, North America,...
+## $ region_dest_id   &lt;int&gt; 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, ...
+## $ country_orig     &lt;fctr&gt; Canada, Canada, United States, United States...
+## $ country_orig_id  &lt;fctr&gt; CAN, CAN, USA, USA, CAN, CAN, CAN, CAN, CAN,...
+## $ country_dest     &lt;fctr&gt; Canada, United States, Canada, United States...
+## $ country_dest_id  &lt;fctr&gt; CAN, USA, CAN, USA, AGO, BDI, BEN, BFA, BWA,...
+## $ regionflow_1990  &lt;int&gt; 57617, 57617, 57617, 57617, 103553, 103553, 1...
+## $ regionflow_1995  &lt;int&gt; 191071, 191071, 191071, 191071, 15550, 15550,...
+## $ regionflow_2000  &lt;int&gt; 84668, 84668, 84668, 84668, 35446, 35446, 354...
+## $ regionflow_2005  &lt;int&gt; 96102, 96102, 96102, 96102, 63080, 63080, 630...
+## $ countryflow_1990 &lt;int&gt; 0, 1509, 56108, 0, 1831, 0, 21, 669, 225, 73,...
+## $ countryflow_1995 &lt;int&gt; 0, 190436, 635, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0,...
+## $ countryflow_2000 &lt;int&gt; 0, 238, 84430, 0, 68, 0, 0, 0, 34, 4, 0, 0, 0...
+## $ countryflow_2005 &lt;int&gt; 0, 28, 96074, 0, 20, 2121, 0, 0, 30, 11, 0, 0...</code></pre>
+<p>To go this let’s: - calculate the total flow of people over the entire period - select the United States as the country destination - select the fields I’ll need</p>
+<pre class="r"><code>df &lt;- df %&gt;%
+  mutate(flow = rowSums(.[15:16])) %&gt;%
+  filter(country_dest == &#39;United States&#39;) %&gt;%
+  mutate_if(is.factor, as.character) %&gt;%
+  select(country_dest, region_orig ,country_orig, flow)</code></pre>
+<p>I’ll be using the sunburstR package to make a plot to the data. I order the do that we need to set up the data in a sunburst-able sequence. We’ll have four different levels, so I’ll need four different sequences.</p>
+<ol style="list-style-type: decimal">
+<li>United States -&gt; “shithole” countries -&gt; Haiti</li>
+<li>United States -&gt; “shithole” countries -&gt; Africa</li>
+<li>United States -&gt; Not “shithole” countries -&gt; Africa -&gt; African countries</li>
+<li>United States -&gt; Not “shithole” countries -&gt; those countries</li>
+</ol>
+<pre class="r"><code>shithole &lt;- df %&gt;%
+  filter(region_orig == &#39;Africa&#39; | country_orig == &#39;Haiti&#39;) %&gt;%
+  mutate(x = rep(&#39;&quot;shithole&quot; countries&#39;,nrow(.))) %&gt;%
+  unite(event, country_dest, x, sep = &#39;-&#39;) %&gt;%
+  rename(count = flow)
+
+
+shithole_Africa &lt;- shithole %&gt;%
+  filter(region_orig == &#39;Africa&#39;) %&gt;%
+  unite(event, event, region_orig, country_orig, sep = &#39;-&#39;) %&gt;%
+  rename(count = count) %&gt;%
+  mutate(depth = rep(4,nrow(.))) 
+
+shithole_Haiti &lt;- shithole %&gt;%
+  filter(country_orig == &#39;Haiti&#39;) %&gt;%
+  unite(event, event, country_orig, sep = &#39;-&#39;) %&gt;%
+  rename(count = count) %&gt;%
+  mutate(depth = rep(3,nrow(.))) %&gt;%
+  .[,-2]
+
+
+NonShithole &lt;- df %&gt;%
+  filter(region_orig != &#39;Africa&#39; &amp; country_orig != &#39;Haiti&#39;) %&gt;%
+  mutate(x = rep(&#39;Not &quot;shithole&quot; countries&#39;,nrow(.))) %&gt;%
+  unite(event, country_dest, x, country_orig,sep = &#39;-&#39;) %&gt;%
+  rename(count = flow) %&gt;%
+  mutate(depth = rep(3,nrow(.))) %&gt;%
+  .[,-2]</code></pre>
+<p>Combine the sequence data frames together, and plot</p>
+<pre class="r"><code>df_sunburst &lt;- rbind(NonShithole, shithole_Africa, shithole_Haiti)
+
+df_sunburst %&gt;%
+  arrange(desc(depth), desc(count), event) %&gt;%
+  sunburst()</code></pre>
+<div id="htmlwidget-1" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/Migration_files/figure-html//widgets/widget_unnamed-chunk-5.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>Questions: What percent of people that come to the US come from “shithole countries”? What percent come from places like Norway? Of the people that migrate to the US, what countries are most people coming from?</p>
+<p>Answers: From 1990 to 2010, of the total flow of people into the United States, just over 7% come from “shithole countries”. The amount of people from Norway was so insignificant it extreme hard to see on the graph (it’s 0.0004%) and the large majority for people are coming from Mexico, making up 31%, followed by China and India with around 9% each.</p>
 <p>Tools: R</p>
 <p>Data Source: <a href="http://www.global-migration.info/">THE GLOBAL FLOW OF PEOPLE</a> The data is the bilateral migration flows between and within regions for five-year periods, 1990 to 2010.</p>
-<p>There has been a lot of talk about immigration lately. President Donald Trump expressed frustration with people coming to the US from “shithole countries”. So let’s take a look at the flow of people.</p>
-<p>First let’s look at the countries with a recorded migration volume of more than 500,000 people in the total span of the time periods.</p>
-<div id="htmlwidget-1" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/Migration_files/figure-html//widgets/widget_unnamed-chunk-1.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
-<p>We can see that the countries with the highest flow out are Mexico, India, and China, while the countries with the highest flow in are the United States, the United Arab Emirates, and Thailand.</p>
-<p>Now let’s look at the total flow of people into the United States to see where people coming to the US from.</p>
-<div id="htmlwidget-2" style="width:95%;height:400px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2">{"x":{"url":"/post/Migration_files/figure-html//widgets/widget_unnamed-chunk-2.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
-<p>We can see that about 27% of the people coming to the US are from what President Donald Trump would consider “shithole countries”, with El Salvador having the largest amount, while countries that President Donald Trump wants more of, like Norway, account for less the 0.3%.</p>
+<p>Large view: <a href="http://rpubs.com/rszumski/354715">Link</a></p>

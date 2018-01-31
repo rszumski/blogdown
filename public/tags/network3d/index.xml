@@ -18,9 +18,7 @@
       <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/post/ramen-bigrams/</guid>
-      <description>Tools: R
-Data Source: 2682 Instant Ramen Noodle Ratings
-Created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Also because why not, who hasn’t enjoyed some instant ramen before.
+      <description>A dataset of 2682 Instant Noodle Ratings was poseted on the datasets subreddit. So I created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Why? Why not, who hasn’t enjoyed some instant ramen before.
 Used tidytext for the calculations and networkD3 for the visualization.</description>
     </item>
     

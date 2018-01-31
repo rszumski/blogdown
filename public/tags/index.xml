@@ -40,24 +40,6 @@
     </item>
     
     <item>
-      <title>Flexdashboard</title>
-      <link>/tags/flexdashboard/</link>
-      <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
-      <author>rszumski@gmail.com (Russell Szumski)</author>
-      <guid>/tags/flexdashboard/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Forecast</title>
-      <link>/tags/forecast/</link>
-      <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
-      <author>rszumski@gmail.com (Russell Szumski)</author>
-      <guid>/tags/forecast/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Ggiraph</title>
       <link>/tags/ggiraph/</link>
       <pubDate>Wed, 20 Dec 2017 00:00:00 +0000</pubDate>
@@ -85,29 +67,11 @@
     </item>
     
     <item>
-      <title>Leaflet</title>
-      <link>/tags/leaflet/</link>
-      <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
-      <author>rszumski@gmail.com (Russell Szumski)</author>
-      <guid>/tags/leaflet/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Network3d</title>
       <link>/tags/network3d/</link>
       <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/network3d/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Parestr</title>
-      <link>/tags/parestr/</link>
-      <pubDate>Mon, 15 Jan 2018 00:00:00 +0000</pubDate>
-      <author>rszumski@gmail.com (Russell Szumski)</author>
-      <guid>/tags/parestr/</guid>
       <description></description>
     </item>
     
@@ -162,15 +126,6 @@
       <pubDate>Tue, 16 Jan 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/tidytext/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Treemap</title>
-      <link>/tags/treemap/</link>
-      <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
-      <author>rszumski@gmail.com (Russell Szumski)</author>
-      <guid>/tags/treemap/</guid>
       <description></description>
     </item>
     

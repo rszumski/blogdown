@@ -11,9 +11,7 @@ tags: ["tidytext", "network3D"]
 <script src="/rmarkdown-libs/forceNetwork-binding/forceNetwork.js"></script>
 
 
-<p>Tools: R</p>
-<p>Data Source: <a href="https://www.theramenrater.com/resources-2/the-list/">2682 Instant Ramen Noodle Ratings</a></p>
-<p>Created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Also because why not, who hasn’t enjoyed some instant ramen before.</p>
+<p>A dataset of 2682 Instant Noodle Ratings was poseted on the <a href="https://www.reddit.com/r/datasets/">datasets</a> subreddit. So I created bi-grams to see how often word X is followed by word Y with names of instant ramen noodles to find any flavors and key attributes/phrases used in the names that are grouped together and appear most often. Why? Why not, who hasn’t enjoyed some instant ramen before.</p>
 <p>Used <a href="https://github.com/juliasilge/tidytext">tidytext</a> for the calculations and <a href="https://github.com/christophergandrud/networkD3">networkD3</a> for the visualization.</p>
 <pre><code>##      word1   word2   n
 ## 1  instant noodles 237
@@ -36,3 +34,5 @@ tags: ["tidytext", "network3D"]
 <div id="htmlwidget-1" style="width:672px;height:480px;" class="forceNetwork html-widget"></div>
 <script type="application/json" data-for="htmlwidget-1">{"x":{"links":{"source":[28,21,14,21,11,14,2,20,23,6,12,12,24,23,6,19,26,7,13,18,2,8,15,10,0,1,16,5,0,1,10,25,5,13,8,0,17,4,11,9,22,5,27,3,3],"target":[36,12,12,6,6,6,1,19,8,8,8,2,2,2,2,2,35,30,37,0,0,0,31,4,4,4,4,4,11,11,11,11,11,10,10,5,33,28,14,14,18,32,20,34,29],"value":[22,25,37,24,44,29,30,26,21,57,38,43,24,24,51,29,23,57,21,31,95,52,36,45,98,27,33,62,237,119,28,23,30,39,34,33,33,83,23,49,25,35,22,30,88],"colour":["#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666"]},"nodes":{"name":["instant","cup","flavour","tom","noodle","rice","chicken","mi","flavor","hot","ramen","noodles","beef","demae","spicy","chow","bowl","soy","style","curry","white","artificial","oriental","pork","seafood","fried","kung","penang","soup","yum","goreng","mein","vermicelli","sauce","yam","fu","base","iccho"],"group":[2,2,1,7,2,2,1,11,1,1,2,2,1,6,1,9,2,10,4,3,3,1,4,1,1,2,8,3,5,7,11,9,2,10,7,8,5,6]},"options":{"NodeID":"name","Group":"group","colourScale":"d3.scaleOrdinal(d3.schemeCategory10);","fontSize":7,"fontFamily":"serif","clickTextSize":17.5,"linkDistance":50,"linkWidth":"1","charge":-30,"opacity":1.25,"zoom":true,"legend":false,"arrows":false,"nodesize":false,"radiusCalculation":" Math.sqrt(d.nodesize)+6","bounded":true,"opacityNoHover":0,"clickAction":null}},"evals":[],"jsHooks":[]}</script>
 <p>We can see the common “blueprint”&quot; of words in instant ramen names are focused around ‘noodle’, ‘noodles’, ‘instant’, ‘flavor’, and ‘chicken’.</p>
+<p>Tools: R</p>
+<p>Data Source: <a href="https://www.theramenrater.com/resources-2/the-list/">2682 Instant Ramen Noodle Ratings</a></p>

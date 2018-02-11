@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
     <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
-    <lastBuildDate>Thu, 25 Jan 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jan 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/highcharter/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>US Wildfires by County</title>
+      <link>/post/us-wildfires-by-county/</link>
+      <pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/us-wildfires-by-county/</guid>
+      <description>I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle 1.88 Million US Wildfires data set, then on to one of the Kernels titled Wildfire Exploratory Analysis which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of highcharter, and finally I found my way to a ‘adding motion to choropleths’ blog post on jkunst that replicated a visualization made by New York Times showing How the Epidemic of Drug Overdose Deaths Rippled Across America.</description>
+    </item>
     
     <item>
       <title>A Hertzsprung–Russell Diagram</title>

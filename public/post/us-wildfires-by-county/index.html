@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>US Wildfires by County</title>
+  <meta property="og:title" content="US Wildfires by County" />
+  <meta name="twitter:title" content="US Wildfires by County" />
+  <meta name="description" content="I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle 1.88 Million US Wildfires data set, then on to one of the Kernels titled Wildfire Exploratory Analysis which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of highcharter, and finally I found my way to a ‘adding motion to choropleths’ blog post on jkunst that replicated a visualization made by New York Times showing How the Epidemic of Drug Overdose Deaths Rippled Across America.">
+  <meta property="og:description" content="I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle 1.88 Million US Wildfires data set, then on to one of the Kernels titled Wildfire Exploratory Analysis which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of highcharter, and finally I found my way to a ‘adding motion to choropleths’ blog post on jkunst that replicated a visualization made by New York Times showing How the Epidemic of Drug Overdose Deaths Rippled Across America.">
+  <meta name="twitter:description" content="I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle 1.88 Million US Wildfires data set, …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/us-wildfires-by-county/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/us-wildfires-by-county/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>US Wildfires by County</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on January 30, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 3 minutes (618 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/pymjs/pym.v1.js"></script>
+<script src="/rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
+
+
+<p>I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle <a href="https://www.kaggle.com/rtatman/188-million-us-wildfires">1.88 Million US Wildfires</a> data set, then on to one of the Kernels titled <a href="https://www.kaggle.com/captcalculator/wildfire-exploratory-analysis">Wildfire Exploratory Analysis</a> which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of <a href="http://jkunst.com/highcharter/highmaps.html">highcharter</a>, and finally I found my way to a ‘adding motion to choropleths’ blog post on <a href="http://jkunst.com/r/adding-motion-to-choropleths/">jkunst</a> that replicated a visualization made by <a href="https://www.nytimes.com/interactive/2016/01/07/us/drug-overdose-deaths-in-the-us.html?_r=0">New York Times</a> showing How the Epidemic of Drug Overdose Deaths Rippled Across America.</p>
+<p>So I replicated that visualization replication using the 1.88 Million US Wildfires data set.</p>
+<p>This was my result</p>
+<div id="htmlwidget-1" style="width:100%;height:500px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/US-Wildfires-by-County_files/figure-html//widgets/widget_unnamed-chunk-1.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>And this is how I did it.</p>
+<p>The data is in a SQL database but because it will fit into RAM let’s get the data from the database and extract it into a data frame.</p>
+<pre class="r"><code>library(RSQLite)
+conn &lt;- dbConnect(SQLite(), &#39;FPA_FOD_20170508.sqlite&#39;)
+df &lt;- tbl(conn, &quot;Fires&quot;) %&gt;% collect()
+dbDisconnect(conn)</code></pre>
+<p>Looking at the data the <code>FIPS_CODE</code> has the FIPS code for the county but not the State so let’s get that from the <a href="https://www.mcc.co.mercer.pa.us/dps/state_fips_code_listing.htm">State FIPS Code Listing</a></p>
+<pre class="r"><code>library(rvest)
+library(dplyr)
+
+url &lt;- &#39;https://www.mcc.co.mercer.pa.us/dps/state_fips_code_listing.htm&#39;
+webpage &lt;- read_html(url)
+
+STATE &lt;- html_nodes(webpage, &#39;center a&#39;) %&gt;%
+  html_text()
+FIPS_STATE &lt;- html_nodes(webpage, &#39;tr+ tr td:nth-child(5) , tr+ tr td:nth-child(2)&#39;) %&gt;%
+  html_text() %&gt;%
+  .[-55]
+
+df_state_fips &lt;- as.data.frame(cbind(STATE, FIPS_STATE)) %&gt;% mutate_if(is.factor, as.character)</code></pre>
+<pre><code>##   STATE FIPS_STATE
+## 1    AK          2
+## 2    MS         28
+## 3    AL          1
+## 4    MT         30
+## 5    AR          5
+## 6    NC         37</code></pre>
+<p>Select the needed variables, join the state FIPS codes this the data frame, unite the FIP codes for the states and counties into a new <code>fips</code> variable, calculate the number of fires for each group of <code>fips</code> and <code>FIRE_YEAR</code> (called <code>value</code>), and rename <code>FIRE_YEAR</code> to <code>year</code>.</p>
+<pre class="r"><code>df_ &lt;- df %&gt;%
+  select(FIPS_CODE, FIRE_YEAR, STATE) %&gt;%
+  na.omit(.)
+
+df_ &lt;- left_join(df_state_fips, df_) %&gt;%
+  unite(fips, FIPS_STATE, FIPS_CODE, sep = &#39;&#39;)
+
+df_ &lt;- df_ %&gt;%
+  group_by(fips, FIRE_YEAR) %&gt;%
+  summarize(value = n()) %&gt;%
+  rename(year = FIRE_YEAR)</code></pre>
+<p>Use the <a href="https://github.com/hadley/reshape">reshape2</a> package to reshape and aggregate the data.</p>
+<p>First using <code>dcast</code> to take the data from long-format and casts it into wide-format by taking <code>fips</code> and <code>value</code> as the ID variables (we want a column for each) thus giving a <code>variable</code> that describes the measured variables.</p>
+<p>Then using <code>melt</code> we’ll get values of <code>year</code> for each <code>fips</code> and <code>value</code>.</p>
+<p>Final we’ll summarize the sum of the <code>value</code> for the groups of <code>fips</code> and <code>vaiable</code></p>
+<pre class="r"><code>df_cast &lt;- dcast(df_, fips+value~year)
+df_cast &lt;- df_cast[,-27]
+
+df_melt &lt;- melt(df_cast, id = c(&#39;fips&#39;,&#39;value&#39;))
+df_melt &lt;- df_melt[,-2]
+
+## replace NA with 0
+df_melt &lt;- df_melt %&gt;%
+  mutate(value = ifelse(is.na(value), 0, value))
+
+df_melt &lt;- df_melt %&gt;% 
+  group_by(fips, variable) %&gt;%
+  summarize(value = sum(value))</code></pre>
+<pre><code>##    fips variable value
+## 1 10001     1992     0
+## 2 10001     1993     0
+## 3 10001     1994     0
+## 4 10001     1995     0
+## 5 10001     1996     0
+## 6 10001     1997     0</code></pre>
+<p>Prepare the data as the motion plugin requires the data in sequences in a list.</p>
+<pre class="r"><code>ds &lt;- df_melt %&gt;% 
+  group_by(fips) %&gt;% 
+  do(item = list(
+    fips = first(.$fips),
+    sequence = .$value,
+    value = first(.$value))) %&gt;% 
+  .$item</code></pre>
+<p>Building the plot.</p>
+<pre class="r"><code>data(&quot;uscountygeojson&quot;)
+
+highchart(type = &quot;map&quot;) %&gt;%
+  hc_add_series(data = ds,
+                name = &quot;Wildfires per year&quot;,
+                mapData = uscountygeojson,
+                joinBy = &quot;fips&quot;,
+                borderColor = &#39;#000000&#39;,
+                borderWidth = 0.25) %&gt;% 
+  hc_colorAxis(minColor = &quot;#ffeda0&quot;, maxColor = &quot;#f03b20&quot;) %&gt;%  
+  hc_title(text = &quot;US Wildfires by County&quot;) %&gt;% 
+  hc_legend(layout = &quot;vertical&quot;, reversed = TRUE,
+            floating = TRUE, align = &quot;right&quot;) %&gt;%
+  hc_motion(
+    enabled = TRUE,
+    axisLabel = &quot;year&quot;,
+    labels = sort(unique(df_melt$variable)),
+    series = 0,
+    updateIterval = 50,
+    updateIterval = 50,
+    magnet = list(
+      round = &quot;floor&quot;,
+      step = 0.1
+    )
+  )</code></pre>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="/post/hr-diagram/" data-toggle="tooltip" data-placement="top" title="A Hertzsprung–Russell Diagram">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="/post/web-scraping-the-numbers/" data-toggle="tooltip" data-placement="top" title="Web Scraping - The Numbers">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

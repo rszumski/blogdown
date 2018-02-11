@@ -1,0 +1,188 @@
+---
+title: "US Wildfires by County"
+author: "Russell Szumski"
+date: 2018-01-30
+categories: ["R"]
+tags: ["highcharter", "reshape2", "RSQLite"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyr)
+library(highcharter)
+library(widgetframe)
+
+df <- read.csv('Wildfires/Wildfires.csv')
+df_melt <- df
+df$fips <- sprintf("%05s", df$fips)
+df$fips <- gsub(' ', '0', df$fips)
+
+df_fip <- read.csv('Wildfires/State FIPS code.csv')
+
+ds <- df %>% 
+  group_by(fips) %>% 
+  do(item = list(
+    fips = first(.$fips),
+    sequence = .$value,
+    value = first(.$value))) %>% 
+  .$item
+
+data("uscountygeojson")
+
+hc <- highchart(type = "map") %>%
+  hc_add_series(data = ds,
+                name = "Wildfires per year",
+                mapData = uscountygeojson,
+                joinBy = "fips",
+                borderColor = '#000000',
+                borderWidth = 0.25) %>% 
+  hc_colorAxis(minColor = "#ffeda0", maxColor = "#f03b20") %>%  
+  hc_title(text = "US Wildfires by County") %>% 
+  hc_legend(layout = "vertical", reversed = TRUE,
+            floating = TRUE, align = "right") %>% 
+  hc_motion(
+    enabled = TRUE,
+    axisLabel = "year",
+    labels = sort(unique(df$variable)),
+    series = 0,
+    updateIterval = 50,
+    updateIterval = 50,
+    magnet = list(
+      round = "floor",
+      step = 0.1
+    )
+  )
+
+```
+
+I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle [1.88 Million US Wildfires](https://www.kaggle.com/rtatman/188-million-us-wildfires) data set, then on to one of the Kernels titled [Wildfire Exploratory Analysis](https://www.kaggle.com/captcalculator/wildfire-exploratory-analysis) which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of [highcharter](http://jkunst.com/highcharter/highmaps.html), and finally I found my way to a 'adding motion to choropleths' blog post on [jkunst](http://jkunst.com/r/adding-motion-to-choropleths/) that replicated a visualization made by [New York Times](https://www.nytimes.com/interactive/2016/01/07/us/drug-overdose-deaths-in-the-us.html?_r=0) showing How the Epidemic of Drug Overdose Deaths Rippled Across America.
+
+So I replicated that visualization replication using the 1.88 Million US Wildfires data set.
+
+This was my result
+
+```{r, echo=FALSE}
+frameWidget(hc, height = 500, width = '100%')
+```
+
+And this is how I did it.
+
+The data is in a SQL database but because it will fit into RAM let’s get the data from the database and extract it into a data frame.
+
+```{r, eval=FALSE}
+library(RSQLite)
+conn <- dbConnect(SQLite(), 'FPA_FOD_20170508.sqlite')
+df <- tbl(conn, "Fires") %>% collect()
+dbDisconnect(conn)
+```
+
+Looking at the data the `FIPS_CODE` has the FIPS code for the county but not the State so let's get that from the [State FIPS Code Listing](https://www.mcc.co.mercer.pa.us/dps/state_fips_code_listing.htm)
+
+```{r, eval=FALSE}
+library(rvest)
+library(dplyr)
+
+url <- 'https://www.mcc.co.mercer.pa.us/dps/state_fips_code_listing.htm'
+webpage <- read_html(url)
+
+STATE <- html_nodes(webpage, 'center a') %>%
+  html_text()
+FIPS_STATE <- html_nodes(webpage, 'tr+ tr td:nth-child(5) , tr+ tr td:nth-child(2)') %>%
+  html_text() %>%
+  .[-55]
+
+df_state_fips <- as.data.frame(cbind(STATE, FIPS_STATE)) %>% mutate_if(is.factor, as.character)
+```
+
+```{r, echo=FALSE}
+head(df_fip)
+```
+
+
+Select the needed variables, join the state FIPS codes this the data frame, unite the FIP codes for the states and counties into a new `fips` variable, calculate the number of fires for each group of `fips` and `FIRE_YEAR` (called `value`), and rename `FIRE_YEAR` to `year`.
+
+```{r, eval=F}
+df_ <- df %>%
+  select(FIPS_CODE, FIRE_YEAR, STATE) %>%
+  na.omit(.)
+
+df_ <- left_join(df_state_fips, df_) %>%
+  unite(fips, FIPS_STATE, FIPS_CODE, sep = '')
+
+df_ <- df_ %>%
+  group_by(fips, FIRE_YEAR) %>%
+  summarize(value = n()) %>%
+  rename(year = FIRE_YEAR)
+```
+
+Use the [reshape2](https://github.com/hadley/reshape) package to reshape and aggregate the data. 
+
+First using `dcast` to take the data from long-format and casts it into wide-format by taking
+`fips` and `value` as the ID variables (we want a column for each) thus giving a `variable` that describes the measured variables.
+
+Then using `melt` we'll get values of `year` for each `fips` and `value`.
+
+Final we'll summarize the sum of the `value` for the groups of `fips` and `vaiable`
+
+```{r, eval=F}
+df_cast <- dcast(df_, fips+value~year)
+df_cast <- df_cast[,-27]
+
+df_melt <- melt(df_cast, id = c('fips','value'))
+df_melt <- df_melt[,-2]
+
+## replace NA with 0
+df_melt <- df_melt %>%
+  mutate(value = ifelse(is.na(value), 0, value))
+
+df_melt <- df_melt %>% 
+  group_by(fips, variable) %>%
+  summarize(value = sum(value))
+```
+
+```{r, echo=FALSE}
+head(df_melt)
+```
+
+Prepare the data as the motion plugin requires the data in sequences in a list.
+
+```{r, eval=F}
+ds <- df_melt %>% 
+  group_by(fips) %>% 
+  do(item = list(
+    fips = first(.$fips),
+    sequence = .$value,
+    value = first(.$value))) %>% 
+  .$item
+```
+
+Building the plot.
+
+```{r, eval=F}
+data("uscountygeojson")
+
+highchart(type = "map") %>%
+  hc_add_series(data = ds,
+                name = "Wildfires per year",
+                mapData = uscountygeojson,
+                joinBy = "fips",
+                borderColor = '#000000',
+                borderWidth = 0.25) %>% 
+  hc_colorAxis(minColor = "#ffeda0", maxColor = "#f03b20") %>%  
+  hc_title(text = "US Wildfires by County") %>% 
+  hc_legend(layout = "vertical", reversed = TRUE,
+            floating = TRUE, align = "right") %>%
+  hc_motion(
+    enabled = TRUE,
+    axisLabel = "year",
+    labels = sort(unique(df_melt$variable)),
+    series = 0,
+    updateIterval = 50,
+    updateIterval = 50,
+    magnet = list(
+      round = "floor",
+      step = 0.1
+    )
+  )
+```

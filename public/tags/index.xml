@@ -60,7 +60,7 @@
     <item>
       <title>Highcharter</title>
       <link>/tags/highcharter/</link>
-      <pubDate>Thu, 25 Jan 2018 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/highcharter/</guid>
       <description></description>
@@ -90,6 +90,24 @@
       <pubDate>Thu, 25 Jan 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/purrr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reshape2</title>
+      <link>/tags/reshape2/</link>
+      <pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/tags/reshape2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rsqlite</title>
+      <link>/tags/rsqlite/</link>
+      <pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/tags/rsqlite/</guid>
       <description></description>
     </item>
     

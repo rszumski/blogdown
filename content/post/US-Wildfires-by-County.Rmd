@@ -42,8 +42,8 @@ hc <- highchart(type = "map") %>%
   hc_legend(layout = "vertical", reversed = TRUE,
             floating = TRUE, align = "right") %>% 
   hc_motion(
-    enabled = TRUE,
-    axisLabel = "year",
+    autoPlay = TRUE,
+    axisLabel = 'year',
     labels = sort(unique(df$variable)),
     series = 0,
     updateIterval = 50,
@@ -63,7 +63,7 @@ So I replicated that visualization replication using the 1.88 Million US Wildfir
 This was my result
 
 ```{r, echo=FALSE}
-frameWidget(hc, height = 500, width = '100%')
+frameWidget(hc, height = '100%', width = '100%')
 ```
 
 And this is how I did it.

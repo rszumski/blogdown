@@ -12,6 +12,8 @@ library(dplyr)
 library(tidyr)
 library(highcharter)
 library(widgetframe)
+library(webshot)
+#webshot::install_phantomjs()
 
 df <- read.csv('Wildfires/Wildfires.csv')
 df_melt <- df
@@ -19,7 +21,6 @@ df$fips <- sprintf("%05s", df$fips)
 df$fips <- gsub(' ', '0', df$fips)
 
 df_fip <- read.csv('Wildfires/State FIPS code.csv')
-
 ds <- df %>% 
   group_by(fips) %>% 
   do(item = list(
@@ -30,6 +31,16 @@ ds <- df %>%
 
 data("uscountygeojson")
 
+
+```
+
+I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle [1.88 Million US Wildfires](https://www.kaggle.com/rtatman/188-million-us-wildfires) data set, then on to one of the Kernels titled [Wildfire Exploratory Analysis](https://www.kaggle.com/captcalculator/wildfire-exploratory-analysis) which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of [highcharter](http://jkunst.com/highcharter/highmaps.html), and finally I found my way to a 'adding motion to choropleths' blog post on [jkunst](http://jkunst.com/r/adding-motion-to-choropleths/) that replicated a visualization made by [New York Times](https://www.nytimes.com/interactive/2016/01/07/us/drug-overdose-deaths-in-the-us.html?_r=0) showing How the Epidemic of Drug Overdose Deaths Rippled Across America.
+
+So I replicated that visualization replication using the 1.88 Million US Wildfires data set.
+
+This was my result
+
+```{r, echo=FALSE}
 hc <- highchart(type = "map") %>%
   hc_add_series(data = ds,
                 name = "Wildfires per year",
@@ -53,18 +64,14 @@ hc <- highchart(type = "map") %>%
       step = 0.1
     )
   )
+frameWidget(hc)
+
+
+
 
 ```
 
-I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle [1.88 Million US Wildfires](https://www.kaggle.com/rtatman/188-million-us-wildfires) data set, then on to one of the Kernels titled [Wildfire Exploratory Analysis](https://www.kaggle.com/captcalculator/wildfire-exploratory-analysis) which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of [highcharter](http://jkunst.com/highcharter/highmaps.html), and finally I found my way to a 'adding motion to choropleths' blog post on [jkunst](http://jkunst.com/r/adding-motion-to-choropleths/) that replicated a visualization made by [New York Times](https://www.nytimes.com/interactive/2016/01/07/us/drug-overdose-deaths-in-the-us.html?_r=0) showing How the Epidemic of Drug Overdose Deaths Rippled Across America.
 
-So I replicated that visualization replication using the 1.88 Million US Wildfires data set.
-
-This was my result
-
-```{r, echo=FALSE}
-frameWidget(hc, height = '100%', width = '100%')
-```
 
 And this is how I did it.
 

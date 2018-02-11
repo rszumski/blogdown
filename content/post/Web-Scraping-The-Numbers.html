@@ -1,0 +1,249 @@
+---
+title: "Web Scraping - The Numbers"
+author: "Russell Szumski"
+date: 2018-02-04
+categories: ["R"]
+tags: ["rvest", "lubridate"]
+---
+
+
+
+<p>A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from <a href="https://www.the-numbers.com">The Numbers</a> using the <a href="https://github.com/hadley/rvest">rvest</a> package.</p>
+<p>The goal is to obtain the release date, movie, production budget, domestic gross, and worldwide gross from there <a href="https://www.the-numbers.com/movie/budgets/">Budget and Financial</a> page. Then join that with the distributor, genre, and movie rating from the <a href="https://www.the-numbers.com/market/mpaa-ratings">MPAA Ratings</a> page.</p>
+<p>First of all the <a href="http://selectorgadget.com/">SelectorGadget</a> should be installed on Google Chrome.</p>
+<p>Load the libraries.</p>
+<pre class="r"><code>library(rvest)
+library(dplyr)</code></pre>
+<p>Each page shows 100 movies, for the first 100 the URL is <code>https://www.the-numbers.com/movie/budgets/all</code>. Each page for the next 100 movies has as slightly different URL. For example, for movies 101-200 the URL is <code>https://www.the-numbers.com/movie/budgets/all/101</code> and for 201-300 it is <code>https://www.the-numbers.com/movie/budgets/all/201</code>. For each page after the first 100 movies the URLs ending number increase by 100, for 54 pages.</p>
+<p>First let’s get the data for the first 100 movies.</p>
+<p>Get the URL and turn on the SelectorGadget on the webpage, click on the information to be extracted to figure out the CSS selectors, the matching ones will be highlighted. We pass the CSS selectors extracted with SelectorGadget to the html_nodes function. Then bundle all the information together into a data frame and see the result.</p>
+<pre class="r"><code>url &lt;- &#39;https://www.the-numbers.com/movie/budgets/all&#39;
+webpage &lt;- read_html(url)
+
+df_1 &lt;- as.data.frame(cbind(Movie = html_nodes(webpage, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage, &#39;.data+ td a&#39;) %&gt;%
+                              html_text(),
+                            ProductionBudget = html_nodes(webpage, &#39;.data:nth-child(4)&#39;) %&gt;%
+                              html_text(),
+                            DomesticGross = html_nodes(webpage, &#39;.data:nth-child(5)&#39;) %&gt;%
+                              html_text(),
+                            WorldwideGross = html_nodes(webpage, &#39;.data:nth-child(6)&#39;) %&gt;%
+                              html_text()))</code></pre>
+<pre class="r"><code>head(df_1, 5)</code></pre>
+<pre><code>##                                         Movie ReleaseDate ProductionBudget
+## 1                                      Avatar  12/18/2009     $425,000,000
+## 2 Pirates of the Caribbean: On Stranger Tides   5/20/2011     $410,600,000
+## 3                     Avengers: Age of Ultron    5/1/2015     $330,600,000
+## 4        Star Wars Ep. VII: The Force Awakens  12/18/2015     $306,000,000
+## 5    Pirates of the Caribbean: At World’s End   5/24/2007     $300,000,000
+##   DomesticGross WorldwideGross
+## 1  $760,507,625 $2,783,918,982
+## 2  $241,063,875 $1,045,663,875
+## 3  $459,005,868 $1,408,218,722
+## 4  $936,662,225 $2,058,662,225
+## 5  $309,420,425   $963,420,425</code></pre>
+<p>Now let’s get the data for the rest of the movies. Again get the URL and use SelectorGadget to figure out the CSS selectors. This time we’ll make a list of numbers from 101 to 5401, increasing by 100, and use lapply to paste the number to the end of the URL, then pass the CSS selectors to the html_nodes function, and bundle all the information together.</p>
+<pre class="r"><code>url_ &lt;- &#39;https://www.the-numbers.com/movie/budgets/all/&#39;
+pages &lt;- seq(101,5401,100)
+
+df_2 &lt;- as.data.frame(cbind(
+  Movie = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;#page_filling_chart b a&#39;) %&gt;%                                                    html_text()})),
+  ReleaseDate = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;.data+ td a&#39;) %&gt;% 
+                        html_text()})),
+  ProductionBudget = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;%                                                                      html_nodes(&#39;.data:nth-child(4)&#39;) %&gt;% 
+                        html_text()})),
+  DomesticGross = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;.data:nth-child(5)&#39;) %&gt;% 
+                        html_text()})),
+  WorldwideGross = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;.data:nth-child(6)&#39;) %&gt;% 
+                        html_text()}))
+    )
+)</code></pre>
+<pre class="r"><code>head(df_2, 5)</code></pre>
+<pre><code>##                                 Movie ReleaseDate ProductionBudget
+## 1             Guardians of the Galaxy    8/1/2014     $170,000,000
+## 2                          Iron Man 2    5/7/2010     $170,000,000
+## 3 Captain America: The Winter Soldier    4/4/2014     $170,000,000
+## 4      Dawn of the Planet of the Apes   7/11/2014     $170,000,000
+## 5                   The Polar Express  11/10/2004     $170,000,000
+##   DomesticGross WorldwideGross
+## 1  $333,172,112   $771,051,335
+## 2  $312,433,331   $621,156,389
+## 3  $259,746,958   $714,401,889
+## 4  $208,545,589   $710,644,566
+## 5  $185,616,723   $309,757,305</code></pre>
+<p>Let’s bind the two data frames together.</p>
+<pre class="r"><code>df_movies &lt;- rbind(df_1,df_2)</code></pre>
+<p>Now let’s get the data from the MPAA Ratings page. We’ll do the same as above but create a data frame for each rating, and bind them together into one.</p>
+<pre class="r"><code>webpage_PG13 &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/PG-13-(US)&#39;)
+
+PG13 &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_PG13, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_PG13, &#39;td:nth-child(2) a&#39;) %&gt;%
+                              html_text(),
+                            Distributor = html_nodes(webpage_PG13, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                              html_text(),
+                            Genre = html_nodes(webpage_PG13, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                              html_text(),
+                            Rating = rep(&#39;PG-13&#39;,
+                                        length(html_nodes(webpage_PG13,
+                                        &#39;#page_filling_chart b a&#39;) %&gt;% html_text()))
+                            )
+                      )
+
+
+webpage_R &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/R-(US)&#39;)
+
+R &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_R, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_R, &#39;td:nth-child(2) a&#39;) %&gt;%
+                              html_text(),
+                            Distributor = html_nodes(webpage_R, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                              html_text(),
+                            Genre = html_nodes(webpage_R, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                              html_text(),
+                            Rating = rep(&#39;R&#39;,
+                                         length(html_nodes(webpage_R,
+                                                           &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                  html_text()))
+)
+)
+
+
+webpage_PG &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/PG-(US)&#39;)
+
+PG &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_PG, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_PG, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_PG, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_PG, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;PG&#39;,length(html_nodes(webpage_PG,
+                                                            &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                   html_text()))))
+
+
+webpage_G &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/G-(US)&#39;)
+
+G &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_G, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_G, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_G, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_G, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;G&#39;,length(html_nodes(webpage_G,
+                                              &#39;#page_filling_chart b a&#39;) %&gt;%
+                                               html_text()))))
+
+webpage_NR &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/Not-Rated-(US)&#39;)
+
+NR &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_NR, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_NR, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_NR, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_NR, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;NR&#39;,length(html_nodes(webpage_NR,
+                                                            &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                   html_text()))))
+
+
+webpage_NC17 &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/NC-17-(US)&#39;)
+
+NC17 &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_NC17, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_NC17, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_NC17, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_NC17, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;NC17&#39;,length(html_nodes(webpage_NC17,
+                                                            &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                   html_text()))))
+
+webpage_open &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/Open-(US)&#39;)
+
+Open &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_open, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_open, &#39;td:nth-child(2) a&#39;) %&gt;%
+                              html_text(),
+                            Distributor = html_nodes(webpage_open, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                              html_text(),
+                            Genre = html_nodes(webpage_open, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                              html_text(),
+                            Rating = rep(&#39;Open&#39;,length(html_nodes(webpage_open,
+                                                                  &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                         html_text()))))
+
+df_movies_2 &lt;- rbind(G,NC17,NR,Open,PG,PG13,R) %&gt;% mutate_if(is.factor, as.character)</code></pre>
+<pre class="r"><code>head(df_movies_2, 5)</code></pre>
+<pre><code>##                             Movie  ReleaseDate    Distributor     Genre
+## 1                     City Lights Jan 30, 1931 United Artists    Comedy
+## 2 Snow White and the Seven Dwarfs Dec 21, 1937    Walt Disney   Musical
+## 3              Gone with the Wind Dec 15, 1939            MGM     Drama
+## 4                       Pinocchio  Feb 9, 1940    Walt Disney Adventure
+## 5                        Fantasia Nov 13, 1940    Walt Disney   Musical
+##   Rating
+## 1      G
+## 2      G
+## 3      G
+## 4      G
+## 5      G</code></pre>
+<p>Last let’s join the two data frames together.</p>
+<p>But first you might have noticed the release dates in each data frame are in different formats. So before we join the two we need to change that.</p>
+<pre class="r"><code>library(lubridate)
+
+df_movies$ReleaseDate &lt;- mdy(df_movies$ReleaseDate)
+df_movies$ReleaseDate &lt;-format(as.Date(df_movies$ReleaseDate), &quot;%m/%d/%Y&quot;) 
+df_movies$ReleaseDate &lt;-as.character(df_movies$ReleaseDate)
+
+df_movies_2$ReleaseDate &lt;- mdy(df_movies_2$ReleaseDate)
+df_movies_2$ReleaseDate &lt;- format(as.Date(df_movies_2$ReleaseDate), &quot;%m/%d/%Y&quot;)
+df_movies_2$ReleaseDate &lt;- as.character(df_movies_2$ReleaseDate)</code></pre>
+<p>Now we can finally join them together and omit NA’s for a more complete data set</p>
+<pre class="r"><code>df_ &lt;- left_join(df_movies,df_movies_2) %&gt;% na.omit(.)</code></pre>
+<pre class="r"><code>head(df_, 5)</code></pre>
+<pre><code>##                                         Movie ReleaseDate ProductionBudget
+## 1                                      Avatar  12/18/2009     $425,000,000
+## 2 Pirates of the Caribbean: On Stranger Tides  05/20/2011     $410,600,000
+## 3                     Avengers: Age of Ultron  05/01/2015     $330,600,000
+## 4        Star Wars Ep. VII: The Force Awakens  12/18/2015     $306,000,000
+## 5    Pirates of the Caribbean: At World’s End  05/24/2007     $300,000,000
+##   DomesticGross WorldwideGross      Distributor     Genre Rating
+## 1  $760,507,625 $2,783,918,982 20th Century Fox    Action  PG-13
+## 2  $241,063,875 $1,045,663,875      Walt Disney Adventure  PG-13
+## 3  $459,005,868 $1,408,218,722      Walt Disney    Action  PG-13
+## 4  $936,662,225 $2,058,662,225      Walt Disney Adventure  PG-13
+## 5  $309,420,425   $963,420,425      Walt Disney Adventure  PG-13</code></pre>
+<pre class="r"><code>str(df_)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    4792 obs. of  8 variables:
+##  $ Movie           : chr  &quot;Avatar&quot; &quot;Pirates of the Caribbean: On Stranger Tides&quot; &quot;Avengers: Age of Ultron&quot; &quot;Star Wars Ep. VII: The Force Awakens&quot; ...
+##  $ ReleaseDate     : chr  &quot;12/18/2009&quot; &quot;05/20/2011&quot; &quot;05/01/2015&quot; &quot;12/18/2015&quot; ...
+##  $ ProductionBudget: chr  &quot;$425,000,000&quot; &quot;$410,600,000&quot; &quot;$330,600,000&quot; &quot;$306,000,000&quot; ...
+##  $ DomesticGross   : chr  &quot;$760,507,625&quot; &quot;$241,063,875&quot; &quot;$459,005,868&quot; &quot;$936,662,225&quot; ...
+##  $ WorldwideGross  : chr  &quot;$2,783,918,982&quot; &quot;$1,045,663,875&quot; &quot;$1,408,218,722&quot; &quot;$2,058,662,225&quot; ...
+##  $ Distributor     : chr  &quot;20th Century Fox&quot; &quot;Walt Disney&quot; &quot;Walt Disney&quot; &quot;Walt Disney&quot; ...
+##  $ Genre           : chr  &quot;Action&quot; &quot;Adventure&quot; &quot;Action&quot; &quot;Adventure&quot; ...
+##  $ Rating          : chr  &quot;PG-13&quot; &quot;PG-13&quot; &quot;PG-13&quot; &quot;PG-13&quot; ...</code></pre>
+<p>We are left with a data set with 4792 observations that include a movies: release date, production budget, domestic gross, worldwide gross, distributor, genre , rating.</p>

@@ -67,6 +67,15 @@
     </item>
     
     <item>
+      <title>Lubridate</title>
+      <link>/tags/lubridate/</link>
+      <pubDate>Sun, 04 Feb 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/tags/lubridate/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Network3d</title>
       <link>/tags/network3d/</link>
       <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
@@ -87,7 +96,7 @@
     <item>
       <title>Rvest</title>
       <link>/tags/rvest/</link>
-      <pubDate>Thu, 25 Jan 2018 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 04 Feb 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/rvest/</guid>
       <description></description>

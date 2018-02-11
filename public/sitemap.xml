@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/post/web-scraping-the-numbers/</loc>
+    <lastmod>2018-02-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/hr-diagram/</loc>
     <lastmod>2018-01-25T00:00:00+00:00</lastmod>
   </url>
@@ -98,6 +103,12 @@
   </url>
   
   <url>
+    <loc>/tags/lubridate/</loc>
+    <lastmod>2018-02-04T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/network3d/</loc>
     <lastmod>2018-01-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -110,7 +121,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-01-25T00:00:00+00:00</lastmod>
+    <lastmod>2018-02-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -122,13 +133,13 @@
   
   <url>
     <loc>/categories/r/</loc>
-    <lastmod>2018-01-25T00:00:00+00:00</lastmod>
+    <lastmod>2018-02-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/rvest/</loc>
-    <lastmod>2018-01-25T00:00:00+00:00</lastmod>
+    <lastmod>2018-02-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -164,7 +175,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2018-01-25T00:00:00+00:00</lastmod>
+    <lastmod>2018-02-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

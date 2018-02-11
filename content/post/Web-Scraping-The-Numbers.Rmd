@@ -1,0 +1,249 @@
+---
+title: "Web Scraping - The Numbers"
+author: "Russell Szumski"
+date: 2018-02-04
+categories: ["R"]
+tags: ["rvest", "lubridate"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+df_1 <- read.csv('The Numbers/df_1.csv')
+df_2 <- read.csv('The Numbers/df_2.csv')
+df_movies_2 <- read.csv('The Numbers/df_movies_2.csv')
+df_ <- read.csv('The Numbers/the-numbers movie dataset.csv') %>% mutate_if(is.factor, as.character)
+```
+
+A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from [The Numbers](https://www.the-numbers.com) using the [rvest](https://github.com/hadley/rvest) package. 
+
+The goal is to obtain the release date,	movie, production budget,	domestic gross, and	worldwide gross from there [Budget and Financial](https://www.the-numbers.com/movie/budgets/) page. Then join that with the distributor, genre, and movie rating from the [MPAA Ratings](https://www.the-numbers.com/market/mpaa-ratings) page.
+
+First of all the [SelectorGadget](http://selectorgadget.com/) should be installed on Google Chrome.
+
+Load the libraries.
+
+```{r, eval=FALSE}
+library(rvest)
+library(dplyr)
+```
+
+Each page shows 100 movies, for the first 100 the URL is `https://www.the-numbers.com/movie/budgets/all`. Each page for the next 100 movies has as slightly different URL. For example, for movies 101-200 the URL is `https://www.the-numbers.com/movie/budgets/all/101` and for 201-300 it is `https://www.the-numbers.com/movie/budgets/all/201`. For each page after the first 100 movies the URLs ending number increase by 100, for 54 pages.  
+
+First let's get the data for the first 100 movies.
+
+Get the URL and turn on the SelectorGadget on the webpage, click on the information to be extracted to figure out the CSS selectors, the matching ones will be highlighted. We pass the CSS selectors extracted with SelectorGadget to the html_nodes function. Then bundle all the information together into a data frame and see the result.
+
+```{r, eval=FALSE}
+url <- 'https://www.the-numbers.com/movie/budgets/all'
+webpage <- read_html(url)
+
+df_1 <- as.data.frame(cbind(Movie = html_nodes(webpage, '#page_filling_chart b a') %>%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage, '.data+ td a') %>%
+                              html_text(),
+                            ProductionBudget = html_nodes(webpage, '.data:nth-child(4)') %>%
+                              html_text(),
+                            DomesticGross = html_nodes(webpage, '.data:nth-child(5)') %>%
+                              html_text(),
+                            WorldwideGross = html_nodes(webpage, '.data:nth-child(6)') %>%
+                              html_text()))
+```
+
+```{r}
+head(df_1, 5)
+```
+
+Now let's get the data for the rest of the movies. Again get the URL and use SelectorGadget to figure out the CSS selectors. This time we'll make a list of numbers from 101 to 5401, increasing by 100, and use lapply to paste the number to the end of the URL, then pass the CSS selectors to the html_nodes function, and bundle all the information together.
+
+```{r, eval=FALSE}
+url_ <- 'https://www.the-numbers.com/movie/budgets/all/'
+pages <- seq(101,5401,100)
+
+df_2 <- as.data.frame(cbind(
+  Movie = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %>% read_html() %>% 
+                        html_nodes('#page_filling_chart b a') %>%                                                    html_text()})),
+  ReleaseDate = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %>% read_html() %>% 
+                        html_nodes('.data+ td a') %>% 
+                        html_text()})),
+  ProductionBudget = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %>% read_html() %>%                                                                      html_nodes('.data:nth-child(4)') %>% 
+                        html_text()})),
+  DomesticGross = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %>% read_html() %>% 
+                        html_nodes('.data:nth-child(5)') %>% 
+                        html_text()})),
+  WorldwideGross = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %>% read_html() %>% 
+                        html_nodes('.data:nth-child(6)') %>% 
+                        html_text()}))
+    )
+)
+```
+
+```{r}
+head(df_2, 5)
+```
+
+Let's bind the two data frames together.
+
+```{r, eval=F}
+df_movies <- rbind(df_1,df_2)
+```
+
+Now let's get the data from the MPAA Ratings page. We'll do the same as above but create a data frame for each rating, and bind them together into one. 
+
+```{r, eval=F}
+webpage_PG13 <- read_html('https://www.the-numbers.com/movies/mpaa-rating/PG-13-(US)')
+
+PG13 <- as.data.frame(cbind(Movie = html_nodes(webpage_PG13, '#page_filling_chart b a') %>%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_PG13, 'td:nth-child(2) a') %>%
+                              html_text(),
+                            Distributor = html_nodes(webpage_PG13, 'td:nth-child(3) a') %>% 
+                              html_text(),
+                            Genre = html_nodes(webpage_PG13, 'td:nth-child(4) a') %>% 
+                              html_text(),
+                            Rating = rep('PG-13',
+                                        length(html_nodes(webpage_PG13,
+                                        '#page_filling_chart b a') %>% html_text()))
+                            )
+                      )
+
+
+webpage_R <- read_html('https://www.the-numbers.com/movies/mpaa-rating/R-(US)')
+
+R <- as.data.frame(cbind(Movie = html_nodes(webpage_R, '#page_filling_chart b a') %>%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_R, 'td:nth-child(2) a') %>%
+                              html_text(),
+                            Distributor = html_nodes(webpage_R, 'td:nth-child(3) a') %>% 
+                              html_text(),
+                            Genre = html_nodes(webpage_R, 'td:nth-child(4) a') %>% 
+                              html_text(),
+                            Rating = rep('R',
+                                         length(html_nodes(webpage_R,
+                                                           '#page_filling_chart b a') %>%
+                                                  html_text()))
+)
+)
+
+
+webpage_PG <- read_html('https://www.the-numbers.com/movies/mpaa-rating/PG-(US)')
+
+PG <- as.data.frame(cbind(Movie = html_nodes(webpage_PG, '#page_filling_chart b a') %>%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_PG, 'td:nth-child(2) a') %>%
+                           html_text(),
+                         Distributor = html_nodes(webpage_PG, 'td:nth-child(3) a') %>% 
+                           html_text(),
+                         Genre = html_nodes(webpage_PG, 'td:nth-child(4) a') %>% 
+                           html_text(),
+                         Rating = rep('PG',length(html_nodes(webpage_PG,
+                                                            '#page_filling_chart b a') %>%
+                                                   html_text()))))
+
+
+webpage_G <- read_html('https://www.the-numbers.com/movies/mpaa-rating/G-(US)')
+
+G <- as.data.frame(cbind(Movie = html_nodes(webpage_G, '#page_filling_chart b a') %>%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_G, 'td:nth-child(2) a') %>%
+                           html_text(),
+                         Distributor = html_nodes(webpage_G, 'td:nth-child(3) a') %>% 
+                           html_text(),
+                         Genre = html_nodes(webpage_G, 'td:nth-child(4) a') %>% 
+                           html_text(),
+                         Rating = rep('G',length(html_nodes(webpage_G,
+                                              '#page_filling_chart b a') %>%
+                                               html_text()))))
+
+webpage_NR <- read_html('https://www.the-numbers.com/movies/mpaa-rating/Not-Rated-(US)')
+
+NR <- as.data.frame(cbind(Movie = html_nodes(webpage_NR, '#page_filling_chart b a') %>%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_NR, 'td:nth-child(2) a') %>%
+                           html_text(),
+                         Distributor = html_nodes(webpage_NR, 'td:nth-child(3) a') %>% 
+                           html_text(),
+                         Genre = html_nodes(webpage_NR, 'td:nth-child(4) a') %>% 
+                           html_text(),
+                         Rating = rep('NR',length(html_nodes(webpage_NR,
+                                                            '#page_filling_chart b a') %>%
+                                                   html_text()))))
+
+
+webpage_NC17 <- read_html('https://www.the-numbers.com/movies/mpaa-rating/NC-17-(US)')
+
+NC17 <- as.data.frame(cbind(Movie = html_nodes(webpage_NC17, '#page_filling_chart b a') %>%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_NC17, 'td:nth-child(2) a') %>%
+                           html_text(),
+                         Distributor = html_nodes(webpage_NC17, 'td:nth-child(3) a') %>% 
+                           html_text(),
+                         Genre = html_nodes(webpage_NC17, 'td:nth-child(4) a') %>% 
+                           html_text(),
+                         Rating = rep('NC17',length(html_nodes(webpage_NC17,
+                                                            '#page_filling_chart b a') %>%
+                                                   html_text()))))
+
+webpage_open <- read_html('https://www.the-numbers.com/movies/mpaa-rating/Open-(US)')
+
+Open <- as.data.frame(cbind(Movie = html_nodes(webpage_open, '#page_filling_chart b a') %>%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_open, 'td:nth-child(2) a') %>%
+                              html_text(),
+                            Distributor = html_nodes(webpage_open, 'td:nth-child(3) a') %>% 
+                              html_text(),
+                            Genre = html_nodes(webpage_open, 'td:nth-child(4) a') %>% 
+                              html_text(),
+                            Rating = rep('Open',length(html_nodes(webpage_open,
+                                                                  '#page_filling_chart b a') %>%
+                                                         html_text()))))
+
+df_movies_2 <- rbind(G,NC17,NR,Open,PG,PG13,R) %>% mutate_if(is.factor, as.character)
+
+```
+
+```{r}
+head(df_movies_2, 5)
+```
+
+Last let's join the two data frames together. 
+
+But first you might have noticed the release dates in each data frame are in different formats. So before we join the two we need to change that.
+
+```{r, eval=F}
+library(lubridate)
+
+df_movies$ReleaseDate <- mdy(df_movies$ReleaseDate)
+df_movies$ReleaseDate <-format(as.Date(df_movies$ReleaseDate), "%m/%d/%Y") 
+df_movies$ReleaseDate <-as.character(df_movies$ReleaseDate)
+
+df_movies_2$ReleaseDate <- mdy(df_movies_2$ReleaseDate)
+df_movies_2$ReleaseDate <- format(as.Date(df_movies_2$ReleaseDate), "%m/%d/%Y")
+df_movies_2$ReleaseDate <- as.character(df_movies_2$ReleaseDate)
+```
+
+Now we can finally join them together and omit NA's for a more complete data set
+
+```{r, eval=F}
+df_ <- left_join(df_movies,df_movies_2) %>% na.omit(.)
+```
+
+```{r}
+head(df_, 5)
+```
+
+```{r}
+str(df_)
+```
+
+We are left with a data set with 4792 observations that include a movies: release date, production budget, domestic gross, worldwide gross, distributor, genre , rating.

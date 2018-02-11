@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Web Scraping - The Numbers</title>
+  <meta property="og:title" content="Web Scraping - The Numbers" />
+  <meta name="twitter:title" content="Web Scraping - The Numbers" />
+  <meta name="description" content="A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from The Numbers using the rvest package.
+The goal is to obtain the release date, movie, production budget, domestic gross, and worldwide gross from there Budget and Financial page. Then join that with the distributor, genre, and movie rating from the MPAA Ratings page.
+First of all the SelectorGadget should be installed on Google Chrome.">
+  <meta property="og:description" content="A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from The Numbers using the rvest package.
+The goal is to obtain the release date, movie, production budget, domestic gross, and worldwide gross from there Budget and Financial page. Then join that with the distributor, genre, and movie rating from the MPAA Ratings page.
+First of all the SelectorGadget should be installed on Google Chrome.">
+  <meta name="twitter:description" content="A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from The Numbers using the rvest package.
+The goal is to …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/web-scraping-the-numbers/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/web-scraping-the-numbers/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Web Scraping - The Numbers</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on February 4, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 6 minutes (1265 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from <a href="https://www.the-numbers.com">The Numbers</a> using the <a href="https://github.com/hadley/rvest">rvest</a> package.</p>
+<p>The goal is to obtain the release date, movie, production budget, domestic gross, and worldwide gross from there <a href="https://www.the-numbers.com/movie/budgets/">Budget and Financial</a> page. Then join that with the distributor, genre, and movie rating from the <a href="https://www.the-numbers.com/market/mpaa-ratings">MPAA Ratings</a> page.</p>
+<p>First of all the <a href="http://selectorgadget.com/">SelectorGadget</a> should be installed on Google Chrome.</p>
+<p>Load the libraries.</p>
+<pre class="r"><code>library(rvest)
+library(dplyr)</code></pre>
+<p>Each page shows 100 movies, for the first 100 the URL is <code>https://www.the-numbers.com/movie/budgets/all</code>. Each page for the next 100 movies has as slightly different URL. For example, for movies 101-200 the URL is <code>https://www.the-numbers.com/movie/budgets/all/101</code> and for 201-300 it is <code>https://www.the-numbers.com/movie/budgets/all/201</code>. For each page after the first 100 movies the URLs ending number increase by 100, for 54 pages.</p>
+<p>First let’s get the data for the first 100 movies.</p>
+<p>Get the URL and turn on the SelectorGadget on the webpage, click on the information to be extracted to figure out the CSS selectors, the matching ones will be highlighted. We pass the CSS selectors extracted with SelectorGadget to the html_nodes function. Then bundle all the information together into a data frame and see the result.</p>
+<pre class="r"><code>url &lt;- &#39;https://www.the-numbers.com/movie/budgets/all&#39;
+webpage &lt;- read_html(url)
+
+df_1 &lt;- as.data.frame(cbind(Movie = html_nodes(webpage, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage, &#39;.data+ td a&#39;) %&gt;%
+                              html_text(),
+                            ProductionBudget = html_nodes(webpage, &#39;.data:nth-child(4)&#39;) %&gt;%
+                              html_text(),
+                            DomesticGross = html_nodes(webpage, &#39;.data:nth-child(5)&#39;) %&gt;%
+                              html_text(),
+                            WorldwideGross = html_nodes(webpage, &#39;.data:nth-child(6)&#39;) %&gt;%
+                              html_text()))</code></pre>
+<pre class="r"><code>head(df_1, 5)</code></pre>
+<pre><code>##                                         Movie ReleaseDate ProductionBudget
+## 1                                      Avatar  12/18/2009     $425,000,000
+## 2 Pirates of the Caribbean: On Stranger Tides   5/20/2011     $410,600,000
+## 3                     Avengers: Age of Ultron    5/1/2015     $330,600,000
+## 4        Star Wars Ep. VII: The Force Awakens  12/18/2015     $306,000,000
+## 5    Pirates of the Caribbean: At World’s End   5/24/2007     $300,000,000
+##   DomesticGross WorldwideGross
+## 1  $760,507,625 $2,783,918,982
+## 2  $241,063,875 $1,045,663,875
+## 3  $459,005,868 $1,408,218,722
+## 4  $936,662,225 $2,058,662,225
+## 5  $309,420,425   $963,420,425</code></pre>
+<p>Now let’s get the data for the rest of the movies. Again get the URL and use SelectorGadget to figure out the CSS selectors. This time we’ll make a list of numbers from 101 to 5401, increasing by 100, and use lapply to paste the number to the end of the URL, then pass the CSS selectors to the html_nodes function, and bundle all the information together.</p>
+<pre class="r"><code>url_ &lt;- &#39;https://www.the-numbers.com/movie/budgets/all/&#39;
+pages &lt;- seq(101,5401,100)
+
+df_2 &lt;- as.data.frame(cbind(
+  Movie = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;#page_filling_chart b a&#39;) %&gt;%                                                    html_text()})),
+  ReleaseDate = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;.data+ td a&#39;) %&gt;% 
+                        html_text()})),
+  ProductionBudget = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;%                                                                      html_nodes(&#39;.data:nth-child(4)&#39;) %&gt;% 
+                        html_text()})),
+  DomesticGross = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;.data:nth-child(5)&#39;) %&gt;% 
+                        html_text()})),
+  WorldwideGross = unlist(lapply(paste0(url_,pages),
+                    function(url){
+                        url %&gt;% read_html() %&gt;% 
+                        html_nodes(&#39;.data:nth-child(6)&#39;) %&gt;% 
+                        html_text()}))
+    )
+)</code></pre>
+<pre class="r"><code>head(df_2, 5)</code></pre>
+<pre><code>##                                 Movie ReleaseDate ProductionBudget
+## 1             Guardians of the Galaxy    8/1/2014     $170,000,000
+## 2                          Iron Man 2    5/7/2010     $170,000,000
+## 3 Captain America: The Winter Soldier    4/4/2014     $170,000,000
+## 4      Dawn of the Planet of the Apes   7/11/2014     $170,000,000
+## 5                   The Polar Express  11/10/2004     $170,000,000
+##   DomesticGross WorldwideGross
+## 1  $333,172,112   $771,051,335
+## 2  $312,433,331   $621,156,389
+## 3  $259,746,958   $714,401,889
+## 4  $208,545,589   $710,644,566
+## 5  $185,616,723   $309,757,305</code></pre>
+<p>Let’s bind the two data frames together.</p>
+<pre class="r"><code>df_movies &lt;- rbind(df_1,df_2)</code></pre>
+<p>Now let’s get the data from the MPAA Ratings page. We’ll do the same as above but create a data frame for each rating, and bind them together into one.</p>
+<pre class="r"><code>webpage_PG13 &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/PG-13-(US)&#39;)
+
+PG13 &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_PG13, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_PG13, &#39;td:nth-child(2) a&#39;) %&gt;%
+                              html_text(),
+                            Distributor = html_nodes(webpage_PG13, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                              html_text(),
+                            Genre = html_nodes(webpage_PG13, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                              html_text(),
+                            Rating = rep(&#39;PG-13&#39;,
+                                        length(html_nodes(webpage_PG13,
+                                        &#39;#page_filling_chart b a&#39;) %&gt;% html_text()))
+                            )
+                      )
+
+
+webpage_R &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/R-(US)&#39;)
+
+R &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_R, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_R, &#39;td:nth-child(2) a&#39;) %&gt;%
+                              html_text(),
+                            Distributor = html_nodes(webpage_R, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                              html_text(),
+                            Genre = html_nodes(webpage_R, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                              html_text(),
+                            Rating = rep(&#39;R&#39;,
+                                         length(html_nodes(webpage_R,
+                                                           &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                  html_text()))
+)
+)
+
+
+webpage_PG &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/PG-(US)&#39;)
+
+PG &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_PG, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_PG, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_PG, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_PG, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;PG&#39;,length(html_nodes(webpage_PG,
+                                                            &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                   html_text()))))
+
+
+webpage_G &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/G-(US)&#39;)
+
+G &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_G, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_G, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_G, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_G, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;G&#39;,length(html_nodes(webpage_G,
+                                              &#39;#page_filling_chart b a&#39;) %&gt;%
+                                               html_text()))))
+
+webpage_NR &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/Not-Rated-(US)&#39;)
+
+NR &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_NR, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_NR, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_NR, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_NR, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;NR&#39;,length(html_nodes(webpage_NR,
+                                                            &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                   html_text()))))
+
+
+webpage_NC17 &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/NC-17-(US)&#39;)
+
+NC17 &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_NC17, &#39;#page_filling_chart b a&#39;) %&gt;%
+                           html_text(),
+                         ReleaseDate = html_nodes(webpage_NC17, &#39;td:nth-child(2) a&#39;) %&gt;%
+                           html_text(),
+                         Distributor = html_nodes(webpage_NC17, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                           html_text(),
+                         Genre = html_nodes(webpage_NC17, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                           html_text(),
+                         Rating = rep(&#39;NC17&#39;,length(html_nodes(webpage_NC17,
+                                                            &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                   html_text()))))
+
+webpage_open &lt;- read_html(&#39;https://www.the-numbers.com/movies/mpaa-rating/Open-(US)&#39;)
+
+Open &lt;- as.data.frame(cbind(Movie = html_nodes(webpage_open, &#39;#page_filling_chart b a&#39;) %&gt;%
+                              html_text(),
+                            ReleaseDate = html_nodes(webpage_open, &#39;td:nth-child(2) a&#39;) %&gt;%
+                              html_text(),
+                            Distributor = html_nodes(webpage_open, &#39;td:nth-child(3) a&#39;) %&gt;% 
+                              html_text(),
+                            Genre = html_nodes(webpage_open, &#39;td:nth-child(4) a&#39;) %&gt;% 
+                              html_text(),
+                            Rating = rep(&#39;Open&#39;,length(html_nodes(webpage_open,
+                                                                  &#39;#page_filling_chart b a&#39;) %&gt;%
+                                                         html_text()))))
+
+df_movies_2 &lt;- rbind(G,NC17,NR,Open,PG,PG13,R) %&gt;% mutate_if(is.factor, as.character)</code></pre>
+<pre class="r"><code>head(df_movies_2, 5)</code></pre>
+<pre><code>##                             Movie  ReleaseDate    Distributor     Genre
+## 1                     City Lights Jan 30, 1931 United Artists    Comedy
+## 2 Snow White and the Seven Dwarfs Dec 21, 1937    Walt Disney   Musical
+## 3              Gone with the Wind Dec 15, 1939            MGM     Drama
+## 4                       Pinocchio  Feb 9, 1940    Walt Disney Adventure
+## 5                        Fantasia Nov 13, 1940    Walt Disney   Musical
+##   Rating
+## 1      G
+## 2      G
+## 3      G
+## 4      G
+## 5      G</code></pre>
+<p>Last let’s join the two data frames together.</p>
+<p>But first you might have noticed the release dates in each data frame are in different formats. So before we join the two we need to change that.</p>
+<pre class="r"><code>library(lubridate)
+
+df_movies$ReleaseDate &lt;- mdy(df_movies$ReleaseDate)
+df_movies$ReleaseDate &lt;-format(as.Date(df_movies$ReleaseDate), &quot;%m/%d/%Y&quot;) 
+df_movies$ReleaseDate &lt;-as.character(df_movies$ReleaseDate)
+
+df_movies_2$ReleaseDate &lt;- mdy(df_movies_2$ReleaseDate)
+df_movies_2$ReleaseDate &lt;- format(as.Date(df_movies_2$ReleaseDate), &quot;%m/%d/%Y&quot;)
+df_movies_2$ReleaseDate &lt;- as.character(df_movies_2$ReleaseDate)</code></pre>
+<p>Now we can finally join them together and omit NA’s for a more complete data set</p>
+<pre class="r"><code>df_ &lt;- left_join(df_movies,df_movies_2) %&gt;% na.omit(.)</code></pre>
+<pre class="r"><code>head(df_, 5)</code></pre>
+<pre><code>##                                         Movie ReleaseDate ProductionBudget
+## 1                                      Avatar  12/18/2009     $425,000,000
+## 2 Pirates of the Caribbean: On Stranger Tides  05/20/2011     $410,600,000
+## 3                     Avengers: Age of Ultron  05/01/2015     $330,600,000
+## 4        Star Wars Ep. VII: The Force Awakens  12/18/2015     $306,000,000
+## 5    Pirates of the Caribbean: At World’s End  05/24/2007     $300,000,000
+##   DomesticGross WorldwideGross      Distributor     Genre Rating
+## 1  $760,507,625 $2,783,918,982 20th Century Fox    Action  PG-13
+## 2  $241,063,875 $1,045,663,875      Walt Disney Adventure  PG-13
+## 3  $459,005,868 $1,408,218,722      Walt Disney    Action  PG-13
+## 4  $936,662,225 $2,058,662,225      Walt Disney Adventure  PG-13
+## 5  $309,420,425   $963,420,425      Walt Disney Adventure  PG-13</code></pre>
+<pre class="r"><code>str(df_)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    4792 obs. of  8 variables:
+##  $ Movie           : chr  &quot;Avatar&quot; &quot;Pirates of the Caribbean: On Stranger Tides&quot; &quot;Avengers: Age of Ultron&quot; &quot;Star Wars Ep. VII: The Force Awakens&quot; ...
+##  $ ReleaseDate     : chr  &quot;12/18/2009&quot; &quot;05/20/2011&quot; &quot;05/01/2015&quot; &quot;12/18/2015&quot; ...
+##  $ ProductionBudget: chr  &quot;$425,000,000&quot; &quot;$410,600,000&quot; &quot;$330,600,000&quot; &quot;$306,000,000&quot; ...
+##  $ DomesticGross   : chr  &quot;$760,507,625&quot; &quot;$241,063,875&quot; &quot;$459,005,868&quot; &quot;$936,662,225&quot; ...
+##  $ WorldwideGross  : chr  &quot;$2,783,918,982&quot; &quot;$1,045,663,875&quot; &quot;$1,408,218,722&quot; &quot;$2,058,662,225&quot; ...
+##  $ Distributor     : chr  &quot;20th Century Fox&quot; &quot;Walt Disney&quot; &quot;Walt Disney&quot; &quot;Walt Disney&quot; ...
+##  $ Genre           : chr  &quot;Action&quot; &quot;Adventure&quot; &quot;Action&quot; &quot;Adventure&quot; ...
+##  $ Rating          : chr  &quot;PG-13&quot; &quot;PG-13&quot; &quot;PG-13&quot; &quot;PG-13&quot; ...</code></pre>
+<p>We are left with a data set with 4792 observations that include a movies: release date, production budget, domestic gross, worldwide gross, distributor, genre , rating.</p>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="/post/hr-diagram/" data-toggle="tooltip" data-placement="top" title="A Hertzsprung–Russell Diagram">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

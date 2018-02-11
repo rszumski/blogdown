@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Rvest on szumskiR</title>
-    <link>/tags/rvest/</link>
-    <description>Recent content in Rvest on szumskiR</description>
+    <title>Lubridate on szumskiR</title>
+    <link>/tags/lubridate/</link>
+    <description>Recent content in Lubridate on szumskiR</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
     <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
     <lastBuildDate>Sun, 04 Feb 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/rvest/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/lubridate/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -21,15 +21,6 @@
       <description>A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from The Numbers using the rvest package.
 The goal is to obtain the release date, movie, production budget, domestic gross, and worldwide gross from there Budget and Financial page. Then join that with the distributor, genre, and movie rating from the MPAA Ratings page.
 First of all the SelectorGadget should be installed on Google Chrome.</description>
-    </item>
-    
-    <item>
-      <title>A Hertzsprung–Russell Diagram</title>
-      <link>/post/hr-diagram/</link>
-      <pubDate>Thu, 25 Jan 2018 00:00:00 +0000</pubDate>
-      <author>rszumski@gmail.com (Russell Szumski)</author>
-      <guid>/post/hr-diagram/</guid>
-      <description>Fact, Hertzsprung–Russell diagrams (HR diagrams) are cool. They are one of the most important tools in the study of the way that stars change with time. Developed independently in the early 1900s by Ejnar Hertzsprung and Henry Norris Russell, it plots each star on a graph measuring the star’s brightness against its temperature (color). Depending on its initial mass, every star goes through specific evolutionary stages dictated by its internal structure and how it produces energy.</description>
     </item>
     
   </channel>

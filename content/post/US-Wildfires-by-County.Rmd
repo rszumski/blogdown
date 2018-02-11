@@ -8,6 +8,7 @@ tags: ["highcharter", "reshape2", "RSQLite"]
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(htmltools)
 df <- read.csv('Wildfires/Wildfires.csv')
 df_melt <- df
 df$fips <- sprintf("%05s", df$fips)
@@ -19,10 +20,15 @@ I watched Only the Brave, a 2017 American biographical action drama film that te
 
 So I replicated that visualization replication using the 1.88 Million US Wildfires data set.
 
-Here's a [Link](http://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html) to the finished visualization if you don't want to scroll to the bottom.
+The results
 
+```{r,echo=F}
+htmltools::tags$iframe(src = 'http://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html', width = '800', height = '600', style="border:none;")
+```
 
-Let's get started.
+Here's a [link](http://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html) to a full page view.
+
+And here is how I did it.
 
 The data is in a SQL database but because it will fit into RAM let’s get the data from the database and extract it into a data frame.
 
@@ -142,7 +148,3 @@ highchart(type = "map") %>%
     )
   )
 ```
-
-The results
-
-<iframe src="http://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html" width="900" height="780" style="border: none;"/>

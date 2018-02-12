@@ -164,7 +164,7 @@
   
   
   &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 3 minutes (623 words)
+  <i class="fa fa-clock-o"></i> 3 minutes (627 words)
   
   
 </span>
@@ -187,7 +187,7 @@
         <p>I watched Only the Brave, a 2017 American biographical action drama film that tells the true story of the Granite Mountain Hotshots, which lead me to the Kaggle <a href="https://www.kaggle.com/rtatman/188-million-us-wildfires">1.88 Million US Wildfires</a> data set, then on to one of the Kernels titled <a href="https://www.kaggle.com/captcalculator/wildfire-exploratory-analysis">Wildfire Exploratory Analysis</a> which had some interesting analysis of wildfires in the US and a cool choropleth map of total US wildfires by County. That lead me to the highmaps section of <a href="http://jkunst.com/highcharter/highmaps.html">highcharter</a>, and finally I found my way to a ‘adding motion to choropleths’ blog post on <a href="http://jkunst.com/r/adding-motion-to-choropleths/">jkunst</a> that replicated a visualization made by <a href="https://www.nytimes.com/interactive/2016/01/07/us/drug-overdose-deaths-in-the-us.html?_r=0">New York Times</a> showing How the Epidemic of Drug Overdose Deaths Rippled Across America.</p>
 <p>So I replicated that visualization replication using the 1.88 Million US Wildfires data set.</p>
 <p>The results</p>
-<iframe src="https://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html" width="800" height="600" style="border:none;"></iframe>
+<iframe src="https://rstudio-pubs-static.s3.amazonaws.com/359356_6536086f04c54d1196e8cd9c9c072cdc.html" width="800" height="600" style="border:none;"></iframe>
 <p>Here’s a <a href="https://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html">link</a> to a full page view.</p>
 <p>And here is how I did it.</p>
 <p>The data is in a SQL database but because it will fit into RAM let’s get the data from the database and extract it into a data frame.</p>
@@ -270,6 +270,7 @@ highchart(type = &quot;map&quot;) %&gt;%
                 joinBy = &quot;fips&quot;,
                 borderColor = &#39;#000000&#39;,
                 borderWidth = 0.25) %&gt;% 
+  hc_mapNavigation(enabled = TRUE) %&gt;%
   hc_colorAxis(minColor = &quot;#ffeda0&quot;, maxColor = &quot;#f03b20&quot;) %&gt;%  
   hc_title(text = &quot;US Wildfires by County&quot;) %&gt;% 
   hc_legend(layout = &quot;vertical&quot;, reversed = TRUE,

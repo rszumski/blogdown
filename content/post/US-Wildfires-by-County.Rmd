@@ -23,7 +23,7 @@ So I replicated that visualization replication using the 1.88 Million US Wildfir
 The results
 
 ```{r,echo=F}
-htmltools::tags$iframe(src = 'https://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html', width = '800', height = '600', style="border:none;")
+htmltools::tags$iframe(src = 'https://rstudio-pubs-static.s3.amazonaws.com/359356_6536086f04c54d1196e8cd9c9c072cdc.html', width = '800', height = '600', style="border:none;")
 ```
 
 Here's a [link](https://rstudio-pubs-static.s3.amazonaws.com/358987_2e5378be208e416a85f32b893a5bb6d8.html) to a full page view.
@@ -131,6 +131,7 @@ highchart(type = "map") %>%
                 joinBy = "fips",
                 borderColor = '#000000',
                 borderWidth = 0.25) %>% 
+  hc_mapNavigation(enabled = TRUE) %>%
   hc_colorAxis(minColor = "#ffeda0", maxColor = "#f03b20") %>%  
   hc_title(text = "US Wildfires by County") %>% 
   hc_legend(layout = "vertical", reversed = TRUE,

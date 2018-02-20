@@ -18,9 +18,8 @@
       <pubDate>Sun, 04 Feb 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/post/web-scraping-the-numbers/</guid>
-      <description>A friend was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping from The Numbers using the rvest package.
-The goal is to obtain the release date, movie, production budget, domestic gross, and worldwide gross from there Budget and Financial page. Then join that with the distributor, genre, and movie rating from the MPAA Ratings page.
-First of all the SelectorGadget should be installed on Google Chrome.</description>
+      <description>A friend of mine was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping using the rvest package.
+I be getting the data from The Numbers. The goal is to obtain the release date, movie title, production budget, domestic gross, and worldwide gross from there Budget and Financial page. Then join that with the distributor, genre, and movie rating from the MPAA Ratings page.</description>
     </item>
     
     <item>

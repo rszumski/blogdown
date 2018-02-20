@@ -17,7 +17,7 @@ df_ <- read.csv('The Numbers/the-numbers movie dataset.csv') %>% mutate_if(is.fa
 
 A friend of mine was looking for data dealing with movie budget and performance, so I thought it would be a good opportunity to practice web scrapping using the [rvest](https://github.com/hadley/rvest) package.
 
-I be getting the data from [The Numbers](https://www.the-numbers.com). The goal is to obtain the release date, movie title, production budget,	domestic gross, and	worldwide gross from there [Budget and Financial](https://www.the-numbers.com/movie/budgets/) page. Then join that with the distributor, genre, and movie rating from the [MPAA Ratings](https://www.the-numbers.com/market/mpaa-ratings) page.
+I will be getting the data from [The Numbers](https://www.the-numbers.com). The goal is to obtain the release date, movie title, production budget,	domestic gross, and	worldwide gross from there [Budget and Financial](https://www.the-numbers.com/movie/budgets/) page. Then join that with the distributor, genre, and movie rating from the [MPAA Ratings](https://www.the-numbers.com/market/mpaa-ratings) page.
 
 First of all the [SelectorGadget](http://selectorgadget.com/) should be installed on Google Chrome.
 

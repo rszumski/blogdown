@@ -194,7 +194,8 @@ In this post we will use xgboost to predict arrest type, leaflet to map, and shi
         <p>Given the location and date/time, can we predict arrest type for the city of Chicago?</p>
 <p>In this post we will use <code>xgboost</code> to predict arrest type, <code>leaflet</code> to map, and <code>shiny</code> to let the user input information to make a prediction.</p>
 <p>For the impatient here is the final product and a <a href="https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/">link</a> to the full page shiny app.</p>
-<iframe src="https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/" width="800" height="600" style="border:none;"></iframe>
+<iframe src="https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/" width="800" height="600" style="border: none;">
+</iframe>
 <p>Okay, let’s give the <code>xgboost</code> R package a look and test it out on the <a href="https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2">Crimes - 2001 to present</a> dataset from the <a href="https://data.cityofchicago.org/">Chicago Data Portal</a>.</p>
 <p>But first what is XGBoost? XGBoost is an optimized distributed gradient boosting library designed to be highly efficient, flexible and portable. It implements machine learning algorithms under the Gradient Boosting framework. XGBoost provides a parallel tree boosting that solve many data science problems in a fast and accurate way.</p>
 <div id="the-data" class="section level3">
@@ -349,7 +350,7 @@ ggplot(df_imp, aes(x=Feature, y=Gain)) +
   scale_y_continuous(limits = c(0, 0.5), labels = scales::percent) +
   theme(plot.title=element_text(hjust=0.5), axis.title.y=element_blank())</code></pre>
 <div class="figure">
-<img src="img/Feature_Importance.png" />
+<img src="/img/Feature_Importance.png" />
 
 </div>
 <p>Unsurprisingly, location features are the most important, with both location-based features establishing almost 80% of the total Gain in the model. The Day feature adds less than 2% to the total gain, meaning it might be insignificant.</p>
@@ -403,7 +404,7 @@ ggplot(df_cm, aes(x=label_act, y=label_pred, fill = Freq)) +
   labs(x = &quot;Actual&quot;,
        y = &quot;Predicted&quot;)</code></pre>
 <div class="figure">
-<img src="img/confusion_matrix.png" />
+<img src="/img/confusion_matrix.png" />
 
 </div>
 <p>There is a large amount of confusion. Many of the labels are mispredicted as Simple Assault. Specifically, the model frequently confuses the combinations of Assault, Drug Abuse, and Larceny, suggesting that they also may be catch-alls.</p>

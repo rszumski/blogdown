@@ -12,7 +12,6 @@ library(dplyr)
 library(data.table)
 library(caret)
 library(ggplot2)
-library(htmltools)
 
 df_ <- fread('Predicting And Mapping Arrest Types/Crimes_-_2001_to_present.csv')
 df_code_index <- fread('Predicting And Mapping Arrest Types/Code_Index_Type.csv')
@@ -27,10 +26,7 @@ In this post we will use `xgboost` to predict arrest type, `leaflet` to map, and
 
 For the impatient here is the final product and a [link](https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/) to the full page shiny app.
 
-```{r,echo=F}
-htmltools::tags$iframe(src = 'https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/', width = '800', height = '600', style="border:none;")
-```
-
+<iframe src="https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/" width="800" height="600" style="border: none;"></iframe>
 
 Okay, let's give the `xgboost` R package a look and test it out on the [Crimes - 2001 to present](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2) dataset from the [Chicago Data Portal](https://data.cityofchicago.org/). 
 
@@ -173,7 +169,7 @@ ggplot(df_imp, aes(x=Feature, y=Gain)) +
   theme(plot.title=element_text(hjust=0.5), axis.title.y=element_blank())
 ```
 
-![](img/Feature_Importance.png)
+![](/img/Feature_Importance.png)
 
 Unsurprisingly, location features are the most important, with both location-based features establishing almost 80% of the total Gain in the model. The Day feature adds less than 2% to the total gain, meaning it might be insignificant.
 
@@ -229,7 +225,7 @@ ggplot(df_cm, aes(x=label_act, y=label_pred, fill = Freq)) +
        y = "Predicted")
 ```
 
-![](img/confusion_matrix.png)
+![](/img/confusion_matrix.png)
 
 There is a large amount of confusion. Many of the labels are mispredicted as Simple Assault. Specifically, the model frequently confuses the combinations of Assault, Drug Abuse, and Larceny, suggesting that they also may be catch-alls.
 

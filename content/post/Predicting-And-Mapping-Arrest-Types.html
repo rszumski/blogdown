@@ -166,7 +166,7 @@ ggplot(df_imp, aes(x=Feature, y=Gain)) +
   scale_y_continuous(limits = c(0, 0.5), labels = scales::percent) +
   theme(plot.title=element_text(hjust=0.5), axis.title.y=element_blank())</code></pre>
 <div class="figure">
-<img src="Predicting%20And%20Mapping%20Arrest%20Types/Feature%20Importance.png" />
+<img src="Predicting%20And%20Mapping%20Arrest%20Types/Feature_Importance.png" />
 
 </div>
 <p>Unsurprisingly, location features are the most important, with both location-based features establishing almost 80% of the total Gain in the model. The Day feature adds less than 2% to the total gain, meaning it might be insignificant.</p>
@@ -220,7 +220,7 @@ ggplot(df_cm, aes(x=label_act, y=label_pred, fill = Freq)) +
   labs(x = &quot;Actual&quot;,
        y = &quot;Predicted&quot;)</code></pre>
 <div class="figure">
-<img src="Predicting%20And%20Mapping%20Arrest%20Types/confusion%20matrix.png" />
+<img src="Predicting%20And%20Mapping%20Arrest%20Types/confusion_matrix.png" />
 
 </div>
 <p>There is a large amount of confusion. Many of the labels are mispredicted as Simple Assault. Specifically, the model frequently confuses the combinations of Assault, Drug Abuse, and Larceny, suggesting that they also may be catch-alls.</p>

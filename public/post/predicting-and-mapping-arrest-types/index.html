@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Predicting And Mapping Arrest Types in Chicago</title>
+  <meta property="og:title" content="Predicting And Mapping Arrest Types in Chicago" />
+  <meta name="twitter:title" content="Predicting And Mapping Arrest Types in Chicago" />
+  <meta name="description" content="Given the location and date/time, can we predict arrest type for the city of Chicago?
+In this post we will use xgboost to predict arrest type, leaflet to map, and shiny to let the user input information to make a prediction.
+For the impatient here is the final product and a link to the full page shiny app.
+ Okay, let’s give the xgboost R package a look and test it out on the Crimes - 2001 to present dataset from the Chicago Data Portal.">
+  <meta property="og:description" content="Given the location and date/time, can we predict arrest type for the city of Chicago?
+In this post we will use xgboost to predict arrest type, leaflet to map, and shiny to let the user input information to make a prediction.
+For the impatient here is the final product and a link to the full page shiny app.
+ Okay, let’s give the xgboost R package a look and test it out on the Crimes - 2001 to present dataset from the Chicago Data Portal.">
+  <meta name="twitter:description" content="Given the location and date/time, can we predict arrest type for the city of Chicago?
+In this post we will use xgboost to predict arrest type, leaflet to map, and shiny to let the user input …">
+  <meta name="author" content="Russell Szumski"/>
+  <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:image" content="/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="/post/predicting-and-mapping-arrest-types/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="szumskiR" />
+
+  <meta name="generator" content="Hugo 0.31.1" />
+  <link rel="canonical" href="/post/predicting-and-mapping-arrest-types/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="/css/codeblock.css" />
+  <link rel="stylesheet" href="/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">szumskiR</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="szumskiR" href="/">
+            <img class="avatar-img" src="/img/avatar-icon.png" alt="szumskiR" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Predicting And Mapping Arrest Types in Chicago</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on February 24, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 10 minutes (2061 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>Given the location and date/time, can we predict arrest type for the city of Chicago?</p>
+<p>In this post we will use <code>xgboost</code> to predict arrest type, <code>leaflet</code> to map, and <code>shiny</code> to let the user input information to make a prediction.</p>
+<p>For the impatient here is the final product and a <a href="https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/">link</a> to the full page shiny app.</p>
+<iframe src="https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/" width="800" height="600" style="border:none;"></iframe>
+<p>Okay, let’s give the <code>xgboost</code> R package a look and test it out on the <a href="https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2">Crimes - 2001 to present</a> dataset from the <a href="https://data.cityofchicago.org/">Chicago Data Portal</a>.</p>
+<p>But first what is XGBoost? XGBoost is an optimized distributed gradient boosting library designed to be highly efficient, flexible and portable. It implements machine learning algorithms under the Gradient Boosting framework. XGBoost provides a parallel tree boosting that solve many data science problems in a fast and accurate way.</p>
+<div id="the-data" class="section level3">
+<h3>The data</h3>
+<p>The dataset contains (at time of writing) about 6.5 million reports with 17 different variables. While not ‘big data’ it’s still a little heavy for my laptop. Luckily for me Chicago Data Portal allows one to manage and filter the data before exporting it. So I selected the date of occurrence, FBI code, longitude, and latitude and filtered when an arrest was made. This left just under 1 million observations, much more manageable.</p>
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   1829148 obs. of  4 variables:
+##  $ Date     : chr  &quot;02/04/2018 08:20:00 PM&quot; &quot;02/04/2018 11:15:00 AM&quot; &quot;02/04/2018 08:00:00 PM&quot; &quot;02/04/2018 09:00:00 PM&quot; ...
+##  $ FBI Code : chr  &quot;26&quot; &quot;14&quot; &quot;08B&quot; &quot;07&quot; ...
+##  $ Latitude : num  41.9 42 41.9 41.9 41.8 ...
+##  $ Longitude: num  -87.8 -87.7 -87.7 -87.6 -87.7 ...
+##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<p>There are 26 different types of arrests in the FBI Code column, but I have no idea what those codes mean. So after a quick Google search I can across <a href="http://gis.chicagopolice.org/clearmap_crime_sums/crime_types.html">CLEARMAP</a>, a website of crime type categories, definition, and description, supplied by the Chicago Police Department.</p>
+<p>After some work with <code>rvest</code> I got the code, it’s description, and gave each code an index variable (saved as df_code_index).</p>
+<pre><code>##     Code Index                      Type
+##  1:    6     0                   Larceny
+##  2:   15     1         Weapons Violation
+##  3:   18     2                Drug Abuse
+##  4:   24     3        Disorderly Conduct
+##  5:   26     4    Misc Non-Index Offense
+##  6:  08B     5            Simple Battery
+##  7:  08A     6            Simple Assault
+##  8:  04A     7        Aggravated Assault
+##  9:   14     8                 Vandalism
+## 10:  04B     9        Aggravated Battery
+## 11:    2    10   Criminal Sexual Assault
+## 12:    5    11                  Burglary
+## 13:    3    12                   Robbery
+## 14:   22    13            Liquor License
+## 15:   16    14              Prostitution
+## 16:   11    15                     Fraud
+## 17:    9    16                     Arson
+## 18:   20    17   Offenses Against Family
+## 19:  01A    18 Homicide 1st &amp; 2nd Degree
+## 20:    7    19       Motor Vehicle Theft
+## 21:   10    20  Forgery &amp; Counterfeiting
+## 22:   19    21                  Gambling
+## 23:   17    22     Criminal Sexual Abuse
+## 24:  01B    23  Involuntary Manslaughter
+## 25:   13    24           Stolen Property
+## 26:   12    25              Embezzlement
+##     Code Index                      Type</code></pre>
+<p>Next, we can engineer features from the data of occurrence column. We can extract the hour in which a given arrest occurred as a feature (hour can take 24 different values) , likewise, we can extract the month in a similar manner (12 values), the year the crime occurred can be extracted (2001 — present), and finally the DayOfWeek (7 values).</p>
+<pre class="r"><code>library(lubridate)
+
+df_ &lt;- df_ %&gt;% 
+  separate(Date, c(&#39;Date&#39;, &#39;time&#39;, &#39;AM.PM&#39;), sep = &#39; &#39;) %&gt;%
+  unite(Time, time, AM.PM, sep = &#39; &#39;)
+
+df_$Date &lt;-as.Date(as.POSIXct(df_$Date, format= &#39;%m/%d/%Y&#39;))
+
+df_$Time &lt;- format(strptime(df_$Time, &quot;%I:%M:%S %p&quot;), format=&quot;%H&quot;)
+
+df_ &lt;- df_ %&gt;%
+  mutate(Month = month(Date),
+         Day   = wday(Date),
+         Year = year(Date))
+
+df_ &lt;- df_ %&gt;%
+  rename(Hour = Time,
+         Lat = Latitude,
+         Long = Longitude,
+         Type = FBI.Code)
+
+df_ &lt;- df_ %&gt;%
+  select(Type, Hour, Day, Month, Year, Lat, Long)</code></pre>
+<p>Along with the latitude/longitude coordinates that gives us six features.</p>
+<p>XGBoost needs all the variables as a numeric vector so let’s replace the FBI code with the index variable we assigned each code.</p>
+<pre class="r"><code>df_index &lt;- left_join(df_, df_code_index)  %&gt;% select(-Type)</code></pre>
+<pre><code>##    Hour Day Month Year      Lat      Long Index
+## 1:   20   1     2 2018 41.87671 -87.75090     0
+## 2:   11   1     2 2018 42.00782 -87.67095     1
+## 3:   20   1     2 2018 41.93540 -87.73047     2
+## 4:   21   1     2 2018 41.89399 -87.63452     3
+## 5:   22   1     2 2018 41.78409 -87.65462     4
+## 6:   22   1     2 2018 41.74016 -87.56241     2</code></pre>
+</div>
+<div id="the-modeling" class="section level3">
+<h3>The modeling</h3>
+<p>Before we start we should set a benchmark for ourselves. If our model is not more accurate than a benchmark, then our fancy modeling is all for naught. Let’s look at the arrest type that happens most often</p>
+<pre class="r"><code>df_index %&gt;% group_by(Index) %&gt;%
+  summarize(Total = n()) %&gt;%
+  arrange(desc(Total))</code></pre>
+<pre><code>## # A tibble: 26 x 2
+##    Index  Total
+##    &lt;int&gt;  &lt;int&gt;
+##  1     6 347194
+##  2     0 137295
+##  3     2 132505
+##  4     8  94722
+##  5     9  35259
+##  6     4  32963
+##  7    19  29590
+##  8     1  28479
+##  9     5  27889
+## 10    14  20332
+## # ... with 16 more rows</code></pre>
+<p>In this case, a simple benchmark might be to just always predict the most common arrest type - Index 6 (Simple Assault). This is equivalent to calculating the percent of the data labeled ‘Simple Assault’.</p>
+<pre class="r"><code>round(347194/length(df_index$Index), 4)</code></pre>
+<pre><code>## [1] 0.3477</code></pre>
+<p>Just guessing the most common type has an accuracy of about 35%. Let’s see if we can do better than that.</p>
+<p>We can use <code>caret</code> for train/test splitting since createDataPartition ensures balanced distribution of categories between train and test.</p>
+<pre class="r"><code>library(caret)
+library(dplyr)
+library(data.table)
+
+## Loading the final dataset with the engineered features
+df &lt;- fread(&#39;Crimes 2001 to present(Index).csv&#39;)
+
+split &lt;- 0.7
+trainIndex &lt;- createDataPartition(df$Index, p = split, list = FALSE, times = 1)
+
+
+xgb.data.train &lt;- xgb.DMatrix((df %&gt;% select(-Index) %&gt;% data.matrix())[trainIndex,], 
+                              label = df$Index[trainIndex])
+
+
+xgb.data.test &lt;- xgb.DMatrix((df %&gt;% select(-Index) %&gt;% data.matrix())[-trainIndex,],
+                             label = df$Index[-trainIndex])</code></pre>
+</div>
+<div id="the-xgboost-training" class="section level3">
+<h3>The XGBoost training</h3>
+<pre class="r"><code>library(xgboost)
+
+numberOfClasses &lt;- length(unique(df$Index))
+
+xgb_params &lt;- list(&quot;objective&quot; = &quot;multi:softprob&quot;,
+                   &quot;eval_metric&quot; = &quot;mlogloss&quot;,
+                   &quot;num_class&quot; = numberOfClasses)
+
+xgb &lt;- xgb.train(data = xgb.data.train,
+                params = xgb_params,
+                nrounds = 500,
+                watchlist = list(test = xgb.data.test),
+                early_stopping_rounds = 10
+)
+## saving the model
+xgb.save(xgb, &#39;xgb.model&#39;)</code></pre>
+</div>
+<div id="analyzing-the-xgboost-model" class="section level3">
+<h3>Analyzing the XGBoost model</h3>
+<p>With gradient boosting we can calculate the proportional contribution of each feature to the total information gain of the model, which will help identify the most important features.</p>
+<pre class="r"><code>library(ggplot2)
+
+df_imp &lt;- tbl_df(xgb.importance(colnames(xgb.data.train), model = xgb))
+df_imp$Feature &lt;- factor(df_imp$Feature, levels=rev(df_imp$Feature))
+
+ggplot(df_imp, aes(x=Feature, y=Gain)) +
+  geom_bar(stat=&quot;identity&quot;, fill=&quot;#34495e&quot;, alpha=0.9) +
+  geom_text(aes(label=sprintf(&quot;%0.1f%%&quot;, Gain*100)), color=&quot;#34495e&quot;, hjust=-0.25, family=&quot;Open Sans Condensed Bold&quot;, size=2.5) +
+  theme_minimal() +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 0.5), labels = scales::percent) +
+  theme(plot.title=element_text(hjust=0.5), axis.title.y=element_blank())</code></pre>
+<div class="figure">
+<img src="Predicting%20And%20Mapping%20Arrest%20Types/Feature%20Importance.png" />
+
+</div>
+<p>Unsurprisingly, location features are the most important, with both location-based features establishing almost 80% of the total Gain in the model. The Day feature adds less than 2% to the total gain, meaning it might be insignificant.</p>
+<p>Let’s calculate the accuracy of the model on the test set using <code>confusionMatrix()</code> from the <code>caret</code> package.</p>
+<pre class="r"><code>test &lt;- (df %&gt;% select(-Index) %&gt;% data.matrix())[-trainIndex,]
+
+preds_matrix &lt;- predict(xgb, test, reshape=T)
+
+results &lt;- t(apply(preds_matrix, 1, function (x) {
+  max_index = which(x==max(x))
+  return (c(max_index-1, x[max_index]))
+}))
+
+df_results &lt;- data.frame(results, label_act = df$Index[-trainIndex]) %&gt;%
+  tbl_df() %&gt;%
+  transmute(label_pred = X1, prod_pred = X2, label_act)</code></pre>
+<pre class="r"><code>cm &lt;- confusionMatrix(df_results$label_pred, df_results$label_act)
+
+data.frame(cm$overall)</code></pre>
+<pre><code>##                cm.overall
+## Accuracy        0.4928235
+## Kappa           0.3132158
+## AccuracyLower   0.4910315
+## AccuracyUpper   0.4946157
+## AccuracyNull    0.3481192
+## AccuracyPValue  0.0000000
+## McnemarPValue         NaN</code></pre>
+<p>We got an accuracy of about 49%, which is the proportion of predictions where the predicted category value matches the actual category value. That might seem low. However, if you predicted a ‘Simple Assault’ label for all the test-set values, you would get an accuracy of 35%. A 14% improvement isn’t half bad and we beat our benchmark.</p>
+<p>Accuracy is a fairly simple metric that will often not be able to capture the nuances of multi-class classification. Let’s take a look at the confusion matrix.</p>
+<pre class="r"><code>library(viridis)
+
+df_cm &lt;- df_cm %&gt;%
+  left_join(df_code_index, by = c(&quot;Prediction&quot; = &quot;Index&quot;)) %&gt;%
+  left_join(df_code_index, by = c(&quot;Reference&quot; = &quot;Index&quot;)) %&gt;%
+  rename(label_pred = Type.x, label_act = Type.y)
+
+df_correct &lt;- df_cm %&gt;% filter(label_pred == label_act)
+
+ggplot(df_cm, aes(x=label_act, y=label_pred, fill = Freq)) +
+  geom_tile() +
+  geom_point(data=df_correct, color=&quot;white&quot;, size=0.8) +
+  theme_minimal() +
+  coord_equal() +
+  scale_x_discrete() +
+  scale_y_discrete() +
+  theme(legend.position=&quot;top&quot;, legend.direction=&quot;horizontal&quot;, legend.key.width=unit(1.25, &quot;cm&quot;), 
+        legend.key.height=unit(0.25, &quot;cm&quot;),
+        axis.text.x=element_text(angle=-90, size=9, vjust=0.5, hjust=0), axis.text.y=element_text(size=9), 
+        plot.title = element_text(hjust=1)) +
+  scale_fill_viridis(option=&quot;B&quot;,name=&quot;# of Preds&quot;, breaks=10^(0:4), trans=&quot;log10&quot;) +
+  labs(x = &quot;Actual&quot;,
+       y = &quot;Predicted&quot;)</code></pre>
+<div class="figure">
+<img src="Predicting%20And%20Mapping%20Arrest%20Types/confusion%20matrix.png" />
+
+</div>
+<p>There is a large amount of confusion. Many of the labels are mispredicted as Simple Assault. Specifically, the model frequently confuses the combinations of Assault, Drug Abuse, and Larceny, suggesting that they also may be catch-alls.</p>
+</div>
+<div id="mapping-the-predicted-types-of-arrest" class="section level3">
+<h3>Mapping the predicted types of arrest</h3>
+<p>Equally as important as model creating is implementing and executing the models. Since we can predict the type of crime based on the given location and date/time of an arrest, we can map boundaries of the mostly likely type of offense.</p>
+<p>We can head over to <a href="http://boundingbox.klokantech.com/">BoundingBox</a> and get a bounding box (bbox) for Chicago. With that let’s create 5625 latitude/longitude points to simulate locations.</p>
+<pre class="r"><code>bbox = c(-87.940102,41.643921,-87.523987,42.023022)
+
+grid_size = 75
+df_points &lt;- data.frame(expand.grid(Long=seq(bbox[1], bbox[3], length.out=grid_size),
+                                    Lat=seq(bbox[2], bbox[4], length.out=grid_size)))
+write.csv(df_points,&#39;df_points.csv&#39;, row.names = F)</code></pre>
+<p>Now we can use this newly created dataframe and the XGBoost model to predict the most-likely type of arrest at the location with a given date/time, create a raster imagine of the prediction types, and plot it using <code>leaflet</code>.</p>
+<p>To take it one step further we can make the prediction, create the raster, and plot it from user input using <code>shiny</code>.</p>
+<pre class="r"><code>library(shiny)
+library(leaflet)
+library(raster)
+library(dplyr)
+library(lubridate)
+library(xgboost)
+library(rgdal)
+
+df_points &lt;- read.csv(&#39;df_points.csv&#39;)
+bst &lt;- xgb.load(&#39;xgb.model&#39;)
+df_labels &lt;- read.csv(&#39;df_labels.csv&#39;) %&gt;% mutate_if(is.integer, as.character)
+df_loc &lt;- read.csv(&#39;community area.csv&#39;)
+
+ui &lt;- bootstrapPage(
+  tags$style(type = &#39;text/css&#39;, &#39;html, body {width:100%;height:100%}&#39;),
+  verbatimTextOutput(&#39;date_time&#39;),
+  leafletOutput(&#39;map&#39;, width = &#39;100%&#39;, height = &#39;100%&#39;),
+  absolutePanel(top = 10, right = 250,
+                dateInput(&#39;date&#39;,
+                          label = &#39;Choose Date:&#39;,
+                          value = Sys.Date()
+                ),
+                selectInput(&#39;hour&#39;, &#39;Choose Hour of the Day:&#39;, 
+                            choices = c(&#39;1 a.m.&#39; = 1, &#39;2 a.m.&#39; = 2, &#39;3 a.m.&#39; = 3,
+                                        &#39;4 a.m.&#39; = 4, &#39;5 a.m.&#39; = 5, &#39;6 a.m.&#39; = 6,
+                                        &#39;7 a.m.&#39; = 7, &#39;8 a.m.&#39; = 8, &#39;9 a.m.&#39; = 9,
+                                        &#39;10 a.m.&#39; = 10, &#39;11 a.m.&#39; = 11, &#39;12 noon&#39; = 12,
+                                        &#39;1 p.m.&#39; = 13, &#39;2 p.m.&#39; = 14, &#39;3 p.m.&#39; = 15,
+                                        &#39;4 p.m.&#39; = 16, &#39;5 p.m.&#39; = 17, &#39;6 p.m.&#39; = 18,
+                                        &#39;7 p.m.&#39; = 19, &#39;8 p.m.&#39; = 20, &#39;9 p.m.&#39; = 21,
+                                        &#39;10 p.m.&#39; = 22, &#39;11 p.m.&#39; = 23, &#39;12 midnight&#39; = 24),
+                            selected = 12
+                ),
+                actionButton(&#39;updateButton&#39;, &#39;Predict&#39;, class = &#39;btn-primary&#39;),
+                h2(),
+                selectInput(&#39;loc&#39;, &#39;Zoom to Community Area:&#39;, 
+                            df_loc$community_area)
+  )
+)
+
+
+server &lt;- function(input, output, session) {
+
+   output$map &lt;- renderLeaflet({
+     leaflet() %&gt;% addProviderTiles(&#39;OpenStreetMap.Mapnik&#39;) %&gt;%
+       setView(lng = -87.6298, lat = 41.8781, zoom = 11) %&gt;%
+       addMeasure(position = &#39;bottomleft&#39;) %&gt;%
+       addEasyButton(easyButton(
+         icon = &#39;fa-home&#39;,
+         title = &#39;Default View&#39;,
+         onClick = JS(&#39;function(btn, map){ map.setView({lon: -87.6298, lat :41.8781}, 11); }&#39;)))
+    })
+   
+   df_points_ &lt;- eventReactive(input$updateButton,{
+     df_points %&gt;%
+       mutate(Hour = input$hour,
+              Month = month(input$date),
+              Year = year(input$date),
+              Day = wday(input$date)) %&gt;%
+       .[,c(3,6,4,5,2,1)] %&gt;% 
+       data.matrix()
+   })
+
+   
+   preds_matrix_ &lt;- eventReactive(input$updateButton,{
+     matrix(predict(bst, df_points_()), byrow=T, nrow(df_points_()), 26)
+   })
+   
+   results_ &lt;- eventReactive(input$updateButton,{
+     t(apply(preds_matrix_(), 1, function (x) {
+     max_index = which(x==max(x))
+     return (c(max_index-1, x[max_index]))
+   }))
+   })
+   
+   df2 &lt;- eventReactive(input$updateButton,{
+     data.frame(Long = df_points_()[,6], Lat = df_points_()[,5],
+                label = factor(results_()[,1]), prob = results_()[,2]) %&gt;%
+       tbl_df() %&gt;%
+       mutate_if(is.factor, as.character) %&gt;%
+       left_join(df_labels, by = c(&#39;label&#39; = &#39;Index&#39;)) %&gt;%
+       mutate(Type = factor(Type)) %&gt;% 
+       left_join(df_labels) %&gt;% .[,c(5,1,2)]
+   })
+
+   r &lt;- eventReactive(input$updateButton,{
+     raster(SpatialPixelsDataFrame(df2()[,c(&#39;Long&#39;, &#39;Lat&#39;)], data = df2(), proj4string = CRS(&#39;+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&#39;)))
+   })
+     
+     
+   val_c &lt;- eventReactive(input$updateButton,{
+     unique(df2()$Type)
+   })
+     
+   pal_c &lt;- eventReactive(input$updateButton,{
+     colorFactor(c(&quot;#114477&quot;, &quot;#4477AA&quot;, &quot;#77AADD&quot;, 
+                         &quot;#117755&quot;, &quot;#44AA88&quot;, &quot;#99CCBB&quot;, 
+                         &quot;#777711&quot;, &quot;#AAAA44&quot;, &quot;#DDDD77&quot;, 
+                         &quot;#771111&quot;, &quot;#AA4444&quot;, &quot;#DD7777&quot;, 
+                         &quot;#771144&quot;, &quot;#AA4477&quot;, &quot;#DD77AA&quot;), val_c(), na.color = &#39;#00000000&#39;)
+   })
+   
+   pal &lt;- eventReactive(input$updateButton,{
+     colorNumeric(c(&quot;#114477&quot;, &quot;#4477AA&quot;, &quot;#77AADD&quot;, 
+                        &quot;#117755&quot;, &quot;#44AA88&quot;, &quot;#99CCBB&quot;, 
+                        &quot;#777711&quot;, &quot;#AAAA44&quot;, &quot;#DDDD77&quot;, 
+                        &quot;#771111&quot;, &quot;#AA4444&quot;, &quot;#DD7777&quot;, 
+                        &quot;#771144&quot;, &quot;#AA4477&quot;, &quot;#DD77AA&quot;), as.numeric(c(1:length(unique(df2()$Type)))),
+                  na.color = &quot;#00000000&quot;)
+   })
+   
+   observeEvent(input$updateButton,{
+     leafletProxy(&#39;map&#39;) %&gt;% 
+       clearControls() %&gt;%
+       clearMarkers() %&gt;%
+       clearImages() %&gt;%
+       addCircles(data = df2(), ~Long, ~Lat, label = df2()$Type, opacity = 0.00,
+                  radius = 300, fillColor = &#39;transparent&#39;) %&gt;%
+       addRasterImage(r(), colors = pal(), opacity = 0.5, project=FALSE) %&gt;%
+       addLegend(pal = pal_c(), values = val_c(), title = &#39;Predicted Arrest Type&#39;)
+     }
+)
+   
+   observeEvent(input$loc,{
+     
+     leafletProxy(&#39;map&#39;) %&gt;% 
+     setView(lng = df_loc %&gt;% filter(community_area == as.character(input$loc)) %&gt;%
+                 .[,2],
+               lat = df_loc %&gt;% filter(community_area == as.character(input$loc)) %&gt;%
+                 .[,3],
+               zoom = df_loc %&gt;% filter(community_area == as.character(input$loc)) %&gt;%
+               .[,4])
+   })
+
+}
+
+shinyApp(ui = ui, server = server)</code></pre>
+<p><a href="https://rszumski.shinyapps.io/Arrest_Type_Prediction_Chicago/">link</a> to the shiny app.</p>
+<p>There we go, given the location and date/time we can indeed predict arrest type for the city of Chicago and make a cool shiny app too.</p>
+</div>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="/post/web-scraping-the-numbers/" data-toggle="tooltip" data-placement="top" title="Web Scraping - The Numbers">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rszumski@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rszumski" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/russell-szumski-0381281a/" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Russell Szumski
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="/">szumskiR</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.31.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

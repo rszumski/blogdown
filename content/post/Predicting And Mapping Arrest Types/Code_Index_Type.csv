@@ -1,0 +1,27 @@
+Code,Index,Type
+6,0,Larceny
+15,1,Weapons Violation
+18,2,Drug Abuse
+24,3,Disorderly Conduct
+26,4,Misc Non-Index Offense
+08B,5,Simple Battery
+08A,6,Simple Assault
+04A,7,Aggravated Assault
+14,8,Vandalism
+04B,9,Aggravated Battery
+2,10,Criminal Sexual Assault
+5,11,Burglary
+3,12,Robbery
+22,13,Liquor License
+16,14,Prostitution
+11,15,Fraud
+9,16,Arson
+20,17,Offenses Against Family
+01A,18,Homicide 1st & 2nd Degree
+7,19,Motor Vehicle Theft
+10,20,Forgery & Counterfeiting
+19,21,Gambling
+17,22,Criminal Sexual Abuse
+01B,23,Involuntary Manslaughter
+13,24,Stolen Property
+12,25,Embezzlement

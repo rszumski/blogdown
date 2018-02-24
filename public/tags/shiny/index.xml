@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shiny on szumskiR</title>
+    <link>/tags/shiny/</link>
+    <description>Recent content in Shiny on szumskiR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
+    <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
+    <lastBuildDate>Sat, 24 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/shiny/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Predicting And Mapping Arrest Types in Chicago</title>
+      <link>/post/predicting-and-mapping-arrest-types/</link>
+      <pubDate>Sat, 24 Feb 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/predicting-and-mapping-arrest-types/</guid>
+      <description>Given the location and date/time, can we predict arrest type for the city of Chicago?
+In this post we will use xgboost to predict arrest type, leaflet to map, and shiny to let the user input information to make a prediction.
+For the impatient here is the final product and a link to the full page shiny app.
+ Okay, let’s give the xgboost R package a look and test it out on the Crimes - 2001 to present dataset from the Chicago Data Portal.</description>
+    </item>
+    
+  </channel>
+</rss>

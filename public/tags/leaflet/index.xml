@@ -7,19 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
     <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
-    <lastBuildDate>Tue, 23 Jan 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 24 Feb 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/leaflet/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>CTA Ridership</title>
-      <link>/post/cta-dashboard/</link>
-      <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
+      <title>Predicting And Mapping Arrest Types in Chicago</title>
+      <link>/post/predicting-and-mapping-arrest-types/</link>
+      <pubDate>Sat, 24 Feb 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
-      <guid>/post/cta-dashboard/</guid>
-      <description>Tools: R
-Data Source: Chicago Data Portal The dataset lists monthly station entry averages, by day type (Weekday, Saturday or Sunday/Holiday), as well as monthly totals, beginning in 2001.</description>
+      <guid>/post/predicting-and-mapping-arrest-types/</guid>
+      <description>Given the location and date/time, can we predict arrest type for the city of Chicago?
+In this post we will use xgboost to predict arrest type, leaflet to map, and shiny to let the user input information to make a prediction.
+For the impatient here is the final product and a link to the full page shiny app.
+ Okay, let’s give the xgboost R package a look and test it out on the Crimes - 2001 to present dataset from the Chicago Data Portal.</description>
     </item>
     
   </channel>

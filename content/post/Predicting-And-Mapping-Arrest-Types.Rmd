@@ -12,6 +12,7 @@ library(dplyr)
 library(data.table)
 library(caret)
 library(ggplot2)
+library(htmltools)
 
 df_ <- fread('Predicting And Mapping Arrest Types/Crimes_-_2001_to_present.csv')
 df_code_index <- fread('Predicting And Mapping Arrest Types/Code_Index_Type.csv')
@@ -172,7 +173,7 @@ ggplot(df_imp, aes(x=Feature, y=Gain)) +
   theme(plot.title=element_text(hjust=0.5), axis.title.y=element_blank())
 ```
 
-![](Predicting And Mapping Arrest Types/Feature_Importance.png)
+![](img/Feature_Importance.png)
 
 Unsurprisingly, location features are the most important, with both location-based features establishing almost 80% of the total Gain in the model. The Day feature adds less than 2% to the total gain, meaning it might be insignificant.
 
@@ -228,7 +229,7 @@ ggplot(df_cm, aes(x=label_act, y=label_pred, fill = Freq)) +
        y = "Predicted")
 ```
 
-![](Predicting And Mapping Arrest Types/confusion_matrix.png)
+![](img/confusion_matrix.png)
 
 There is a large amount of confusion. Many of the labels are mispredicted as Simple Assault. Specifically, the model frequently confuses the combinations of Assault, Drug Abuse, and Larceny, suggesting that they also may be catch-alls.
 

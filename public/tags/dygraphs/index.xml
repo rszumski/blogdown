@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
     <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
-    <lastBuildDate>Wed, 17 Jan 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 20 May 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/dygraphs/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>I Ran a Marathon Once</title>
+      <link>/post/running-dashboard/</link>
+      <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/running-dashboard/</guid>
+      <description>In 2016 I trained for and ran the Chicago Marathon. During the training I was wearing a Garmin Forerunner10 watch. I recorded all the stats the watch had, then did absolutely nothing with that data. It’s two years later, so I guess I should take a look at it.
+When I trained I didn’t follow any training program. My idea was to run a lot, I think I did that, but at this point I have no Idea.</description>
+    </item>
     
     <item>
       <title> I Want to Believe</title>

@@ -5,21 +5,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Flexdashboard</title>
-  <meta property="og:title" content="Flexdashboard" />
-  <meta name="twitter:title" content="Flexdashboard" />
+  <title>Chicago Homicide Clearance Rate</title>
+  <meta property="og:title" content="Chicago Homicide Clearance Rate" />
+  <meta name="twitter:title" content="Chicago Homicide Clearance Rate" />
+  <meta name="description" content="If you’re murdered in America, there’s a 1 in 3 chance that the police won’t identify your killer.
+To use the FBI’s terminology, the national “clearance rate” for homicide today is 64.1 percent. Fifty years ago, it was more than 90 percent.
+Living in Chicago I often hear, from people outside of the city, how dangerous it is and how many murders go unsolved. So I thought I would take a look at the city’s “clearance” rate for myself.">
+  <meta property="og:description" content="If you’re murdered in America, there’s a 1 in 3 chance that the police won’t identify your killer.
+To use the FBI’s terminology, the national “clearance rate” for homicide today is 64.1 percent. Fifty years ago, it was more than 90 percent.
+Living in Chicago I often hear, from people outside of the city, how dangerous it is and how many murders go unsolved. So I thought I would take a look at the city’s “clearance” rate for myself.">
+  <meta name="twitter:description" content="If you’re murdered in America, there’s a 1 in 3 chance that the police won’t identify your killer.
+To use the FBI’s terminology, the national “clearance rate” for homicide today is 64.1 percent. Fifty …">
   <meta name="author" content="Russell Szumski"/>
   <link href='/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="/img/avatar-icon.png" />
   <meta name="twitter:image" content="/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
-  <meta property="og:url" content="/tags/flexdashboard/" />
+  <meta property="og:url" content="/post/chicago-homicide-clearance-rate/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="szumskiR" />
 
   <meta name="generator" content="Hugo 0.31.1" />
-  <link rel="canonical" href="/tags/flexdashboard/" />
-  <link rel="alternate" href="/tags/flexdashboard/index.xml" type="application/rss+xml" title="szumskiR">
+  <link rel="canonical" href="/post/chicago-homicide-clearance-rate/" />
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="szumskiR">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -134,14 +142,40 @@
 
 
     
+  
+  
+  
+
+
+
+
+  
+
   <header class="header-section ">
+    
     <div class="intro-header no-img">
+      
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <div class="page-heading">
-              <h1>#Flexdashboard</h1>
-              <hr class="small">
+            <div class="post-heading">
+              <h1>Chicago Homicide Clearance Rate</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 20, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 2 minutes (367 words)
+  
+  
+</span>
+
+
+                
             </div>
           </div>
         </div>
@@ -149,83 +183,52 @@
     </div>
   </header>
 
+
     
-  <div class="container" role="main">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        
-        <div class="posts-list">
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>If you’re murdered in America, there’s a 1 in 3 chance that the police won’t identify your killer.</p>
+<p>To use the FBI’s terminology, the national “clearance rate” for homicide today is 64.1 percent. Fifty years ago, it was more than 90 percent.</p>
+<p>Living in Chicago I often hear, from people outside of the city, how dangerous it is and how many murders go unsolved. So I thought I would take a look at the city’s “clearance” rate for myself. Luckily for me, the city of Chicago has a publicly available dataset of crimes in the city from 2001 to the present. Using that I put together this dashboard.</p>
+<iframe src="https://rstudio-pubs-static.s3.amazonaws.com/406148_53cd0545428c46c3a573c2538d86ed1c.html" width="1000" height="800" style="border:none;"></iframe>
+<p>A <a href="https://rstudio-pubs-static.s3.amazonaws.com/406148_53cd0545428c46c3a573c2538d86ed1c.html">link</a> to a full page view.</p>
+<div id="the-data" class="section level4">
+<h4>The Data</h4>
+<p>The dataset comes from the <a href="https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2">Chicago Data Potal</a>. It reflects reported incidents of crime (with the exception of murders where data exists for each victim) that occurred in the City of Chicago from 2001 to 2017. Data is extracted from the Chicago Police Department’s CLEAR (Citizen Law Enforcement Analysis and Reporting) system.</p>
+<p>Disclaimer: These crimes may be based upon preliminary information supplied to the Police Department by the reporting parties that have not been verified. The preliminary crime classifications may be changed at a later date based upon additional investigation and there is always the possibility of mechanical or human error. Therefore, the Chicago Police Department does not guarantee (either expressed or implied) the accuracy, completeness, timeliness, or correct sequencing of the information and the information should not be used for comparison purposes over time.</p>
+</div>
+<div id="definitions" class="section level4">
+<h4>Definitions</h4>
+<p>I followed Illinois Uniform Crime Reporting (IUCR) codes when filtering out homicides from other crimes. IUCR codes are four digit codes that law enforcement agencies use to classify criminal incidents when taking individual reports. In that program, homicides include FIRST DEGREE MURDER, SECOND DEGREE MURDER, INVOLUNTARY MANSLAUGHTER, and RECKLESS HOMICIDE.</p>
+<p>Clearance rate or arrest rate is calculated by dividing the number of crimes that are “cleared” (a charge being laid, an arrest) by the total number of crimes recorded.</p>
+</div>
+<div id="mapping-methodology" class="section level4">
+<h4>Mapping Methodology</h4>
+<p>Areas shaded in orange are places where fewer than one-third of the homicides resulted in an arrest.</p>
+<p>Areas shaded in blue are where two-thirds or more of the homicides resulted in an arrest</p>
+</div>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
           
-            <article class="post-preview">
-              <a href="/post/chicago-homicide-clearance-rate/">
-                <h2 class="post-title">Chicago Homicide Clearance Rate</h2>
-
-                
-              </a>
-
-              <p class="post-meta">
-                Posted on July 20, 2018
-              </p>
-              <div class="post-entry">
-                
-                  If you’re murdered in America, there’s a 1 in 3 chance that the police won’t identify your killer.
-To use the FBI’s terminology, the national “clearance rate” for homicide today is 64.1 percent. Fifty years ago, it was more than 90 percent.
-Living in Chicago I often hear, from people outside of the city, how dangerous it is and how many murders go unsolved. So I thought I would take a look at the city’s “clearance” rate for myself.
-                  <a href="/post/chicago-homicide-clearance-rate/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <span class="post-meta">
-                  
-                    #<a href="/tags/highcharter/">highcharter</a>&nbsp;
-                  
-                    #<a href="/tags/flexdashboard/">flexdashboard</a>&nbsp;
-                  
-                    #<a href="/tags/leaflet/">leaflet</a>&nbsp;
-                  
-                </span>
-              
-
-            </article>
+            <li class="previous">
+              <a href="/post/running-dashboard/" data-toggle="tooltip" data-placement="top" title="I Ran a Marathon Once">&larr; Previous Post</a>
+            </li>
           
-            <article class="post-preview">
-              <a href="/post/running-dashboard/">
-                <h2 class="post-title">I Ran a Marathon Once</h2>
-
-                
-              </a>
-
-              <p class="post-meta">
-                Posted on May 20, 2018
-              </p>
-              <div class="post-entry">
-                
-                  In 2016 I trained for and ran the Chicago Marathon. During the training I was wearing a Garmin Forerunner10 watch. I recorded all the stats the watch had, then did absolutely nothing with that data. It’s two years later, so I guess I should take a look at it.
-When I trained I didn’t follow any training program. My idea was to run a lot, I think I did that, but at this point I have no Idea.
-                  <a href="/post/running-dashboard/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <span class="post-meta">
-                  
-                    #<a href="/tags/highcharter/">highcharter</a>&nbsp;
-                  
-                    #<a href="/tags/flexdashboard/">flexdashboard</a>&nbsp;
-                  
-                    #<a href="/tags/dygraphs/">dygraphs</a>&nbsp;
-                  
-                </span>
-              
-
-            </article>
           
-        </div>
-        
-      </div>
+        </ul>
+      
+
+
+      
+
     </div>
   </div>
+</div>
 
     <footer>
   <div class="container">

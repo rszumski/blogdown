@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>rszumski@gmail.com (Russell Szumski)</managingEditor>
     <webMaster>rszumski@gmail.com (Russell Szumski)</webMaster>
-    <lastBuildDate>Sat, 24 Feb 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Jul 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/leaflet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Chicago Homicide Clearance Rate</title>
+      <link>/post/chicago-homicide-clearance-rate/</link>
+      <pubDate>Fri, 20 Jul 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/post/chicago-homicide-clearance-rate/</guid>
+      <description>If you’re murdered in America, there’s a 1 in 3 chance that the police won’t identify your killer.
+To use the FBI’s terminology, the national “clearance rate” for homicide today is 64.1 percent. Fifty years ago, it was more than 90 percent.
+Living in Chicago I often hear, from people outside of the city, how dangerous it is and how many murders go unsolved. So I thought I would take a look at the city’s “clearance” rate for myself.</description>
+    </item>
     
     <item>
       <title>Predicting And Mapping Arrest Types in Chicago</title>

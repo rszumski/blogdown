@@ -15,22 +15,20 @@ If you're murdered in America, there's a 1 in 3 chance that the police won't ide
 
 To use the FBI's terminology, the national "clearance rate" for homicide today is 64.1 percent. Fifty years ago, it was more than 90 percent.
 
-Living in Chicago I often hear, from people outside of the city, how dangerous it is and how many murders go unsolved. So I thought I would take a look at the city's "clearance" rate for myself. Luckily for me, the city of Chicago has a publicly available dataset of crimes in the city from 2001 to the present. Using that I put together this dashboard.
+From 2001 to 2017, of the 8913 homicides in Chicago, the average percent of homicides that resulted in an arrest was just under 49. The number of homicides has spiked in recent years while the arrest rate decreased. There have been 4609 homicides without an arrest between 2001 and 2017.
 
 ```{r,echo=F}
-htmltools::tags$iframe(src = 'https://rstudio-pubs-static.s3.amazonaws.com/406148_53cd0545428c46c3a573c2538d86ed1c.html', width = '1000', height = '800', style="border:none;")
+htmltools::tags$iframe(src = 'https://rszumski.github.io/chicago_homicides_bar_charts/', width = 100%, height = '600', style="border:none;")
+```
+Chicago has low-arrest zones with a high concentration of homicides and low arrest rates, and high-arrest zones with a high concentration of homicides and high arrest rates.
+
+```{r,echo=F}
+htmltools::tags$iframe(src = 'https://rszumski.github.io/chicago_homicides/', width = 100%, height = '800', style="border:none;")
 ```
 
 A [link](https://rstudio-pubs-static.s3.amazonaws.com/406148_53cd0545428c46c3a573c2538d86ed1c.html) to a full page view.
 
-#### The Data
 
-The dataset comes from the [Chicago Data Potal](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2).
-It reflects reported incidents of crime (with the exception of murders where data exists for each victim) that occurred in the City of Chicago from 2001 to 2017. Data is extracted from the Chicago Police Department's CLEAR (Citizen Law Enforcement Analysis and Reporting) system. 
-
-Disclaimer: These crimes may be based upon preliminary information supplied to the Police Department by the reporting parties that have not been verified. The preliminary crime classifications may be changed at a later date based upon additional investigation and there is always the possibility of mechanical or human error. Therefore, the Chicago Police Department does not guarantee (either expressed or implied) the accuracy, completeness, timeliness, or correct sequencing of the information and the information should not be used for comparison purposes over time.
-
-#### Definitions
 
 I followed Illinois Uniform Crime Reporting (IUCR) codes when filtering out homicides from other crimes. IUCR codes are four digit codes that law enforcement agencies use to classify criminal incidents when taking individual reports. In that program, homicides include FIRST DEGREE MURDER, SECOND DEGREE MURDER, INVOLUNTARY MANSLAUGHTER, and RECKLESS HOMICIDE.
 

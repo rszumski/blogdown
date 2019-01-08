@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>Chart.js</title>
+      <link>/tags/chart.js/</link>
+      <pubDate>Fri, 20 Jul 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/tags/chart.js/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Cluster</title>
       <link>/tags/cluster/</link>
       <pubDate>Thu, 18 May 2017 00:00:00 +0000</pubDate>
@@ -51,7 +60,7 @@
     <item>
       <title>Flexdashboard</title>
       <link>/tags/flexdashboard/</link>
-      <pubDate>Fri, 20 Jul 2018 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/flexdashboard/</guid>
       <description></description>
@@ -78,7 +87,7 @@
     <item>
       <title>Highcharter</title>
       <link>/tags/highcharter/</link>
-      <pubDate>Fri, 20 Jul 2018 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/highcharter/</guid>
       <description></description>
@@ -87,7 +96,7 @@
     <item>
       <title>Leaflet</title>
       <link>/tags/leaflet/</link>
-      <pubDate>Fri, 20 Jul 2018 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 24 Feb 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/leaflet/</guid>
       <description></description>
@@ -99,6 +108,15 @@
       <pubDate>Sun, 04 Feb 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/lubridate/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mapbox</title>
+      <link>/tags/mapbox/</link>
+      <pubDate>Fri, 20 Jul 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/tags/mapbox/</guid>
       <description></description>
     </item>
     
@@ -117,6 +135,15 @@
       <pubDate>Thu, 25 Jan 2018 00:00:00 +0000</pubDate>
       <author>rszumski@gmail.com (Russell Szumski)</author>
       <guid>/tags/purrr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Qgis</title>
+      <link>/tags/qgis/</link>
+      <pubDate>Fri, 20 Jul 2018 00:00:00 +0000</pubDate>
+      <author>rszumski@gmail.com (Russell Szumski)</author>
+      <guid>/tags/qgis/</guid>
       <description></description>
     </item>
     
